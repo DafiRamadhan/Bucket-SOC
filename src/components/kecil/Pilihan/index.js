@@ -24,6 +24,7 @@ const Pilihan = ({
           style={styles.picker(formfontSize)}
           onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}>
           <Picker.Item
+            style={styles.picker(formfontSize)}
             label="--Pilih--"
             value=""
           />
@@ -40,7 +41,7 @@ export default Pilihan;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
+    marginTop: 17,
   },
   label: labelfontSize => ({
     fontSize: labelfontSize ? labelfontSize : RFValue(18, heightMobileUI),
@@ -48,14 +49,14 @@ const styles = StyleSheet.create({
     color: 'black',
   }),
   picker: formfontSize => ({
-    fontSize: formfontSize ? formfontSize : RFValue(18, heightMobileUI),
+    fontSize: formfontSize ? formfontSize : RFValue(16, heightMobileUI),
     fontFamily: fonts.primary.bold,
     marginTop: -10,
     marginBottom: 10,
+    color: 'black',
   }),
   wrapperPicker: (width, height) => ({
-    borderWidth: 1,
-    borderRadius: 5,
+    borderBottomWidth: 1,
     borderColor: colors.borderInput,
     marginTop: 7,
     width: width,

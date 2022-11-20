@@ -18,7 +18,7 @@ import {heightMobileUI} from '../../../utils/constant';
 //'kategori' dikirim dari halaman ListKategori
 const CardKategori2 = ({kategori}) => {
   return (
-    <DropShadow style={dropshadow.kategoriCard}>
+    <DropShadow style={dropshadow.kategoriText}>
       <TouchableOpacity style={styles.container}>
         <Text style={styles.label}>
           {kategori.nama}
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   label: {
-    fontSize: RFValue(16, heightMobileUI),
+    fontSize: RFValue(14, heightMobileUI),
     fontFamily: fonts.primary.bold,
     color: colors.white,
     textAlign: 'center',

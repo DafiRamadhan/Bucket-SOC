@@ -1,12 +1,14 @@
 import React from 'react';
+import {Linking} from 'react-native';
 import { IconKontakKami, IconEditProfile, IconPassword, IconLogout } from '../../assets';
 
-export const dummyMenu = [
+export const Menu = [
   {
     id: 1,
     nama: 'Kontak Kami',
     gambar: <IconKontakKami />,
-    halaman: 'KontakKami',
+    halaman: 'whatsapp://send?phone=6288225276534',
+    // "whatsapp://send?text=" + msg + "&phone=" + mobile
   },
   {
     id: 2,

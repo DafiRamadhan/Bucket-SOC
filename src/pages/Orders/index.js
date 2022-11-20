@@ -1,144 +1,60 @@
-import React, {Component} from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-  Button,
-  Alert,
-  ActivityIndicator,
-} from 'react-native';
-import GetLocation from 'react-native-get-location';
+import { Text, StyleSheet, View, ScrollView } from 'react-native'
+import React, { Component } from 'react'
+import { dummyPesanan } from '../../data'
+import { ListOrders } from '../../components'
+import { colors, fonts, responsiveHeight } from '../../utils'
+import { RFValue } from 'react-native-responsive-fontsize'
+import { heightMobileUI } from '../../utils/constant'
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+export default class Orders extends Component {
+constructor(props) {
+  super(props)
 
-
-export default class App extends Component {
-  state = {
-    location: null,
-    loading: false,
-  };
-
-  _requestLocation = () => {
-    this.setState({loading: true, location: null});
-
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: true,
-      timeout: 150000,
-    })
-      .then(location => {
-        this.setState({
-          location,
-          loading: false,
-        });
-      })
-      .catch(ex => {
-        const {code, message} = ex;
-        console.warn(code, message);
-        if (code === 'CANCELLED') {
-          Alert.alert('Location cancelled by user or by another request');
-        }
-        if (code === 'UNAVAILABLE') {
-          GetLocation.openGpsSettings();
-        }
-        if (code === 'TIMEOUT') {
-          Alert.alert('Location request timed out');
-        }
-        if (code === 'UNAUTHORIZED') {
-          Alert.alert('Authorization denied');
-        }
-        this.setState({
-          location: null,
-          loading: false,
-        });
-      });
-  };
+  this.state = {
+     pesanan: dummyPesanan
+  }
+}
 
   render() {
-    const {location, loading} = this.state;
+    const {pesanan} = this.state
+    const {navigation} = this.props
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>
-          To get location, press the button:
-        </Text>
-        <View style={styles.button}>
-          <Button
-            disabled={loading}
-            title="Get Location"
-            onPress={this._requestLocation}
-          />
-        </View>
-        {loading ? <ActivityIndicator /> : null}
-        {location ? (
-          <Text style={styles.location}>{JSON.stringify(location, 0, 2)}</Text>
-        ) : null}
-        <Text style={styles.instructions}>Extra functions:</Text>
-        <View style={styles.button}>
-          <Button
-            title="Open App Settings"
-            onPress={() => {
-              GetLocation.openAppSettings();
-            }}
-          />
-        </View>
-        <View style={styles.button}>
-          <Button
-            title="Open Gps Settings"
-            onPress={() => {
-              GetLocation.openGpsSettings();
-            }}
-          />
-        </View>
-        <View style={styles.button}>
-          <Button
-            title="Open Wifi Settings"
-            onPress={() => {
-              GetLocation.openWifiSettings();
-            }}
-          />
-        </View>
-        <View style={styles.button}>
-          <Button
-            title="Open Mobile Data Settings"
-            onPress={() => {
-              GetLocation.openCelularSettings();
-            }}
-          />
-        </View>
-        <Text style={styles.instructions}>{instructions}</Text>
+      <View style={styles.pages}>
+        <Text style={styles.title}>Orders</Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.container}>
+            <View style={styles.listmenu}>
+              <ListOrders daftarPesanan={pesanan} navigation={navigation}/>
+            </View>
+          </View>
+        </ScrollView>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  pages: {
+    //flex: 1,
+    backgroundColor: colors.primary,
+  },
+  title: {
+    fontSize: RFValue(32, heightMobileUI),
+    fontFamily: fonts.primary.bold,
+    color: 'white',
+    alignSelf: 'center',
+    marginVertical: responsiveHeight(30),
+    position: 'absolute',
+  },
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: colors.white,
+    width: '100%',
+    borderTopRightRadius: 50,
+    borderTopLeftRadius: 50,
+    paddingBottom: 120,
+    marginTop: responsiveHeight(100),
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  location: {
-    color: '#333333',
-    marginBottom: 5,
-  },
-  button: {
-    marginBottom: 8,
+  listmenu: {
+    //marginTop: responsiveHeight(7),
   },
 });

@@ -9,6 +9,8 @@ import Pilihan from './Pilihan';
 import CardKeranjang from './CardKeranjang';
 import Header from './Header';
 import CardAlamat from './CardAlamat';
+import PilihTanggal from './PilihTanggal';
+import CardOrders from './CardOrders';
 
 export {
   KeranjangIcon,
@@ -22,4 +24,6 @@ export {
   CardKeranjang,
   Header,
   CardAlamat,
+  PilihTanggal,
+  CardOrders,
 };

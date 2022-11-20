@@ -1,13 +1,28 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Linking } from 'react-native'
 import React from 'react'
 import { IconArrowRight } from '../../../assets'
 import { colors, fonts, responsiveHeight, responsiveWidth } from '../../../utils'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { heightMobileUI } from '../../../utils/constant'
 
-const CardMenu = ({pilihan}) => {
+const CardMenu = ({pilihan, navigation}) => {
+  if (pilihan.nama == "Kontak Kami") {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => Linking.openURL(pilihan.halaman)}>
+      <View style={styles.menu}>
+        {pilihan.gambar}
+        <Text style={styles.text}>{pilihan.nama}</Text>
+      </View>
+      <IconArrowRight />
+    </TouchableOpacity>
+  );
+  }
+  return (
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => navigation.navigate(pilihan.halaman)}>
       <View style={styles.menu}>
         {pilihan.gambar}
         <Text style={styles.text}>{pilihan.nama}</Text>

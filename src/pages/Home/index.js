@@ -36,7 +36,7 @@ export default class Home extends Component {
               <ListKategori pilihKategori={kategori} />
             </View>
             <View style={styles.pilihBuket}>
-              <Text style={styles.label}>Pilih Buket Yang Anda Inginkan</Text>
+              <Text style={styles.label}>Pilih Buket Favorit Anda</Text>
               <ListBuket pilihBuket={buket} navigation={navigation} />
             </View>
             <TouchableOpacity
@@ -76,8 +76,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   label: {
-    fontSize: RFValue(20, heightMobileUI),
-    fontFamily: fonts.primary.regular,
+    fontSize: RFValue(18, heightMobileUI),
+    fontFamily: fonts.primary.semibold,
     marginHorizontal: 20,
     color: 'black',
   },

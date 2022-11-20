@@ -3,13 +3,15 @@ import React from 'react';
 import { colors, fonts, responsiveHeight, responsiveWidth } from '../../../utils';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightMobileUI } from '../../../utils/constant';
+import { useNavigation } from '@react-navigation/native';
 
 const CardAlamat = ({profile}) => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <View style={styles.title}>
         <Text style={styles.titleText}>Alamat Pengiriman</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('EditProfile')}>
           <Text style={styles.ubahText}>Ubah Alamat</Text>
         </TouchableOpacity>
       </View>
@@ -33,7 +35,6 @@ export default CardAlamat;
 const styles = StyleSheet.create({
   container: {
     marginTop: responsiveHeight(17),
-    marginHorizontal: responsiveWidth(25),
     marginBottom: responsiveHeight(17),
   },
   title: {
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     marginBottom: 7,
   },
   titleText: {
-    fontFamily: fonts.primary.bold,
+    fontFamily: fonts.primary.semibold,
     fontSize: RFValue(18, heightMobileUI),
     color: colors.black,
   },

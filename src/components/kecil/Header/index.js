@@ -53,6 +53,6 @@ const styles = StyleSheet.create({
   titleText: {
     color: colors.black,
     fontFamily: fonts.primary.medium,
-    fontSize: RFValue(22, heightMobileUI),
+    fontSize: RFValue(20, heightMobileUI),
   },
 });

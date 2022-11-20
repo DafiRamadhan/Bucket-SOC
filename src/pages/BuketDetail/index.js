@@ -94,7 +94,7 @@ export default class BuketDetail extends Component {
                 countTextStyle={styles.countText}
                 start={1}
                 min={1}
-                max={100}
+                max={20}
                 value={this.state.value}
                 onChange={value => this.setState({value})}
               />
@@ -139,8 +139,8 @@ const styles = StyleSheet.create({
   },
   tombolBack: {
     position: 'absolute',
-    marginTop: 10,
-    marginLeft: 10,
+    marginTop: responsiveHeight(10),
+    marginLeft: responsiveWidth(10),
     zIndex: 1,
     padding: 5,
   },
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   deskripsi: {
     fontSize: RFValue(14, heightMobileUI),
     fontFamily: fonts.primary.regular,
-    color: '#696969',
+    color: colors.desc,
     marginTop: responsiveHeight(7),
     textAlign: 'justify',
   },
@@ -230,13 +230,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingHorizontal: responsiveWidth(16),
   },
   keranjangText: {
     color: colors.white,
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(18, heightMobileUI),
+    paddingLeft: 10,
   },
   modalText: {
     color: '#777777',

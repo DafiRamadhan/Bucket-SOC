@@ -22,8 +22,16 @@ export const dropshadow = {
     shadowOpacity: 0.25,
     shadowRadius: 2.1,
   },
+  kategoriText: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 1.5,
+  },
   footer: {
-    //position: 'absolute',
     bottom: 0,
     shadowColor: '#000',
     shadowOffset: {

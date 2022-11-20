@@ -1,6 +1,6 @@
 import {Text, StyleSheet, View, Image, ScrollView} from 'react-native';
 import React, {Component} from 'react';
-import {dummyMenu, dummyProfile} from '../../data';
+import {dummyProfile, Menu} from '../../data';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
 import {IconAlamat, IconEmail, IconPhone} from '../../assets';
 import {RFValue} from 'react-native-responsive-fontsize';
@@ -13,13 +13,13 @@ export default class Profile extends Component {
 
     this.state = {
       profile: dummyProfile,
-      menu: dummyMenu,
+      menu: Menu,
     };
   }
   render() {
     const {profile, menu} = this.state;
     return (
-      <View style={styles.page}>
+      <View style={styles.pages}>
         <Text style={styles.title}>Profile Pribadi</Text>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.container}>
@@ -50,7 +50,7 @@ export default class Profile extends Component {
             </View>
             <View style={styles.pembatas}></View>
             <View style={styles.listmenu}>
-              <ListMenu pilihMenu={menu} />
+              <ListMenu pilihMenu={menu} navigation={this.props.navigation}/>
             </View>
           </View>
         </ScrollView>
@@ -60,7 +60,7 @@ export default class Profile extends Component {
 }
 
 const styles = StyleSheet.create({
-  page: {
+  pages: {
     flex: 1,
     backgroundColor: colors.primary,
   },

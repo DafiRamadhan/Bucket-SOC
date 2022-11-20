@@ -8,5 +8,7 @@ export const dummyProfile = {
   kelurahan: 'Karangasem',
   kecamatan: 'Laweyan',
   kota: 'Kota Surakarta',
+  latitude: -7.575667,
+  longitude: 110.824239,
   avatar: Profile,
 };

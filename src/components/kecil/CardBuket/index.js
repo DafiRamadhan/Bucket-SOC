@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   title: {
-    fontSize: RFValue(15, heightMobileUI),
+    fontSize: RFValue(14, heightMobileUI),
     fontFamily: fonts.primary.bold,
     textAlign: 'center',
     marginTop: 5,
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     bottom: 8,
   },
   harga: {
-    fontSize: RFValue(15, heightMobileUI),
+    fontSize: RFValue(13, heightMobileUI),
     fontFamily: fonts.primary.extrabold,
     textAlign: 'center',
     marginHorizontal: 10,

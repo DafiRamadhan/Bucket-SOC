@@ -6,4 +6,5 @@ export const colors = {
   navmenu: '#9F9F9F',
   borderInput: '#C4C4C4',
   line: '#E7E7E7',
+  desc: '#676767',
 };

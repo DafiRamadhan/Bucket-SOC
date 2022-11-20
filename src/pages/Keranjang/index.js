@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingHorizontal: responsiveWidth(16),
   },
   titleText: {
@@ -120,6 +119,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(18, heightMobileUI),
+    paddingLeft: 10,
   },
   totalText: {
     color: colors.black,

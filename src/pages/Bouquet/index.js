@@ -1,17 +1,10 @@
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-} from 'react-native';
+import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import React, {Component} from 'react';
-import {
-  HeaderComponent,
-  ListBuket,
-  ListKategori2,
-} from '../../components';
+import {HeaderComponent2, ListBuket, ListKategori2} from '../../components';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
 import {dummyBuket, dummyKategori} from '../../data';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {heightMobileUI} from '../../utils/constant';
 
 export default class Bouquet extends Component {
   //konstanta untuk mengambil data dari JSON
@@ -31,14 +24,17 @@ export default class Bouquet extends Component {
     const {navigation} = this.props;
     return (
       <View style={styles.page}>
-        <HeaderComponent navigation={navigation} />
+        <View style={styles.wrapTitle}>
+          <Text style={styles.titleText}>Katalog Buket</Text>
+        </View>
+        <HeaderComponent2 navigation={navigation} />
+        <View style={styles.pilihKategori}>
+          <ListKategori2 pilihKategori={kategori} />
+        </View>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.body}>
-            <View style={styles.pilihKategori}>
-              <ListKategori2 pilihKategori={kategori} />
-            </View>
             <View style={styles.pilihBuket}>
-              <Text style={styles.label}>Pilih Buket Yang Anda Inginkan</Text>
+              <Text style={styles.label}>Pilih Buket Favorit Anda</Text>
               <ListBuket pilihBuket={buket} navigation={navigation} />
             </View>
           </View>
@@ -51,42 +47,33 @@ export default class Bouquet extends Component {
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.white,
+  },
+  wrapTitle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: responsiveHeight(20),
+  },
+  titleText: {
+    fontSize: RFValue(20, heightMobileUI),
+    fontFamily: fonts.primary.semibold,
+    color: 'black',
   },
   body: {
     backgroundColor: 'white',
-    paddingBottom: 80,
-  },
-  pilihKategori: {
-    marginTop: 20,
+    marginBottom: 80,
   },
   pilihBuket: {
-    marginTop: 10,
     marginBottom: 20,
   },
   label: {
-    fontSize: 18,
-    fontFamily: fonts.primary.regular,
+    fontSize: RFValue(18, heightMobileUI),
+    fontFamily: fonts.primary.semibold,
     marginHorizontal: 20,
     color: 'black',
   },
   containerTombol: {
     alignItems: 'center',
     marginBottom: 20,
-  },
-  tombol: {
-    backgroundColor: colors.primary,
-    width: responsiveWidth(300),
-    height: responsiveHeight(40),
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-  },
-  textTombol: {
-    fontSize: 18,
-    fontFamily: fonts.primary.bold,
-    textAlign: 'center',
-    marginHorizontal: 10,
-    color: 'white',
   },
 });

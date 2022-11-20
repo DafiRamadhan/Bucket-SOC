@@ -1,159 +1,196 @@
+import {
+  Text,
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  TextInput,
+} from 'react-native';
 import React, {Component} from 'react';
-import {Alert, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import MapView, {Marker} from 'react-native-maps';
-import {IconBlueDots, IconLocation, IconMarker} from '../../assets';
-import GetLocation from 'react-native-get-location';
-import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+import {dummyProfile, Lokasi} from '../../data';
+import {
+  colors,
+  dropshadow,
+  fonts,
+  responsiveHeight,
+  responsiveWidth,
+} from '../../utils';
 import DropShadow from 'react-native-drop-shadow';
-import {colors, dropshadow, fonts, responsiveHeight, responsiveWidth} from '../../utils';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { heightMobileUI } from '../../utils/constant';
+import {IconBack} from '../../assets';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {heightMobileUI} from '../../utils/constant';
+import {Inputan, Pilihan} from '../../components';
+import Maps from '../Maps';
 
-export default class Maps extends Component {
-  state = {
-    location: {
-      latitude: 0,
-      longitude: 0,
-    },
-    region: {
-      latitude: -7.575667,
-      longitude: 110.824239,
-      latitudeDelta: 0.009,
-      longitudeDelta: 0.009,
-    },
-  };
+export default class EditProfile extends Component {
+  constructor(props) {
+    super(props);
 
-  requestLocation = () => {
-    GetLocation.getCurrentPosition({
-      enableHighAccuracy: true,
-      timeout: 150000,
-    })
-      .then(location => {
-        this.setState({
-          location,
-          region: {
-            latitude: location.latitude,
-            longitude: location.longitude,
-            latitudeDelta: 0.009,
-            longitudeDelta: 0.009,
-          },
-        });
-      })
-      .catch(ex => {
-        const {code, message} = ex;
-        console.warn(code, message);
-        if (code === 'CANCELLED') {
-          Alert.alert('Location cancelled by user or by another request');
-        }
-        if (code === 'UNAVAILABLE') {
-          if (Platform.OS === 'android') {
-            RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
-              interval: 10000,
-              fastInterval: 5000,
-            })
-              .catch(err => {
-                console.warn('Error ' + err.message + ', Code : ' + err.code);
-                //alert('Error ' + err.message + ', Code : ' + err.code);
-              });
-          }
-          GetLocation.openGpsSettings();
-        }
-        if (code === 'TIMEOUT') {
-          Alert.alert('Location request timed out');
-        }
-        if (code === 'UNAUTHORIZED') {
-          Alert.alert('Authorization denied');
-        }
-      });
-  };
-
-  onRegionChange = region => {
-    this.setState({
-      region,
-    });
-  };
+    this.state = {
+      dataKota: [],
+      dataKecamatan: [],
+      dataKelurahan: [],
+      profile: dummyProfile,
+    };
+  }
 
   render() {
-    const {location, region} = this.state;
+    const {dataKota, dataKecamatan, dataKelurahan, profile} = this.state;
+    const {navigation} = this.props;
     return (
-      <View style={styles.map}>
-        <MapView
-          style={styles.map}
-          region={region}
-          onRegionChangeComplete={this.onRegionChange}>
-          <Marker
-            coordinate={{
-              latitude: location.latitude,
-              longitude: location.longitude,
-            }}>
-            <IconBlueDots />
-          </Marker>
-        </MapView>
-        <View style={styles.markerFixed}>
-          <Text style={styles.markerText}>Titik Lokasi Anda</Text>
-          <IconMarker />
-        </View>
-        <DropShadow style={dropshadow.navmenubar}>
+      <View style={styles.pages}>
+        <DropShadow style={dropshadow.footer}>
           <TouchableOpacity
-            style={styles.currentBtn}
-            onPress={this.requestLocation}>
-            <IconLocation />
+            style={styles.tombolBack}
+            onPress={() => navigation.goBack()}>
+            <IconBack />
           </TouchableOpacity>
+          <View style={styles.header}>
+            <Text style={styles.titleText}>Edit Profile</Text>
+          </View>
         </DropShadow>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.container}>
+            <Inputan label="Nama" value={profile.nama} />
+            <Inputan label="Email" value={profile.email} />
+            <Inputan label="No. Handphone" value={profile.nomerHp} />
+            <Inputan label="Alamat Lengkap" value={profile.alamat} textarea />
+            <Pilihan label="Kabupaten / Kota" datas={dataKota} />
+            <Pilihan label="Kecamatan" datas={dataKecamatan} />
+            <Pilihan label="Kelurahan / Desa" datas={dataKelurahan} />
+            <Text style={styles.koordinatText}>Titik Koordinat Alamat :</Text>
+            <View style={styles.koordinat}>
+              <Text style={styles.titikText}>
+                {profile.latitude}, {profile.longitude}
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  style={styles.ubahKoordinat}
+                  onPress={() => navigation.navigate('Maps')}>
+                  Ubah
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.inputFoto}>
+              <Text style={styles.fotoText}>Foto Profile</Text>
+              <View style={styles.wrapperFoto}>
+                <Image source={profile.avatar} style={styles.foto} />
+                <TouchableOpacity style={styles.ubahFoto}>
+                  <Text style={styles.ubahText}>Ubah Foto</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <TouchableOpacity style={styles.simpan}>
+              <Text style={styles.simpanText}>Simpan</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  map: {
+  pages: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+  container: {
+    marginHorizontal: 30,
+  },
+  tombolBack: {
+    position: 'absolute',
+    marginTop: 12,
+    marginLeft: 10,
+    zIndex: 1,
+    padding: 5,
+  },
+  header: {
+    height: responsiveHeight(70),
+    width: '100%',
+    backgroundColor: colors.white,
+    paddingHorizontal: responsiveWidth(13),
+    marginBottom: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  titleText: {
+    color: colors.black,
+    fontFamily: fonts.primary.medium,
+    fontSize: RFValue(22, heightMobileUI),
+  },
+  inputFoto: {
+    marginTop: 17,
+  },
+  fotoText: {
+    color: colors.black,
+    fontFamily: fonts.primary.semibold,
+    fontSize: RFValue(18, heightMobileUI),
+    marginBottom: 7,
+  },
+  koordinatText: {
+    color: colors.black,
+    fontFamily: fonts.primary.semibold,
+    fontSize: RFValue(18, heightMobileUI),
+    marginTop: 17,
+  },
+  foto: {
+    height: responsiveHeight(124),
+    width: responsiveWidth(124),
+    borderRadius: 10,
+  },
+  wrapperFoto: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ubahFoto: {
+    height: responsiveHeight(40),
+    width: responsiveWidth(150),
+    backgroundColor: colors.primary,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: responsiveWidth(50),
     flex: 1,
   },
-  markerFixed: {
-    position: 'absolute',
-    alignItems: 'center',
-    width: '100%',
-    top: '41.5%',
-  },
-  markerText: {
-    fontFamily: fonts.primary.bold,
-    fontSize: RFValue(13, heightMobileUI),
+  ubahText: {
     color: colors.white,
-    backgroundColor: colors.primary,
-    padding: 3,
-    marginBottom: 5,
-    borderRadius: 5,
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(18, heightMobileUI),
   },
-  currentBtn: {
-    bottom: 150,
-    position: 'absolute',
-    right: 0,
+  koordinat: {
+    height: responsiveHeight(43),
+    borderBottomWidth: 1,
+    borderColor: colors.borderInput,
+    paddingHorizontal: 10,
+    marginTop: responsiveHeight(7),
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  location: {
-    color: '#333333',
-    marginBottom: 5,
-    bottom: 400,
-    position: 'absolute',
+  titikText: {
+    fontFamily: fonts.primary.regular,
+    fontSize: RFValue(16, heightMobileUI),
   },
-  location2: {
-    color: '#333333',
-    marginBottom: 5,
-    bottom: 200,
-    position: 'absolute',
+  ubahKoordinat: {
+    color: colors.primary,
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(16, heightMobileUI),
   },
-  marker: {
-    height: 48,
-    width: 48,
-  },
-  footer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    bottom: 40,
-    position: 'absolute',
+  simpan: {
+    height: responsiveHeight(54),
     width: '100%',
+    backgroundColor: colors.primary,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: responsiveWidth(40),
   },
-  region: {
-    color: '#fff',
-    lineHeight: 20,
-    margin: 20,
+  simpanText: {
+    color: colors.white,
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(20, heightMobileUI),
   },
 });

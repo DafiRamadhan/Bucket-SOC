@@ -7,42 +7,44 @@ import {heightMobileUI} from '../../../utils/constant';
 
 const CardKeranjang = ({keranjang}) => {
   return (
-      <View style={styles.container}>
-        <View style={styles.box}>
-          <Image source={keranjang.product.gambar} style={styles.gambar} />
-          <View style={styles.desc}>
-            <View style={styles.title}>
-              <Text numberOfLines={1} style={styles.nama}>
-                {keranjang.product.nama}
-              </Text>
-              <Text style={styles.harga}>
-                Rp{keranjang.product.harga.toLocaleString('id-ID')}
-              </Text>
-            </View>
-            <View style={styles.deskripsi}>
-              <View style={styles.deskripsiWrap}>
-                <Text style={styles.deskripsiTitle}>Jumlah : </Text>
-                <Text style={styles.deskripsiText}>
-                  {keranjang.jumlahPesan}
-                </Text>
-              </View>
-              <View style={styles.deskripsiWrap}>
-                <Text style={styles.deskripsiTitle}>Kategori Buket : </Text>
-                <Text style={styles.deskripsiText}>
-                  {keranjang.product.kategori.nama}
-                </Text>
-              </View>
-              <Text style={styles.deskripsiTitle}>Catatan :</Text>
-              <Text style={styles.deskripsiText} numberOfLines={2}>
-                {keranjang.catatan}
-              </Text>
-            </View>
+    <View style={styles.container}>
+      <View style={styles.box}>
+        <Image source={keranjang.product.gambar} style={styles.gambar} />
+        <View style={styles.desc}>
+          <View style={styles.title}>
+            <Text numberOfLines={1} style={styles.nama}>
+              {keranjang.product.nama}
+            </Text>
+            <Text style={styles.harga}>
+              Rp{keranjang.product.harga.toLocaleString('id-ID')}
+            </Text>
           </View>
-          <TouchableOpacity style={styles.hapus}>
-            <IconTrash />
-          </TouchableOpacity>
+          <View style={styles.deskripsi}>
+            <View style={styles.deskripsiWrap}>
+              <Text style={styles.deskripsiTitle}>Jumlah : </Text>
+              <Text style={styles.deskripsiText}>{keranjang.jumlahPesan}</Text>
+            </View>
+            <View style={styles.deskripsiWrap}>
+              <Text style={styles.deskripsiTitle}>Kategori Buket : </Text>
+              <Text style={styles.deskripsiText}>
+                {keranjang.product.kategori.nama}
+              </Text>
+            </View>
+            {keranjang.catatan ? (
+              <Text style={styles.deskripsiTitle}>Catatan :</Text>
+            ) : (
+              <Text></Text>
+            )}
+            <Text style={styles.deskripsiText} numberOfLines={2}>
+              {keranjang.catatan}
+            </Text>
+          </View>
         </View>
+        <TouchableOpacity style={styles.hapus}>
+          <IconTrash />
+        </TouchableOpacity>
       </View>
+    </View>
   );
 };
 
@@ -51,7 +53,7 @@ export default CardKeranjang;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: colors.white,
+    //backgroundColor: colors.primary,
     borderBottomColor: '#E7E7E7',
     height: responsiveHeight(171),
     borderBottomWidth: 2,
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
   },
   box: {
     flexDirection: 'row',
-    backgroundColor: colors.white,
+    //backgroundColor: colors.primary,
     height: responsiveHeight(141),
     marginVertical: responsiveHeight(15),
   },
@@ -77,7 +79,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   desc: {
-    alignSelf: 'center',
+    //alignSelf: 'center',
   },
   title: {
     width: responsiveWidth(225),
