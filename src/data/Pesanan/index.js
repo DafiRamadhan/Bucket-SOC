@@ -1,10 +1,10 @@
-import {Balon, Bunga, Snack, Uang, GiftBox} from '../../assets';
+import {Balon, Bunga, Uang, GiftBox} from '../../assets';
 import {
   BuketBunga,
   BuketUang,
-  BuketSnack,
   BuketBalon,
   GiftSnack,
+  GiftSnack2,
   BuketFlorist,
 } from '../../assets';
 
@@ -55,7 +55,7 @@ export const dummyPesanan = [
         product: {
           id: 5,
           nama: 'GiftBox Isi Snack Merah 10 Jenis',
-          gambar: [GiftSnack, BuketBunga],
+          gambar: [GiftSnack, GiftSnack2],
           kategori: {
             id: 5,
             nama: 'GiftBox',
@@ -159,7 +159,7 @@ export const dummyPesanan = [
         product: {
           id: 5,
           nama: 'GiftBox Isi Snack Merah 10 Jenis',
-          gambar: [GiftSnack, BuketBunga],
+          gambar: [GiftSnack, GiftSnack2],
           kategori: {
             id: 5,
             nama: 'GiftBox',
