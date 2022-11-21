@@ -2,6 +2,7 @@ import {StyleSheet, View} from 'react-native';
 import React, {Component} from 'react';
 import {Slider1, Slider2, Slider3} from '../../../assets';
 import {colors, responsiveHeight, responsiveWidth} from '../../../utils';
+import { SliderBox } from 'react-native-image-slider-box';
 
 export default class BannerSlider extends Component {
   //Membuat state image dalam constructor

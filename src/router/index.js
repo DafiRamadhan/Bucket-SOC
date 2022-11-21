@@ -92,7 +92,7 @@ const Intro = () => {
 
 const Router = () => {
   return (
-    <Stack.Navigator initialRouteName="MainApp">
+    <Stack.Navigator initialRouteName="Intro">
       <Stack.Screen
         name="MainApp"
         component={MainApp}
