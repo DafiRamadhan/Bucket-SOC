@@ -35,7 +35,7 @@ export const dummyPesanan = [
         product: {
           id: 3,
           nama: 'Buket Bunga Mawar Asli',
-          gambar: BuketBunga,
+          gambar: [BuketBunga],
           kategori: {
             id: 1,
             nama: 'Bunga',
@@ -55,7 +55,7 @@ export const dummyPesanan = [
         product: {
           id: 5,
           nama: 'GiftBox Isi Snack Merah 10 Jenis',
-          gambar: GiftSnack,
+          gambar: [GiftSnack, BuketBunga],
           kategori: {
             id: 5,
             nama: 'GiftBox',
@@ -74,7 +74,7 @@ export const dummyPesanan = [
         product: {
           id: 4,
           nama: 'Buket Balon Isi Florist Merah Replika',
-          gambar: BuketBalon,
+          gambar: [BuketBalon],
           kategori: {
             id: 4,
             nama: 'Balon',
@@ -116,7 +116,7 @@ export const dummyPesanan = [
         product: {
           id: 1,
           nama: 'Buket Uang Biru Muda 50 Ribu 10 Lembar',
-          gambar: BuketUang,
+          gambar: [BuketUang],
           kategori: {
             id: 2,
             nama: 'Uang',
@@ -131,25 +131,6 @@ export const dummyPesanan = [
         totalHarga: 550000,
         catatan: 'Isi Ucapan : Selamat atas keberhasilan Anda.',
       },
-      // {
-      //   id: 2,
-      //   product: {
-      //     id: 6,
-      //     nama: 'Buket Florist Warna Warni Replika',
-      //     gambar: BuketFlorist,
-      //     kategori: {
-      //       id: 1,
-      //       nama: 'Bunga',
-      //       gambar: Bunga,
-      //     },
-      //     harga: 130000,
-      //     deskripsi: 'Buket Florist',
-      //     ready: true,
-      //   },
-      //   jumlahPesan: 2,
-      //   totalHarga: 260000,
-      //   catatan: 'Kirim besok rabu jam 10 pagi.',
-      // },
     ],
   },
   {
@@ -178,7 +159,7 @@ export const dummyPesanan = [
         product: {
           id: 5,
           nama: 'GiftBox Isi Snack Merah 10 Jenis',
-          gambar: GiftSnack,
+          gambar: [GiftSnack, BuketBunga],
           kategori: {
             id: 5,
             nama: 'GiftBox',
@@ -197,7 +178,7 @@ export const dummyPesanan = [
         product: {
           id: 6,
           nama: 'Buket Florist Warna Warni Replika',
-          gambar: BuketFlorist,
+          gambar: [BuketFlorist],
           kategori: {
             id: 1,
             nama: 'Bunga',

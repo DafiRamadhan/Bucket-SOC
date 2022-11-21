@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   body: {
     backgroundColor: 'white',
-    marginBottom: responsiveHeight(20),
+    paddingBottom: responsiveHeight(80),
   },
   pilihBuket: {
     marginBottom: responsiveHeight(20),

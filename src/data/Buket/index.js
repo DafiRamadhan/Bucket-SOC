@@ -5,7 +5,7 @@ export const dummyBuket = [
   {
     id: 1,
     nama: 'Buket Uang Biru Muda 50 Ribu 10 Lembar',
-    gambar: BuketUang,
+    gambar: [BuketUang],
     kategori: {
       id: 2,
       nama: 'Uang',
@@ -19,7 +19,7 @@ export const dummyBuket = [
   {
     id: 2,
     nama: 'Buket Snack Merah 6 Jenis',
-    gambar: BuketSnack,
+    gambar: [BuketSnack],
     kategori: {
       id: 3,
       nama: 'Snack',
@@ -32,7 +32,7 @@ export const dummyBuket = [
   {
     id: 3,
     nama: 'Buket Bunga Mawar Asli',
-    gambar: BuketBunga,
+    gambar: [BuketBunga],
     kategori: {
       id: 1,
       nama: 'Bunga',
@@ -45,7 +45,7 @@ export const dummyBuket = [
   {
     id: 4,
     nama: 'Buket Balon Isi Florist Merah Replika',
-    gambar: BuketBalon,
+    gambar: [BuketBalon],
     kategori: {
       id: 4,
       nama: 'Balon',
@@ -58,7 +58,7 @@ export const dummyBuket = [
   {
     id: 5,
     nama: 'GiftBox Isi Snack Merah 10 Jenis',
-    gambar: GiftSnack,
+    gambar: [GiftSnack, BuketBunga],
     kategori: {
       id: 5,
       nama: 'GiftBox',
@@ -71,7 +71,7 @@ export const dummyBuket = [
   {
     id: 6,
     nama: 'Buket Florist Warna Warni Replika',
-    gambar: BuketFlorist,
+    gambar: [BuketFlorist],
     kategori: {
       id: 1,
       nama: 'Bunga',

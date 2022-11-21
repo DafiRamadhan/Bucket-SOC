@@ -18,7 +18,7 @@ const CardOrders = ({pesanan, navigation}) => {
           </View>
           <View style={styles.item}>
             <Image
-              source={pesanan.items[0].product.gambar}
+              source={pesanan.items[0].product.gambar[0]}
               style={styles.gambar}
             />
             <View style={styles.wrapDetail}>

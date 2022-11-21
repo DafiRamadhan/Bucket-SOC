@@ -2,67 +2,47 @@ import {
   Text,
   StyleSheet,
   View,
-  Image,
   ScrollView,
   TouchableOpacity,
-  Modal,
-  TextInput,
 } from 'react-native';
 import React, {Component} from 'react';
-import {colors, dropshadow, fonts, responsiveHeight, responsiveWidth} from '../../utils';
+import {
+  colors,
+  dropshadow,
+  fonts,
+  responsiveHeight,
+  responsiveWidth,
+} from '../../utils';
 import {IconAddCart, IconBack} from '../../assets';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
-import ImageViewer from 'react-native-image-zoom-viewer';
 import Inputan from '../../components/kecil/Inputan';
-import Pilihan from '../../components/kecil/Pilihan';
 import DropShadow from 'react-native-drop-shadow';
 import Counter from 'react-native-counters';
+import BuketSlider from '../../components/besar/BuketSlider';
 
 export default class BuketDetail extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       buket: this.props.route.params.buket,
       images: this.props.route.params.buket.gambar,
-      openImage: false,
-      previewImage: false,
       value: 1,
     };
   }
 
-  clickPreview = () => {
-    this.setState({
-      openImage: true,
-      previewImage: [
-        {
-          url: '',
-          props: {
-            source: this.state.images,
-          },
-        },
-      ],
-    });
-  };
-
   render() {
     const {navigation} = this.props;
     const {buket, images} = this.state;
-    const {openImage, previewImage} = this.state;
     return (
       <View style={styles.page}>
-        <TouchableOpacity
-          style={styles.tombolBack}
-          onPress={() => navigation.goBack()}>
-          <IconBack />
-        </TouchableOpacity>
-        <Image source={images} style={styles.gambar} />
         <ScrollView showsVerticalScrollIndicator={false}>
           <TouchableOpacity
-            onPress={() => this.clickPreview()}
-            style={styles.zoomImage}
-          />
+            style={styles.tombolBack}
+            onPress={() => navigation.goBack()}>
+            <IconBack />
+          </TouchableOpacity>
+          <BuketSlider images={images} />
           <View style={styles.container}>
             <View style={styles.desc}>
               <Text style={styles.harga}>
@@ -107,18 +87,6 @@ export default class BuketDetail extends Component {
             </TouchableOpacity>
           </View>
         </DropShadow>
-        <Modal
-          visible={openImage}
-          transparent={true}
-          onRequestClose={() => this.setState({openImage: false})}>
-          <ImageViewer
-            imageUrls={previewImage}
-            backgroundColor="#F6ECEA"
-            onClick={() => this.setState({openImage: false})}
-            enableSwipeDown
-            onSwipeDown={() => this.setState({openImage: false})}></ImageViewer>
-          <Text style={styles.modalText}>[Klik layar untuk kembali]</Text>
-        </Modal>
       </View>
     );
   }
@@ -134,23 +102,12 @@ const styles = StyleSheet.create({
     width: '100%',
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
-    paddingBottom: 40,
-    zIndex: 1,
+    paddingBottom: responsiveHeight(40),
   },
   tombolBack: {
-    position: 'absolute',
     marginTop: responsiveHeight(10),
     marginLeft: responsiveWidth(10),
-    zIndex: 1,
     padding: 5,
-  },
-  gambar: {
-    width: responsiveWidth(310),
-    height: responsiveHeight(310),
-    borderRadius: 10,
-    position: 'absolute',
-    alignSelf: 'center',
-    marginVertical: responsiveHeight(50),
   },
   desc: {
     marginHorizontal: responsiveWidth(25),
@@ -185,12 +142,6 @@ const styles = StyleSheet.create({
     color: colors.desc,
     marginTop: responsiveHeight(7),
     textAlign: 'justify',
-  },
-  zoomImage: {
-    alignSelf: 'center',
-    zIndex: 1,
-    width: '100%',
-    height: responsiveHeight(410),
   },
   footer: {
     height: responsiveHeight(85),
@@ -237,13 +188,5 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(18, heightMobileUI),
     paddingLeft: 10,
-  },
-  modalText: {
-    color: '#777777',
-    fontFamily: fonts.primary.regular,
-    fontSize: RFValue(16, heightMobileUI),
-    position: 'absolute',
-    alignSelf: 'center',
-    bottom: 150,
   },
 });

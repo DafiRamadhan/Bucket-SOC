@@ -11,7 +11,7 @@ const CardBuket = ({buket, navigation}) => {
     navigation.navigate('BuketDetail', {buket})}>
       <DropShadow style={dropshadow.kategoriCard}>
         <View style={styles.card}>
-          <Image source={buket.gambar} style={styles.gambar} />
+          <Image source={buket.gambar[0]} style={styles.gambar} />
           <Text numberOfLines={2} style={styles.title}>
             {buket.nama}
           </Text>

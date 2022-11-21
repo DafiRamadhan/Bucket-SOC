@@ -48,8 +48,7 @@ export default class Register2 extends Component {
               <Pilihan label="Kelurahan / Desa" datas={dataKelurahan} />
               <Text style={styles.koordinatText}>Titik Koordinat Alamat :</Text>
               <View style={styles.koordinat}>
-                <Text style={styles.titikText}>
-                </Text>
+                <Text style={styles.titikText}></Text>
                 <TouchableOpacity>
                   <Text
                     style={styles.ubahKoordinat}

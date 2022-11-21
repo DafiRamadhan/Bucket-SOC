@@ -63,7 +63,7 @@ export default class DetailPesanan extends Component {
                   <View key={index} style={styles.itemList}>
                     <View style={styles.item}>
                       <Image
-                        source={list.product.gambar}
+                        source={list.product.gambar[0]}
                         style={styles.gambar}
                       />
                       <View style={styles.wrapDetail}>
