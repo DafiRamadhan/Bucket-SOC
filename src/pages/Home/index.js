@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: responsiveWidth(20),
     paddingTop: responsiveHeight(20),
-    //paddingBottom: responsiveHeight(5),
   },
   wrapTitle: {
     flex: 1,
@@ -125,7 +124,6 @@ const styles = StyleSheet.create({
     paddingBottom: responsiveHeight(80),
   },
   pilihKategori: {
-    //marginTop: responsiveHeight(10),
     paddingBottom: responsiveHeight(25),
   },
   pilihBuket: {

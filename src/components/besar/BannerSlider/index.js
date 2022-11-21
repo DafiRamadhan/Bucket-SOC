@@ -1,7 +1,6 @@
 import {StyleSheet, View} from 'react-native';
 import React, {Component} from 'react';
 import {Slider1, Slider2, Slider3} from '../../../assets';
-import {SliderBox} from 'react-native-image-slider-box';
 import {colors, responsiveHeight, responsiveWidth} from '../../../utils';
 
 export default class BannerSlider extends Component {
@@ -18,6 +17,9 @@ export default class BannerSlider extends Component {
     return (
       <View>
         <SliderBox
+          autoplay
+          autoplayInterval={5000}
+          circleLoop
           images={this.state.images}
           disableOnPress
           sliderBoxHeight={responsiveHeight(150)}
@@ -32,13 +34,13 @@ export default class BannerSlider extends Component {
 }
 
 const styles = StyleSheet.create({
-    slider: {
-        borderRadius: 10,
-        width: responsiveWidth(380)
-    },
-    dotStyle: {
-        width: 10,
-        height: 5,
-        borderRadius: 5,
-    }
+  slider: {
+    borderRadius: 10,
+    width: responsiveWidth(380),
+  },
+  dotStyle: {
+    width: 10,
+    height: 5,
+    borderRadius: 5,
+  },
 });
