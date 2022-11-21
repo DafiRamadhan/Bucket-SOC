@@ -1,15 +1,8 @@
-import {
-  Text,
-  StyleSheet,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, View, TextInput} from 'react-native';
 import React, {Component} from 'react';
-import {colors, fonts, responsiveHeight} from '../../../utils';
+import {fonts, responsiveHeight} from '../../../utils';
 import {IconSearch} from '../../../assets';
 import {KeranjangIcon} from '../../kecil';
-import BannerSlider from '../BannerSlider';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../../utils/constant';
 
@@ -26,7 +19,7 @@ export default class HeaderComponent extends Component {
           </View>
           {/* Tombol Keranjang */}
           <KeranjangIcon
-            icon="keranjang"
+            icon="keranjang2"
             totalKeranjang={5}
             onPress={() => navigation.navigate('Keranjang')}
           />
@@ -38,7 +31,6 @@ export default class HeaderComponent extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.primary,
     height: responsiveHeight(90),
   },
   wrapperHeader: {
@@ -46,13 +38,13 @@ const styles = StyleSheet.create({
     marginLeft: responsiveHeight(20),
     marginRight: responsiveHeight(30),
     marginBottom: responsiveHeight(20),
+
     flexDirection: 'row',
-    //backgroundColor: colors.navmenu,
   },
   searchBar: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: colors.white,
+    backgroundColor: '#EEEEEE',
     paddingLeft: 12,
     borderRadius: 40,
     alignItems: 'center',

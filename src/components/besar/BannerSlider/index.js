@@ -1,6 +1,6 @@
-import {Text, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {Component} from 'react';
-import {Slider1, Slider2} from '../../../assets';
+import {Slider1, Slider2, Slider3} from '../../../assets';
 import {SliderBox} from 'react-native-image-slider-box';
 import {colors, responsiveHeight, responsiveWidth} from '../../../utils';
 
@@ -10,7 +10,7 @@ export default class BannerSlider extends Component {
     super(props);
 
     this.state = {
-      images: [Slider1, Slider2],
+      images: [Slider1, Slider2, Slider3],
     };
   }
 
@@ -19,12 +19,12 @@ export default class BannerSlider extends Component {
       <View>
         <SliderBox
           images={this.state.images}
-          autoplay
-          circleLoop
-          sliderBoxHeight={responsiveHeight(146)}
+          disableOnPress
+          sliderBoxHeight={responsiveHeight(150)}
           ImageComponentStyle={styles.slider}
           dotStyle={styles.dotStyle}
-          dotColor={colors.primary}
+          dotColor={colors.navmenu}
+          imageLoadingColor={colors.primary}
         />
       </View>
     );
@@ -34,7 +34,7 @@ export default class BannerSlider extends Component {
 const styles = StyleSheet.create({
     slider: {
         borderRadius: 10,
-        width: responsiveWidth(390)
+        width: responsiveWidth(380)
     },
     dotStyle: {
         width: 10,

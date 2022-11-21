@@ -31,8 +31,8 @@ export default CardKategori
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    paddingRight: 10,
-    marginTop: 10,
+    paddingRight: responsiveWidth(10),
+    marginTop: responsiveHeight(10),
   },
   card: {
     width: responsiveWidth(80),

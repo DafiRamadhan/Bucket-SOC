@@ -1,6 +1,7 @@
 import { StyleSheet, View, ScrollView } from 'react-native'
 import React from 'react'
 import { CardKategori } from '../../kecil'
+import { responsiveWidth } from '../../../utils';
 
 //pilihKateogri dikirim dari halaman Home
 const ListKategori = ({pilihKategori}) => {
@@ -21,7 +22,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 20,
-    marginBottom: 10,
+    marginHorizontal: responsiveWidth(20),
   },
 });

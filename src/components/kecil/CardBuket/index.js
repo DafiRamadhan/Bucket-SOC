@@ -28,7 +28,7 @@ export default CardBuket
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
+    marginVertical: responsiveHeight(10),
   },
   card: {
     width: responsiveWidth(180),

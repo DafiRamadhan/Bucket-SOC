@@ -15,6 +15,7 @@ const KeranjangIcon = ({icon, totalKeranjang, onPress}) => {
     //return default jika kondisi if tidak ada yang memenuhi
     return <IconCart2 />;
   };
+  
   if (totalKeranjang >= 99) {
     return (
       <TouchableOpacity style={styles.container} onPress={onPress}>

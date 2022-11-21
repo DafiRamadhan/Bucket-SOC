@@ -1,5 +1,4 @@
 import Home from './Home';
-import Splash from './Splash';
 import Bouquet from './Bouquet';
 import Orders from './Orders';
 import Profile from './Profile';
@@ -22,7 +21,6 @@ import Intro5 from './Intro/Intro5';
 
 export {
   Home,
-  Splash,
   Bouquet,
   Orders,
   Profile,

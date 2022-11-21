@@ -1,6 +1,6 @@
 import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import React, {Component} from 'react';
-import {HeaderComponent2, ListBuket, ListKategori2} from '../../components';
+import {HeaderComponent, ListBuket, ListKategori2} from '../../components';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
 import {dummyBuket, dummyKategori} from '../../data';
 import {RFValue} from 'react-native-responsive-fontsize';
@@ -27,7 +27,7 @@ export default class Bouquet extends Component {
         <View style={styles.wrapTitle}>
           <Text style={styles.titleText}>Katalog Buket</Text>
         </View>
-        <HeaderComponent2 navigation={navigation} />
+        <HeaderComponent navigation={navigation} />
         <View style={styles.pilihKategori}>
           <ListKategori2 pilihKategori={kategori} />
         </View>
@@ -61,19 +61,19 @@ const styles = StyleSheet.create({
   },
   body: {
     backgroundColor: 'white',
-    marginBottom: 80,
+    marginBottom: responsiveHeight(20),
   },
   pilihBuket: {
-    marginBottom: 20,
+    marginBottom: responsiveHeight(20),
   },
   label: {
     fontSize: RFValue(18, heightMobileUI),
     fontFamily: fonts.primary.semibold,
-    marginHorizontal: 20,
+    marginHorizontal: responsiveWidth(20),
     color: 'black',
   },
   containerTombol: {
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: responsiveHeight(20),
   },
 });
