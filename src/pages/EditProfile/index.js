@@ -5,10 +5,10 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  TextInput,
+  Modal,
 } from 'react-native';
 import React, {Component} from 'react';
-import {dummyProfile, Lokasi} from '../../data';
+import {dummyProfile} from '../../data';
 import {
   colors,
   dropshadow,
@@ -20,8 +20,7 @@ import DropShadow from 'react-native-drop-shadow';
 import {IconBack} from '../../assets';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
-import {Inputan, Pilihan} from '../../components';
-import Maps from '../Maps';
+import {Inputan, Maps, Pilihan} from '../../components';
 
 export default class EditProfile extends Component {
   constructor(props) {
@@ -31,12 +30,48 @@ export default class EditProfile extends Component {
       dataKota: [],
       dataKecamatan: [],
       dataKelurahan: [],
+      openMaps: false,
       profile: dummyProfile,
+      dataLatitude: dummyProfile.latitude,
+      dataLongitude: dummyProfile.longitude,
     };
   }
 
+  clickMaps = () => {
+    this.setState({
+      openMaps: true,
+    });
+  };
+
+  updateLatitude = latitude => {
+    this.setState({
+      dataLatitude: latitude,
+      openMaps: false,
+    });
+  };
+
+  updateLongitude = longitude => {
+    this.setState({
+      dataLongitude: longitude,
+    });
+  };
+
+  goBack = () => {
+    this.setState({
+      openMaps: false,
+    });
+  };
+
   render() {
-    const {dataKota, dataKecamatan, dataKelurahan, profile} = this.state;
+    const {
+      dataKota,
+      dataKecamatan,
+      dataKelurahan,
+      openMaps,
+      dataLatitude,
+      dataLongitude,
+      profile,
+    } = this.state;
     const {navigation} = this.props;
     return (
       <View style={styles.pages}>
@@ -61,13 +96,17 @@ export default class EditProfile extends Component {
             <Pilihan label="Kelurahan / Desa" datas={dataKelurahan} />
             <Text style={styles.koordinatText}>Titik Koordinat Alamat :</Text>
             <View style={styles.koordinat}>
-              <Text style={styles.titikText}>
-                {profile.latitude}, {profile.longitude}
-              </Text>
+              {dataLatitude ? (
+                <Text numberOfLines={1} style={styles.titikText}>
+                  {dataLatitude}, {dataLongitude}
+                </Text>
+              ) : (
+                <Text></Text>
+              )}
               <TouchableOpacity>
                 <Text
                   style={styles.ubahKoordinat}
-                  onPress={() => navigation.navigate('Maps')}>
+                  onPress={() => this.clickMaps()}>
                   Ubah
                 </Text>
               </TouchableOpacity>
@@ -86,6 +125,15 @@ export default class EditProfile extends Component {
             </TouchableOpacity>
           </View>
         </ScrollView>
+        <Modal
+          visible={openMaps}
+          onRequestClose={() => this.setState({openMaps: false})}>
+          <Maps
+            updateLatitude={data => this.updateLatitude(data)}
+            updateLongitude={data => this.updateLongitude(data)}
+            goBack={() => this.goBack()}
+          />
+        </Modal>
       </View>
     );
   }
@@ -173,6 +221,9 @@ const styles = StyleSheet.create({
   titikText: {
     fontFamily: fonts.primary.regular,
     fontSize: RFValue(16, heightMobileUI),
+    color: colors.black,
+    marginRight: responsiveWidth(5),
+    flex: 1,
   },
   ubahKoordinat: {
     color: colors.primary,

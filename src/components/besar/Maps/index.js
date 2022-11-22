@@ -8,19 +8,13 @@ import {
   View,
 } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
-import {IconBack, IconBlueDots, IconLocation, IconMarker} from '../../assets';
 import GetLocation from 'react-native-get-location';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import DropShadow from 'react-native-drop-shadow';
-import {
-  colors,
-  dropshadow,
-  fonts,
-  responsiveHeight,
-  responsiveWidth,
-} from '../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
-import {heightMobileUI} from '../../utils/constant';
+import { IconBack, IconBlueDots, IconLocation, IconMarker } from '../../../assets';
+import { colors, dropshadow, fonts, responsiveHeight, responsiveWidth } from '../../../utils';
+import { heightMobileUI } from '../../../utils/constant';
 
 export default class Maps extends Component {
   state = {
@@ -33,10 +27,6 @@ export default class Maps extends Component {
       longitude: 110.824239,
       latitudeDelta: 0.009,
       longitudeDelta: 0.009,
-    },
-    simpan: {
-      latitude: 0,
-      longitude: 0,
     },
   };
 
@@ -92,16 +82,16 @@ export default class Maps extends Component {
   };
 
   saveLocation = () => {
-    this.setState({
-      simpan: {
-        latitude: this.state.region.latitude,
-        longitude: this.state.region.longitude,
-      },
-    });
+    this.props.updateLatitude(this.state.region.latitude);
+    this.props.updateLongitude(this.state.region.longitude);
+  };
+
+  goBack = () => {
+    this.props.goBack();
   };
 
   render() {
-    const {location, region, simpan} = this.state;
+    const {location, region} = this.state;
     const {navigation} = this.props;
     return (
       <View style={styles.map}>
@@ -118,9 +108,7 @@ export default class Maps extends Component {
           </Marker>
         </MapView>
         <DropShadow style={dropshadow.footer}>
-          <TouchableOpacity
-            style={styles.tombolBack}
-            onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.tombolBack} onPress={this.goBack}>
             <IconBack />
           </TouchableOpacity>
         </DropShadow>
@@ -139,10 +127,10 @@ export default class Maps extends Component {
           style={styles.simpan}
           region={region}
           onPress={this.saveLocation}>
-          <Text style={styles.simpanText}>Simpan</Text>
+          <Text style={styles.simpanText}>Pilih</Text>
         </TouchableOpacity>
         {/* <Text style={styles.location}>{JSON.stringify(region, 0, 2)}</Text>
-        <Text style={styles.location2}>{JSON.stringify(simpan, 0, 2)}</Text> */}
+        <Text style={styles.location2}>{JSON.stringify(location, 0, 2)}</Text> */}
       </View>
     );
   }

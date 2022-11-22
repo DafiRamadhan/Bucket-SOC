@@ -4,10 +4,11 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Modal,
 } from 'react-native';
 import React, {Component} from 'react';
 import {IconBack, Register2Img} from '../../assets';
-import {Inputan, Pilihan} from '../../components';
+import {Inputan, Maps, Pilihan} from '../../components';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
@@ -20,10 +21,46 @@ export default class Register2 extends Component {
       dataKota: [],
       dataKecamatan: [],
       dataKelurahan: [],
+      openMaps: false,
+      dataLatitude: '',
+      dataLongitude: '',
     };
   }
+
+  clickMaps = () => {
+    this.setState({
+      openMaps: true,
+    });
+  };
+
+  updateLatitude = latitude => {
+    this.setState({
+      dataLatitude: latitude,
+      openMaps: false,
+    });
+  };
+
+  updateLongitude = longitude => {
+    this.setState({
+      dataLongitude: longitude,
+    });
+  };
+
+  goBack = () => {
+    this.setState({
+      openMaps: false,
+    });
+  };
+
   render() {
-    const {dataKota, dataKecamatan, dataKelurahan} = this.state;
+    const {
+      dataKota,
+      dataKecamatan,
+      dataKelurahan,
+      openMaps,
+      dataLatitude,
+      dataLongitude,
+    } = this.state;
     const {navigation} = this.props;
     return (
       <View style={styles.pages}>
@@ -48,11 +85,17 @@ export default class Register2 extends Component {
               <Pilihan label="Kelurahan / Desa" datas={dataKelurahan} />
               <Text style={styles.koordinatText}>Titik Koordinat Alamat :</Text>
               <View style={styles.koordinat}>
-                <Text style={styles.titikText}></Text>
+                {dataLatitude ? (
+                  <Text numberOfLines={1} style={styles.titikText}>
+                    {dataLatitude}, {dataLongitude}
+                  </Text>
+                ) : (
+                  <Text></Text>
+                )}
                 <TouchableOpacity>
                   <Text
                     style={styles.ubahKoordinat}
-                    onPress={() => navigation.navigate('Maps')}>
+                    onPress={() => this.clickMaps()}>
                     Pilih
                   </Text>
                 </TouchableOpacity>
@@ -65,6 +108,15 @@ export default class Register2 extends Component {
             </View>
           </View>
         </ScrollView>
+        <Modal
+          visible={openMaps}
+          onRequestClose={() => this.setState({openMaps: false})}>
+          <Maps
+            updateLatitude={data => this.updateLatitude(data)}
+            updateLongitude={data => this.updateLongitude(data)}
+            goBack={() => this.goBack()}
+          />
+        </Modal>
       </View>
     );
   }
@@ -139,6 +191,9 @@ const styles = StyleSheet.create({
   titikText: {
     fontFamily: fonts.primary.regular,
     fontSize: RFValue(16, heightMobileUI),
+    color: colors.black,
+    marginRight: responsiveWidth(5),
+    flex: 1,
   },
   ubahKoordinat: {
     color: colors.primary,

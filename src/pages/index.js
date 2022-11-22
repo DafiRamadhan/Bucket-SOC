@@ -6,7 +6,6 @@ import BuketDetail from './BuketDetail';
 import Keranjang from './Keranjang';
 import Checkout from './Checkout';
 import EditProfile from './EditProfile';
-import Maps from './Maps';
 import EditPassword from './EditPassword';
 import DetailPesanan from './DetailPesanan';
 import Login from './Login';
@@ -28,7 +27,6 @@ export {
   Keranjang,
   Checkout,
   EditProfile,
-  Maps,
   EditPassword,
   DetailPesanan,
   Login,

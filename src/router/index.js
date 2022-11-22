@@ -9,7 +9,6 @@ import {
   BuketDetail,
   Keranjang,
   Checkout,
-  Maps,
   EditProfile,
   EditPassword,
   DetailPesanan,
@@ -92,7 +91,7 @@ const Intro = () => {
 
 const Router = () => {
   return (
-    <Stack.Navigator initialRouteName="Intro">
+    <Stack.Navigator initialRouteName="MainApp">
       <Stack.Screen
         name="MainApp"
         component={MainApp}
@@ -116,11 +115,6 @@ const Router = () => {
       <Stack.Screen
         name="EditProfile"
         component={EditProfile}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Maps"
-        component={Maps}
         options={{headerShown: false}}
       />
       <Stack.Screen
