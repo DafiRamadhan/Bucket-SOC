@@ -34,6 +34,10 @@ export default class EditProfile extends Component {
       profile: dummyProfile,
       dataLatitude: dummyProfile.latitude,
       dataLongitude: dummyProfile.longitude,
+      region: {
+        latitude: -7.575667,
+        longitude: 110.824239,
+      },
     };
   }
 
@@ -43,16 +47,15 @@ export default class EditProfile extends Component {
     });
   };
 
-  updateLatitude = latitude => {
+  updateLocation = data => {
     this.setState({
-      dataLatitude: latitude,
+      dataLatitude: data.latitude,
+      dataLongitude: data.longitude,
+      region: {
+        latitude: data.latitude,
+        longitude: data.longitude,
+      },
       openMaps: false,
-    });
-  };
-
-  updateLongitude = longitude => {
-    this.setState({
-      dataLongitude: longitude,
     });
   };
 
@@ -71,6 +74,7 @@ export default class EditProfile extends Component {
       dataLatitude,
       dataLongitude,
       profile,
+      region,
     } = this.state;
     const {navigation} = this.props;
     return (
@@ -103,12 +107,10 @@ export default class EditProfile extends Component {
               ) : (
                 <Text></Text>
               )}
-              <TouchableOpacity>
-                <Text
-                  style={styles.ubahKoordinat}
-                  onPress={() => this.clickMaps()}>
-                  Ubah
-                </Text>
+              <TouchableOpacity
+                style={styles.ubahBtn}
+                onPress={() => this.clickMaps()}>
+                <Text style={styles.ubahKoordinat}>Ubah</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.inputFoto}>
@@ -129,8 +131,8 @@ export default class EditProfile extends Component {
           visible={openMaps}
           onRequestClose={() => this.setState({openMaps: false})}>
           <Maps
-            updateLatitude={data => this.updateLatitude(data)}
-            updateLongitude={data => this.updateLongitude(data)}
+            region={region}
+            updateLocation={data => this.updateLocation(data)}
             goBack={() => this.goBack()}
           />
         </Modal>
@@ -212,7 +214,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(43),
     borderBottomWidth: 1,
     borderColor: colors.borderInput,
-    paddingHorizontal: 10,
+    paddingLeft: responsiveWidth(10),
     marginTop: responsiveHeight(7),
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -222,8 +224,13 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.regular,
     fontSize: RFValue(16, heightMobileUI),
     color: colors.black,
-    marginRight: responsiveWidth(5),
     flex: 1,
+  },
+  ubahBtn: {
+    paddingTop: responsiveWidth(10),
+    paddingLeft: responsiveWidth(5),
+    paddingRight: responsiveWidth(10),
+    paddingBottom: responsiveWidth(10),
   },
   ubahKoordinat: {
     color: colors.primary,

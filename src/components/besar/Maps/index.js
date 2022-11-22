@@ -23,8 +23,8 @@ export default class Maps extends Component {
       longitude: 0,
     },
     region: {
-      latitude: -7.575667,
-      longitude: 110.824239,
+      latitude: this.props.region.latitude,
+      longitude: this.props.region.longitude,
       latitudeDelta: 0.009,
       longitudeDelta: 0.009,
     },
@@ -49,9 +49,9 @@ export default class Maps extends Component {
       .catch(ex => {
         const {code, message} = ex;
         console.warn(code, message);
-        if (code === 'CANCELLED') {
-          Alert.alert('Location cancelled by user or by another request');
-        }
+        // if (code === 'CANCELLED') {
+        //   Alert.alert('Mohon Menunggu...');
+        // }
         if (code === 'UNAVAILABLE') {
           if (Platform.OS === 'android') {
             RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
@@ -82,8 +82,7 @@ export default class Maps extends Component {
   };
 
   saveLocation = () => {
-    this.props.updateLatitude(this.state.region.latitude);
-    this.props.updateLongitude(this.state.region.longitude);
+    this.props.updateLocation(this.state.region);
   };
 
   goBack = () => {
@@ -215,7 +214,7 @@ const styles = StyleSheet.create({
     fontSize: RFValue(20, heightMobileUI),
   },
   tombolBack: {
-    bottom: responsiveHeight(820),
+    bottom: responsiveHeight(840),
     left: responsiveWidth(15),
     position: 'absolute',
     backgroundColor: colors.white,

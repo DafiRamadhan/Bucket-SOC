@@ -28,7 +28,6 @@ export default class BuketSlider extends Component {
       <View>
         <View style={styles.gambar}>
           <SliderBox
-            firstItem={index}
             images={images}
             sliderBoxHeight={responsiveHeight(310)}
             ImageComponentStyle={styles.slider}
