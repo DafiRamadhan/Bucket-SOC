@@ -92,7 +92,6 @@ export default class Maps extends Component {
 
   render() {
     const {location, region} = this.state;
-    const {navigation} = this.props;
     return (
       <View style={styles.map}>
         <MapView
