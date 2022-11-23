@@ -9,7 +9,7 @@ import React, {useState} from 'react';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../../utils/constant';
-import {IconConfirmPassword, IconEmailGrey, IconEyeClose, IconEyeOpen, IconPasswordGrey, IconPhoneGrey, IconProfileGrey} from '../../../assets';
+import {IconBuilding, IconConfirmPassword, IconEmailGrey, IconEyeClose, IconEyeOpen, IconPasswordGrey, IconPhoneGrey, IconProfileGrey} from '../../../assets';
 
 const Inputan = ({
   textarea,
@@ -43,6 +43,9 @@ const Inputan = ({
     }
     if (icon === 'confirm-password') {
       return <IconConfirmPassword />;
+    }
+    if (icon === 'building') {
+      return <IconBuilding />;
     }
     //return default jika kondisi if tidak ada yang memenuhi
     return <IconEmailGrey />;
@@ -204,8 +207,6 @@ const styles = StyleSheet.create({
     width: width,
     height: height ? height : responsiveHeight(43),
     paddingVertical: 5,
-    paddingHorizontal: 10,
-    marginTop: responsiveHeight(7),
     borderBottomWidth: 1,
     borderColor: colors.borderInput,
   }),

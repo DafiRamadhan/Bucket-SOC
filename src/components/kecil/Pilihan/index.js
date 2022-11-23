@@ -12,9 +12,9 @@ const Pilihan = ({
   height,
   labelfontSize,
   formfontSize,
+  selectedValue,
+  onValueChange,
 }) => {
-  const [selectedValue, setSelectedValue] = useState('');
-
   return (
     <View style={styles.container}>
       <Text style={styles.label(labelfontSize)}>{label} :</Text>
@@ -22,14 +22,36 @@ const Pilihan = ({
         <Picker
           selectedValue={selectedValue}
           style={styles.picker(formfontSize)}
-          onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}>
+          onValueChange={onValueChange}>
           <Picker.Item
             style={styles.picker(formfontSize)}
             label="--Pilih--"
             value=""
           />
           {datas.map((item, index) => {
-            return <Picker.Item label={item} value={item} key={index} />;
+            if (label == 'Kabupaten / Kota') {
+              return (
+                <Picker.Item label={item.kota} value={item.kota} key={item.id} />
+              );
+            } else if (label == 'Kecamatan') {
+              return (
+                <Picker.Item
+                  label={item.nama}
+                  value={item.nama}
+                  key={item.id}
+                />
+              );
+            } else if (label == 'Kelurahan / Desa') {
+              return (
+                <Picker.Item
+                  label={item.nama}
+                  value={item.nama}
+                  key={item.id}
+                />
+              );
+            } else {
+              return <Picker.Item label={item} value={item} key={index} />;
+            }
           })}
         </Picker>
       </View>

@@ -17,7 +17,7 @@ import {
   responsiveWidth,
 } from '../../utils';
 import DropShadow from 'react-native-drop-shadow';
-import {IconBack} from '../../assets';
+import {IconBack, IconMarker} from '../../assets';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
 import {Inputan, Maps, Pilihan} from '../../components';
@@ -27,17 +27,19 @@ export default class EditProfile extends Component {
     super(props);
 
     this.state = {
-      dataKota: [],
-      dataKecamatan: [],
-      dataKelurahan: [],
-      openMaps: false,
-      profile: dummyProfile,
-      dataLatitude: dummyProfile.latitude,
-      dataLongitude: dummyProfile.longitude,
       region: {
         latitude: -7.575667,
         longitude: 110.824239,
       },
+      openMaps: false,
+      nama: dummyProfile.nama,
+      email: dummyProfile.email,
+      nomerHp: dummyProfile.nomerHp,
+      alamat: dummyProfile.alamat,
+      detail_alamat: dummyProfile.detail_alamat,
+      latitude: dummyProfile.latitude,
+      longitude: dummyProfile.longitude,
+      avatar: dummyProfile.avatar,
     };
   }
 
@@ -49,13 +51,19 @@ export default class EditProfile extends Component {
 
   updateLocation = data => {
     this.setState({
-      dataLatitude: data.latitude,
-      dataLongitude: data.longitude,
+      latitude: data.latitude,
+      longitude: data.longitude,
       region: {
         latitude: data.latitude,
         longitude: data.longitude,
       },
       openMaps: false,
+    });
+  };
+
+  updateAlamat = data => {
+    this.setState({
+      alamat: data,
     });
   };
 
@@ -66,16 +74,7 @@ export default class EditProfile extends Component {
   };
 
   render() {
-    const {
-      dataKota,
-      dataKecamatan,
-      dataKelurahan,
-      openMaps,
-      dataLatitude,
-      dataLongitude,
-      profile,
-      region,
-    } = this.state;
+    const {openMaps, region, nama, email, nomerHp, alamat, detail_alamat, latitude, longitude, avatar} = this.state;
     const {navigation} = this.props;
     return (
       <View style={styles.pages}>
@@ -91,32 +90,40 @@ export default class EditProfile extends Component {
         </DropShadow>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.container}>
-            <Inputan label="Nama" value={profile.nama} />
-            <Inputan label="Email" value={profile.email} />
-            <Inputan label="No. Handphone" value={profile.nomerHp} />
-            <Inputan label="Alamat Lengkap" value={profile.alamat} textarea />
-            <Pilihan label="Kabupaten / Kota" datas={dataKota} />
-            <Pilihan label="Kecamatan" datas={dataKecamatan} />
-            <Pilihan label="Kelurahan / Desa" datas={dataKelurahan} />
-            <Text style={styles.koordinatText}>Titik Koordinat Alamat :</Text>
-            <View style={styles.koordinat}>
-              {dataLatitude ? (
-                <Text numberOfLines={1} style={styles.titikText}>
-                  {dataLatitude}, {dataLongitude}
-                </Text>
-              ) : (
-                <Text></Text>
-              )}
-              <TouchableOpacity
-                style={styles.ubahBtn}
-                onPress={() => this.clickMaps()}>
-                <Text style={styles.ubahKoordinat}>Ubah</Text>
+            <Inputan label="Nama" value={nama} />
+            <Inputan label="Email" value={email} />
+            <Inputan label="No. Handphone" value={nomerHp} />
+            <View style={styles.wrapAlamat}>
+              <Text style={styles.alamatText}>Alamat :</Text>
+              <TouchableOpacity onPress={() => this.clickMaps()}>
+                <Text style={styles.changeText}>Ubah Alamat</Text>
               </TouchableOpacity>
             </View>
+            <DropShadow style={dropshadow.kategoriCard}>
+              <View style={styles.cardAlamat}>
+                <IconMarker />
+                <View style={styles.wrapInfo}>
+                  <Text style={styles.infoText}>{alamat}</Text>
+                  <View style={styles.wrapCoordinate}>
+                    <Text numberOfLines={1} style={styles.coordinateText}>
+                      {latitude}
+                    </Text>
+                    <Text style={styles.commaText}>, </Text>
+                    <Text numberOfLines={1} style={styles.coordinateText}>
+                      {longitude}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </DropShadow>
+            <Inputan
+              label="Detail Alamat / Acuan"
+              value={detail_alamat}
+            />
             <View style={styles.inputFoto}>
               <Text style={styles.fotoText}>Foto Profile</Text>
               <View style={styles.wrapperFoto}>
-                <Image source={profile.avatar} style={styles.foto} />
+                <Image source={avatar} style={styles.foto} />
                 <TouchableOpacity style={styles.ubahFoto}>
                   <Text style={styles.ubahText}>Ubah Foto</Text>
                 </TouchableOpacity>
@@ -133,6 +140,7 @@ export default class EditProfile extends Component {
           <Maps
             region={region}
             updateLocation={data => this.updateLocation(data)}
+            updateAlamat={data => this.updateAlamat(data)}
             goBack={() => this.goBack()}
           />
         </Modal>
@@ -172,7 +180,7 @@ const styles = StyleSheet.create({
     fontSize: RFValue(22, heightMobileUI),
   },
   inputFoto: {
-    marginTop: 17,
+    marginTop: responsiveHeight(17),
   },
   fotoText: {
     color: colors.black,
@@ -180,11 +188,54 @@ const styles = StyleSheet.create({
     fontSize: RFValue(18, heightMobileUI),
     marginBottom: 7,
   },
-  koordinatText: {
+  wrapAlamat: {
+    flexDirection: 'row',
+    marginTop: responsiveHeight(17),
+    justifyContent: 'space-between',
+  },
+  alamatText: {
     color: colors.black,
     fontFamily: fonts.primary.semibold,
     fontSize: RFValue(18, heightMobileUI),
-    marginTop: 17,
+  },
+  changeText: {
+    color: colors.primary,
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(18, heightMobileUI),
+  },
+  cardAlamat: {
+    width: '100%',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginTop: responsiveHeight(7),
+    flexDirection: 'row',
+    padding: responsiveWidth(10),
+  },
+  wrapInfo: {
+    flex: 1,
+    marginLeft: responsiveWidth(10),
+  },
+  infoText: {
+    color: colors.black,
+    fontFamily: fonts.primary.regular,
+    fontSize: RFValue(16, heightMobileUI),
+    textAlign: 'justify',
+    marginBottom: responsiveHeight(5),
+  },
+  wrapCoordinate: {
+    flexDirection: 'row',
+  },
+  coordinateText: {
+    color: colors.black,
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(16, heightMobileUI),
+    flex: 1,
+  },
+  commaText: {
+    color: colors.black,
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(16, heightMobileUI),
   },
   foto: {
     height: responsiveHeight(124),
@@ -209,33 +260,6 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(18, heightMobileUI),
-  },
-  koordinat: {
-    height: responsiveHeight(43),
-    borderBottomWidth: 1,
-    borderColor: colors.borderInput,
-    paddingLeft: responsiveWidth(10),
-    marginTop: responsiveHeight(7),
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  titikText: {
-    fontFamily: fonts.primary.regular,
-    fontSize: RFValue(16, heightMobileUI),
-    color: colors.black,
-    flex: 1,
-  },
-  ubahBtn: {
-    paddingTop: responsiveWidth(10),
-    paddingLeft: responsiveWidth(5),
-    paddingRight: responsiveWidth(10),
-    paddingBottom: responsiveWidth(10),
-  },
-  ubahKoordinat: {
-    color: colors.primary,
-    fontFamily: fonts.primary.bold,
-    fontSize: RFValue(16, heightMobileUI),
   },
   simpan: {
     height: responsiveHeight(54),

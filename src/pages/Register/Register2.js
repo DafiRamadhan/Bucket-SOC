@@ -7,27 +7,27 @@ import {
   Modal,
 } from 'react-native';
 import React, {Component} from 'react';
-import {IconBack, Register2Img} from '../../assets';
-import {Inputan, Maps, Pilihan} from '../../components';
-import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
+import {IconBack, IconMarker, Register2Img} from '../../assets';
+import {Inputan, Maps} from '../../components';
+import {colors, dropshadow, fonts, responsiveHeight, responsiveWidth} from '../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
+import DropShadow from 'react-native-drop-shadow';
 
 export default class Register2 extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      dataKota: [],
-      dataKecamatan: [],
-      dataKelurahan: [],
-      openMaps: false,
-      dataLatitude: '',
-      dataLongitude: '',
+      alamat: '',
+      detail_alamat: '',
+      latitude: '',
+      longitude: '',
       region: {
         latitude: -7.575667,
         longitude: 110.824239,
       },
+      openMaps: false,
     };
   }
 
@@ -39,13 +39,19 @@ export default class Register2 extends Component {
 
   updateLocation = data => {
     this.setState({
-      dataLatitude: data.latitude,
-      dataLongitude: data.longitude,
+      latitude: data.latitude,
+      longitude: data.longitude,
       region: {
         latitude: data.latitude,
         longitude: data.longitude,
       },
       openMaps: false,
+    });
+  };
+
+  updateAlamat = data => {
+    this.setState({
+      alamat: data,
     });
   };
 
@@ -57,13 +63,12 @@ export default class Register2 extends Component {
 
   render() {
     const {
-      dataKota,
-      dataKecamatan,
-      dataKelurahan,
       openMaps,
-      dataLatitude,
-      dataLongitude,
       region,
+      alamat,
+      detail_alamat,
+      latitude,
+      longitude,
     } = this.state;
     const {navigation} = this.props;
     return (
@@ -83,25 +88,37 @@ export default class Register2 extends Component {
               <Text style={styles.alamatText}>Alamat</Text>
             </View>
             <View>
-              <Inputan label="Alamat Lengkap" textarea />
-              <Pilihan label="Kabupaten / Kota" datas={dataKota} />
-              <Pilihan label="Kecamatan" datas={dataKecamatan} />
-              <Pilihan label="Kelurahan / Desa" datas={dataKelurahan} />
-              <Text style={styles.koordinatText}>Titik Koordinat Alamat :</Text>
-              <View style={styles.koordinat}>
-                {dataLatitude ? (
-                  <Text numberOfLines={1} style={styles.titikText}>
-                    {dataLatitude}, {dataLongitude}
-                  </Text>
-                ) : (
-                  <Text></Text>
-                )}
-                <TouchableOpacity
-                  style={styles.ubahBtn}
-                  onPress={() => this.clickMaps()}>
-                  <Text style={styles.ubahKoordinat}>Pilih</Text>
+              <View style={styles.wrapAlamat}>
+                <TouchableOpacity onPress={() => this.clickMaps()}>
+                  <Text style={styles.changeText}>Tentukan Alamat</Text>
                 </TouchableOpacity>
               </View>
+              <DropShadow style={dropshadow.kategoriCard}>
+                <View style={styles.cardAlamat}>
+                  <IconMarker />
+                  {alamat ? (
+                    <View style={styles.wrapInfo}>
+                      <Text style={styles.infoText}>{alamat}</Text>
+                      <View style={styles.wrapCoordinate}>
+                        <Text numberOfLines={1} style={styles.coordinateText}>
+                          {latitude}
+                        </Text>
+                        <Text style={styles.commaText}>, </Text>
+                        <Text numberOfLines={1} style={styles.coordinateText}>
+                          {longitude}
+                        </Text>
+                      </View>
+                    </View>
+                  ) : (
+                    <Text style={styles.placeholderAlamat}>Alamat Lengkap Anda (wilayah Kota Surakarta dan sekitarnya.)</Text>
+                  )}
+                </View>
+              </DropShadow>
+              <Inputan
+                icon={'building'}
+                noLabel
+                placeholder={'Detail Alamat (nomor, blok, lantai, dll)'}
+              />
               <TouchableOpacity
                 style={styles.btn}
                 onPress={() => navigation.navigate('Login')}>
@@ -116,6 +133,7 @@ export default class Register2 extends Component {
           <Maps
             region={region}
             updateLocation={data => this.updateLocation(data)}
+            updateAlamat={data => this.updateAlamat(data)}
             goBack={() => this.goBack()}
           />
         </Modal>
@@ -160,6 +178,57 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(30, heightMobileUI),
   },
+  wrapAlamat: {
+    marginTop: responsiveHeight(30),
+  },
+  changeText: {
+    color: colors.primary,
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(18, heightMobileUI),
+    alignSelf: 'flex-end',
+    flex: 1,
+  },
+  cardAlamat: {
+    width: '100%',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginTop: responsiveHeight(7),
+    flexDirection: 'row',
+    padding: responsiveWidth(10),
+  },
+  placeholderAlamat: {
+    fontSize: RFValue(16, heightMobileUI),
+    fontFamily: fonts.primary.regular,
+    color: colors.navmenu,
+    marginLeft: responsiveWidth(12),
+    textAlign: 'justify',
+  },
+  wrapInfo: {
+    flex: 1,
+    marginLeft: responsiveWidth(10),
+  },
+  infoText: {
+    color: colors.black,
+    fontFamily: fonts.primary.regular,
+    fontSize: RFValue(16, heightMobileUI),
+    textAlign: 'justify',
+    marginBottom: responsiveHeight(5),
+  },
+  wrapCoordinate: {
+    flexDirection: 'row',
+  },
+  coordinateText: {
+    color: colors.black,
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(16, heightMobileUI),
+    flex: 1,
+  },
+  commaText: {
+    color: colors.black,
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(16, heightMobileUI),
+  },
   btn: {
     height: responsiveHeight(54),
     marginTop: responsiveHeight(40),
@@ -173,38 +242,5 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(20, heightMobileUI),
-  },
-  koordinatText: {
-    color: colors.black,
-    fontFamily: fonts.primary.semibold,
-    fontSize: RFValue(18, heightMobileUI),
-    marginTop: 17,
-  },
-  koordinat: {
-    height: responsiveHeight(43),
-    borderBottomWidth: 1,
-    borderColor: colors.borderInput,
-    paddingLeft: responsiveWidth(10),
-    marginTop: responsiveHeight(7),
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  titikText: {
-    fontFamily: fonts.primary.regular,
-    fontSize: RFValue(16, heightMobileUI),
-    color: colors.black,
-    flex: 1,
-  },
-  ubahBtn: {
-    paddingTop: responsiveWidth(10),
-    paddingLeft: responsiveWidth(5),
-    paddingRight: responsiveWidth(10),
-    paddingBottom: responsiveWidth(10),
-  },
-  ubahKoordinat: {
-    color: colors.primary,
-    fontFamily: fonts.primary.bold,
-    fontSize: RFValue(16, heightMobileUI),
   },
 });

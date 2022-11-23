@@ -1,14 +1,13 @@
-import { Profile } from "../../assets"
+import {Profile} from '../../assets';
 
 export const dummyProfile = {
   nama: 'Caerel Steven C. A.',
   email: 'muhammaddafiramadhan@yahoo.com',
   nomerHp: '085886839034',
-  alamat: 'Jalan Menoreh XI No. 7 (Samping Warung Bu Tri)',
-  kelurahan: 'Karangasem',
-  kecamatan: 'Laweyan',
-  kota: 'Kota Surakarta',
-  latitude: -7.575667,
-  longitude: 110.824239,
+  alamat:
+    'Gg. Delima VIII No.21, Jajar, Kec. Laweyan, Kota Surakarta, Jawa Tengah 57144, Indonesia',
+  detail_alamat: 'Samping warung Bu Tri',
+  latitude: -7.5756666864396385,
+  longitude: 110.82423878833652,
   avatar: Profile,
 };

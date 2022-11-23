@@ -12,12 +12,28 @@ import GetLocation from 'react-native-get-location';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import DropShadow from 'react-native-drop-shadow';
 import {RFValue} from 'react-native-responsive-fontsize';
-import { IconBack, IconBlueDots, IconLocation, IconMarker } from '../../../assets';
-import { colors, dropshadow, fonts, responsiveHeight, responsiveWidth } from '../../../utils';
-import { heightMobileUI } from '../../../utils/constant';
+import {
+  IconBack,
+  IconBlueDots,
+  IconClearText,
+  IconLocation,
+  IconMarker,
+  IconSearch,
+} from '../../../assets';
+import {
+  colors,
+  dropshadow,
+  fonts,
+  responsiveHeight,
+  responsiveWidth,
+} from '../../../utils';
+import {heightMobileUI} from '../../../utils/constant';
+import Geocoder from 'react-native-geocoding';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 
 export default class Maps extends Component {
   state = {
+    GOOGLE_MAPS_API: 'AIzaSyAeMwbNSLvxapRSoWXY2RY1tfq97J8mU_E',
     location: {
       latitude: 0,
       longitude: 0,
@@ -28,6 +44,7 @@ export default class Maps extends Component {
       latitudeDelta: 0.009,
       longitudeDelta: 0.009,
     },
+    address: '',
   };
 
   requestLocation = () => {
@@ -79,10 +96,32 @@ export default class Maps extends Component {
     this.setState({
       region,
     });
+    Geocoder.init(this.state.GOOGLE_MAPS_API, {language: 'id'});
+    Geocoder.from({
+      latitude: region.latitude,
+      longitude: region.longitude,
+    })
+      .then(json => {
+        var addressComponent = json.results[0].formatted_address;
+        this.setState({
+          address: addressComponent,
+        });
+      })
+      .catch(error => Alert.alert(error));
   };
 
   saveLocation = () => {
-    this.props.updateLocation(this.state.region);
+    if (
+      this.state.region.latitude > -7.35725 ||
+      this.state.region.latitude < -7.7271903 ||
+      this.state.region.longitude < 110.6435949 ||
+      this.state.region.longitude > 111.0134088
+    ) {
+      Alert.alert('Mohon Maaf. Belum tersedia untuk lokasi Anda.');
+    } else {
+      this.props.updateLocation(this.state.region);
+      this.props.updateAlamat(this.state.address);
+    }
   };
 
   goBack = () => {
@@ -90,7 +129,7 @@ export default class Maps extends Component {
   };
 
   render() {
-    const {location, region} = this.state;
+    const {GOOGLE_MAPS_API, location, region, address} = this.state;
     return (
       <View style={styles.map}>
         <MapView
@@ -105,6 +144,56 @@ export default class Maps extends Component {
             <IconBlueDots />
           </Marker>
         </MapView>
+        <View style={styles.searchBox}>
+          <View style={styles.iconSearch}>
+            <IconSearch />
+          </View>
+          <GooglePlacesAutocomplete
+            placeholder="Cari"
+            minLength={2}
+            onPress={(data = null) => {
+              //console.log(data.description);
+              Geocoder.from(data.description)
+                .then(json => {
+                  var places = json.results[0].geometry.location;
+                  this.setState({
+                    region: {
+                      latitude: places.lat,
+                      longitude: places.lng,
+                      latitudeDelta: 0.009,
+                      longitudeDelta: 0.009,
+                    },
+                  });
+                  //console.log(places);
+                })
+                .catch(error => console.warn(error));
+            }}
+            query={{
+              key: GOOGLE_MAPS_API,
+              language: 'id',
+              components: 'country:id',
+            }}
+            ref={instance => {
+              this.GooglePlacesRef = instance;
+            }}
+            styles={{
+              textInput: {
+                color: colors.black,
+                fontSize: RFValue(16, heightMobileUI),
+                fontFamily: fonts.primary.regular,
+              },
+            }}
+            renderRightButton={() => (
+              <TouchableOpacity
+                style={styles.iconClear}
+                onPress={() => {
+                  this.GooglePlacesRef.setAddressText('');
+                }}>
+                <IconClearText />
+              </TouchableOpacity>
+            )}
+          />
+        </View>
         <DropShadow style={dropshadow.footer}>
           <TouchableOpacity style={styles.tombolBack} onPress={this.goBack}>
             <IconBack />
@@ -121,6 +210,16 @@ export default class Maps extends Component {
             <IconLocation />
           </TouchableOpacity>
         </DropShadow>
+        <View style={styles.infoBox}>
+          <IconMarker />
+          <View style={styles.wrapInfo}>
+            <View>
+              <Text numberOfLines={3} style={styles.infoText}>
+                {address}
+              </Text>
+            </View>
+          </View>
+        </View>
         <TouchableOpacity
           style={styles.simpan}
           region={region}
@@ -154,7 +253,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   currentBtn: {
-    bottom: 184,
+    bottom: responsiveHeight(245),
     position: 'absolute',
     right: 20,
     padding: 4,
@@ -197,6 +296,62 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     margin: 20,
   },
+  searchBox: {
+    position: 'absolute',
+    flexDirection: 'row',
+    top: responsiveHeight(30),
+    width: responsiveWidth(340),
+    alignSelf: 'center',
+    backgroundColor: colors.white,
+    borderRadius: 5,
+    paddingHorizontal: responsiveWidth(10),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.39,
+    shadowRadius: 8.3,
+    elevation: 8,
+    zIndex: 1,
+  },
+  iconSearch: {
+    marginTop: responsiveHeight(12),
+  },
+  iconClear: {
+    marginTop: responsiveHeight(17),
+  },
+  infoBox: {
+    position: 'absolute',
+    bottom: responsiveHeight(130),
+    flexDirection: 'row',
+    height: responsiveHeight(85),
+    width: responsiveWidth(340),
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.white,
+    borderRadius: 10,
+    paddingHorizontal: responsiveWidth(10),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.39,
+    shadowRadius: 8.3,
+    elevation: 8,
+  },
+  wrapInfo: {
+    flex: 1,
+    marginLeft: responsiveWidth(10),
+  },
+  infoText: {
+    color: colors.black,
+    fontFamily: fonts.primary.medium,
+    fontSize: RFValue(14, heightMobileUI),
+    textAlign: 'justify',
+  },
   simpan: {
     height: responsiveHeight(54),
     width: responsiveWidth(340),
@@ -214,11 +369,10 @@ const styles = StyleSheet.create({
     fontSize: RFValue(20, heightMobileUI),
   },
   tombolBack: {
-    bottom: responsiveHeight(840),
-    left: responsiveWidth(15),
+    bottom: responsiveHeight(245),
     position: 'absolute',
-    backgroundColor: colors.white,
-    padding: 3,
+    left: 20,
+    padding: 4,
     borderRadius: 100,
     shadowColor: '#000',
     shadowOffset: {
@@ -228,6 +382,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.39,
     shadowRadius: 8.3,
 
-    elevation: 13,
+    elevation: 8,
+    backgroundColor: colors.white,
   },
 });

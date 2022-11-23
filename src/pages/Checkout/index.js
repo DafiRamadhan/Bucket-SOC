@@ -33,6 +33,8 @@ export default class Checkout extends Component {
       profile: dummyProfile,
       pesanan: dummyPesanan[0],
       ekspedisi: ['Go-Send Instant', 'GrabExpress Instant', 'Ambil di Toko'],
+      dataPengiriman: '',
+      selectedPengirimanIndex: '',
       pilihTanggal: '',
       pilihWaktu: '',
     };
@@ -51,7 +53,7 @@ export default class Checkout extends Component {
   };
 
   render() {
-    const {profile, ekspedisi, pesanan} = this.state;
+    const {profile, ekspedisi, pesanan, dataPengiriman} = this.state;
     const {navigation} = this.props;
     return (
       <View style={styles.pages}>
@@ -69,7 +71,17 @@ export default class Checkout extends Component {
             backgroundColor={colors.line}
           />
           <View style={styles.container}>
-            <Pilihan label="Pilih Metode Pengiriman" datas={ekspedisi} />
+            <Pilihan
+              label="Pilih Metode Pengiriman"
+              datas={ekspedisi}
+              selectedValue={dataPengiriman}
+              onValueChange={(itemValue, itemIndex) => {
+                this.setState({
+                  dataPengiriman: itemValue,
+                  selectedPengirimanIndex: itemIndex,
+                });
+              }}
+            />
           </View>
           <Jarak width={'100%'} height={responsiveHeight(20)} />
           <Jarak
@@ -106,7 +118,10 @@ export default class Checkout extends Component {
               <View style={styles.totalHarga}>
                 <Text style={styles.tagihan}>Total Tagihan</Text>
                 <Text style={styles.tagihan}>
-                  Rp{(pesanan.totalHarga + pesanan.ongkir).toLocaleString('id-ID')}
+                  Rp
+                  {(pesanan.totalHarga + pesanan.ongkir).toLocaleString(
+                    'id-ID',
+                  )}
                 </Text>
               </View>
             </View>

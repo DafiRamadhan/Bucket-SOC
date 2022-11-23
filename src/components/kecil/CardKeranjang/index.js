@@ -9,7 +9,7 @@ const CardKeranjang = ({keranjang}) => {
   return (
     <View style={styles.container}>
       <View style={styles.box}>
-        <Image source={keranjang.product.gambar} style={styles.gambar} />
+        <Image source={keranjang.product.gambar[0]} style={styles.gambar} />
         <View style={styles.desc}>
           <View style={styles.title}>
             <Text numberOfLines={1} style={styles.nama}>

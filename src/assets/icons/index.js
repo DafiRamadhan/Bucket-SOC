@@ -34,6 +34,8 @@ import IconPasswordGrey from './password-grey.svg';
 import IconProfileGrey from './profile-grey.svg';
 import IconPhoneGrey from './phone-grey.svg';
 import IconConfirmPassword from './confirm-password.svg';
+import IconClearText from './clear-text.svg';
+import IconBuilding from './building-grey.svg';
 
 export {
   IconHome,
@@ -72,4 +74,6 @@ export {
   IconProfileGrey,
   IconPhoneGrey,
   IconConfirmPassword,
+  IconClearText,
+  IconBuilding,
 };
