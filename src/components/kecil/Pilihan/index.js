@@ -29,29 +29,7 @@ const Pilihan = ({
             value=""
           />
           {datas.map((item, index) => {
-            if (label == 'Kabupaten / Kota') {
-              return (
-                <Picker.Item label={item.kota} value={item.kota} key={item.id} />
-              );
-            } else if (label == 'Kecamatan') {
-              return (
-                <Picker.Item
-                  label={item.nama}
-                  value={item.nama}
-                  key={item.id}
-                />
-              );
-            } else if (label == 'Kelurahan / Desa') {
-              return (
-                <Picker.Item
-                  label={item.nama}
-                  value={item.nama}
-                  key={item.id}
-                />
-              );
-            } else {
               return <Picker.Item label={item} value={item} key={index} />;
-            }
           })}
         </Picker>
       </View>
