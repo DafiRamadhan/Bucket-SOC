@@ -27,11 +27,8 @@ export default class EditProfile extends Component {
     super(props);
 
     this.state = {
-      region: {
-        latitude: dummyProfile.latitude,
-        longitude: dummyProfile.longitude,
-      },
       openMaps: false,
+      search: false,
       nama: dummyProfile.nama,
       email: dummyProfile.email,
       nomerHp: dummyProfile.nomerHp,
@@ -51,19 +48,10 @@ export default class EditProfile extends Component {
 
   updateLocation = data => {
     this.setState({
-      latitude: data.latitude,
-      longitude: data.longitude,
-      region: {
-        latitude: data.latitude,
-        longitude: data.longitude,
-      },
+      alamat: data.address,
+      latitude: data.region.latitude,
+      longitude: data.region.longitude,
       openMaps: false,
-    });
-  };
-
-  updateAlamat = data => {
-    this.setState({
-      alamat: data,
     });
   };
 
@@ -74,7 +62,18 @@ export default class EditProfile extends Component {
   };
 
   render() {
-    const {openMaps, region, nama, email, nomerHp, alamat, detail_alamat, latitude, longitude, avatar} = this.state;
+    const {
+      openMaps,
+      search,
+      nama,
+      email,
+      nomerHp,
+      alamat,
+      detail_alamat,
+      latitude,
+      longitude,
+      avatar,
+    } = this.state;
     const {navigation} = this.props;
     return (
       <View style={styles.pages}>
@@ -105,21 +104,14 @@ export default class EditProfile extends Component {
                 <View style={styles.wrapInfo}>
                   <Text style={styles.infoText}>{alamat}</Text>
                   <View style={styles.wrapCoordinate}>
-                    <Text numberOfLines={1} style={styles.coordinateText}>
-                      {latitude}
-                    </Text>
+                    <Text numberOfLines={1} style={styles.coordinateText}>{latitude}</Text>
                     <Text style={styles.commaText}>, </Text>
-                    <Text numberOfLines={1} style={styles.coordinateText}>
-                      {longitude}
-                    </Text>
+                    <Text numberOfLines={1} style={styles.coordinateText}>{longitude}</Text>
                   </View>
                 </View>
               </View>
             </DropShadow>
-            <Inputan
-              label="Detail Alamat"
-              value={detail_alamat}
-            />
+            <Inputan label="Detail Alamat" value={detail_alamat} />
             <View style={styles.inputFoto}>
               <Text style={styles.fotoText}>Foto Profile</Text>
               <View style={styles.wrapperFoto}>
@@ -138,9 +130,11 @@ export default class EditProfile extends Component {
           visible={openMaps}
           onRequestClose={() => this.setState({openMaps: false})}>
           <Maps
-            region={region}
+            address={alamat}
+            latitude={latitude}
+            longitude={longitude}
+            search={search}
             updateLocation={data => this.updateLocation(data)}
-            updateAlamat={data => this.updateAlamat(data)}
             goBack={() => this.goBack()}
           />
         </Modal>
@@ -219,7 +213,7 @@ const styles = StyleSheet.create({
   infoText: {
     color: colors.black,
     fontFamily: fonts.primary.regular,
-    fontSize: RFValue(16, heightMobileUI),
+    fontSize: RFValue(15, heightMobileUI),
     textAlign: 'justify',
     marginBottom: responsiveHeight(5),
   },
@@ -229,13 +223,12 @@ const styles = StyleSheet.create({
   coordinateText: {
     color: colors.black,
     fontFamily: fonts.primary.bold,
-    fontSize: RFValue(16, heightMobileUI),
-    flex: 1,
+    fontSize: RFValue(14, heightMobileUI),
   },
   commaText: {
     color: colors.black,
     fontFamily: fonts.primary.bold,
-    fontSize: RFValue(16, heightMobileUI),
+    fontSize: RFValue(14, heightMobileUI),
   },
   foto: {
     height: responsiveHeight(124),

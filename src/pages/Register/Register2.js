@@ -21,13 +21,10 @@ export default class Register2 extends Component {
     this.state = {
       alamat: '',
       detail_alamat: '',
-      latitude: '',
-      longitude: '',
-      region: {
-        latitude: -7.575667,
-        longitude: 110.824239,
-      },
+      latitude: -7.575667,
+      longitude: 110.824239,
       openMaps: false,
+      search: true,
     };
   }
 
@@ -39,19 +36,11 @@ export default class Register2 extends Component {
 
   updateLocation = data => {
     this.setState({
-      latitude: data.latitude,
-      longitude: data.longitude,
-      region: {
-        latitude: data.latitude,
-        longitude: data.longitude,
-      },
+      alamat: data.address,
+      latitude: data.region.latitude,
+      longitude: data.region.longitude,
       openMaps: false,
-    });
-  };
-
-  updateAlamat = data => {
-    this.setState({
-      alamat: data,
+      search: false,
     });
   };
 
@@ -64,7 +53,7 @@ export default class Register2 extends Component {
   render() {
     const {
       openMaps,
-      region,
+      search,
       alamat,
       latitude,
       longitude,
@@ -109,7 +98,10 @@ export default class Register2 extends Component {
                       </View>
                     </View>
                   ) : (
-                    <Text style={styles.placeholderAlamat}>Alamat Lengkap Anda (wilayah Kota Surakarta dan sekitarnya.)</Text>
+                    <Text style={styles.placeholderAlamat}>
+                      Alamat Lengkap Anda (wilayah Kota Surakarta dan
+                      sekitarnya.)
+                    </Text>
                   )}
                 </View>
               </DropShadow>
@@ -130,9 +122,11 @@ export default class Register2 extends Component {
           visible={openMaps}
           onRequestClose={() => this.setState({openMaps: false})}>
           <Maps
-            region={region}
+            address={alamat}
+            latitude={latitude}
+            longitude={longitude}
+            search={search}
             updateLocation={data => this.updateLocation(data)}
-            updateAlamat={data => this.updateAlamat(data)}
             goBack={() => this.goBack()}
           />
         </Modal>
@@ -211,7 +205,7 @@ const styles = StyleSheet.create({
   infoText: {
     color: colors.black,
     fontFamily: fonts.primary.regular,
-    fontSize: RFValue(16, heightMobileUI),
+    fontSize: RFValue(15, heightMobileUI),
     textAlign: 'justify',
     marginBottom: responsiveHeight(5),
   },
@@ -221,13 +215,12 @@ const styles = StyleSheet.create({
   coordinateText: {
     color: colors.black,
     fontFamily: fonts.primary.bold,
-    fontSize: RFValue(16, heightMobileUI),
-    flex: 1,
+    fontSize: RFValue(14, heightMobileUI),
   },
   commaText: {
     color: colors.black,
     fontFamily: fonts.primary.bold,
-    fontSize: RFValue(16, heightMobileUI),
+    fontSize: RFValue(14, heightMobileUI),
   },
   btn: {
     height: responsiveHeight(54),

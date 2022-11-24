@@ -39,13 +39,13 @@ export default class Maps extends Component {
       longitude: 0,
     },
     region: {
-      latitude: this.props.region.latitude,
-      longitude: this.props.region.longitude,
+      latitude: this.props.latitude,
+      longitude: this.props.longitude,
       latitudeDelta: 0.009,
       longitudeDelta: 0.009,
     },
-    address: '',
-    search: false,
+    address: this.props.address,
+    search: this.props.search,
   };
 
   requestLocation = () => {
@@ -97,7 +97,7 @@ export default class Maps extends Component {
     this.setState({
       region,
     });
-    if (this.state.search === false) {
+    if (this.state.search === true) {
       Geocoder.init(this.state.GOOGLE_MAPS_API, {language: 'id'});
       Geocoder.from({
         latitude: region.latitude,
@@ -110,10 +110,12 @@ export default class Maps extends Component {
             address: newAddress,
           });
         })
-        .catch(error => Alert.alert('Gagal mengambil data. Periksa jaringan Anda.'));
+        .catch(error =>
+          Alert.alert('Gagal mengambil data. Mohon periksa jaringan Anda.'),
+        );
     } else {
       this.setState({
-        search : false,
+        search: true,
       });
     }
   };
@@ -127,8 +129,7 @@ export default class Maps extends Component {
     ) {
       Alert.alert('Mohon Maaf. Belum tersedia untuk lokasi Anda.');
     } else {
-      this.props.updateLocation(this.state.region);
-      this.props.updateAlamat(this.state.address);
+      this.props.updateLocation(this.state);
     }
   };
 
@@ -172,13 +173,15 @@ export default class Maps extends Component {
                       latitudeDelta: 0.009,
                       longitudeDelta: 0.009,
                     },
-                    search: true,
+                    search: false,
                     address: address,
                   });
                   //console.log(address);
                 })
                 .catch(error =>
-                  Alert.alert('Gagal mengambil data. Periksa jaringan Anda.'),
+                  Alert.alert(
+                    'Gagal mengambil data. Mohon periksa jaringan Anda.',
+                  ),
                 );
             }}
             query={{
@@ -197,13 +200,15 @@ export default class Maps extends Component {
               },
             }}
             renderRightButton={() => (
-              <TouchableOpacity
-                style={styles.iconClear}
-                onPress={() => {
-                  this.GooglePlacesRef.setAddressText('');
-                }}>
-                <IconClearText />
-              </TouchableOpacity>
+              <View>
+                <TouchableOpacity
+                  style={styles.iconClear}
+                  onPress={() => {
+                    this.GooglePlacesRef.setAddressText('');
+                  }}>
+                  <IconClearText />
+                </TouchableOpacity>
+              </View>
             )}
           />
         </View>
