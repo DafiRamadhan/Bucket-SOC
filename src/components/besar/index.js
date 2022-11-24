@@ -8,6 +8,7 @@ import BuketSlider from './BuketSlider';
 import ListMenu from './ListMenu';
 import ListKeranjang from './ListKeranjang';
 import ListOrders from './ListOrders';
+import ListDetailPesanan from './ListDetailPesanan';
 import Maps from './Maps';
 
 
@@ -22,5 +23,6 @@ export {
   ListMenu,
   ListKeranjang,
   ListOrders,
+  ListDetailPesanan,
   Maps,
 };

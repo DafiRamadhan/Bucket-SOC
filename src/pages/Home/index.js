@@ -23,7 +23,7 @@ export default class Home extends Component {
   constructor(props) {
     super(props);
 
-    //state akan dioper ke ListKategori
+    //state akan dioper ke List
     this.state = {
       kategori: dummyKategori,
       buket: dummyBuket,

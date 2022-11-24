@@ -45,6 +45,7 @@ export default class Maps extends Component {
       longitudeDelta: 0.009,
     },
     address: '',
+    search: false,
   };
 
   requestLocation = () => {
@@ -96,18 +97,25 @@ export default class Maps extends Component {
     this.setState({
       region,
     });
-    Geocoder.init(this.state.GOOGLE_MAPS_API, {language: 'id'});
-    Geocoder.from({
-      latitude: region.latitude,
-      longitude: region.longitude,
-    })
-      .then(json => {
-        var addressComponent = json.results[0].formatted_address;
-        this.setState({
-          address: addressComponent,
-        });
+    if (this.state.search === false) {
+      Geocoder.init(this.state.GOOGLE_MAPS_API, {language: 'id'});
+      Geocoder.from({
+        latitude: region.latitude,
+        longitude: region.longitude,
       })
-      .catch(error => Alert.alert(error));
+        .then(json => {
+          var addressComponent = json.results[0].formatted_address;
+          var newAddress = addressComponent.replace(', Indonesia', '');
+          this.setState({
+            address: newAddress,
+          });
+        })
+        .catch(error => Alert.alert(error));
+    } else {
+      this.setState({
+        search : false,
+      });
+    }
   };
 
   saveLocation = () => {
@@ -152,10 +160,11 @@ export default class Maps extends Component {
             placeholder="Cari"
             minLength={2}
             onPress={(data = null) => {
-              //console.log(data.description);
+              //console.log(data);
               Geocoder.from(data.description)
                 .then(json => {
                   var places = json.results[0].geometry.location;
+                  var address = data.description.replace(', Indonesia', '');
                   this.setState({
                     region: {
                       latitude: places.lat,
@@ -163,10 +172,12 @@ export default class Maps extends Component {
                       latitudeDelta: 0.009,
                       longitudeDelta: 0.009,
                     },
+                    search: true,
+                    address: address,
                   });
-                  //console.log(places);
+                  //console.log(address);
                 })
-                .catch(error => console.warn(error));
+                .catch(error => Alert.alert(error));
             }}
             query={{
               key: GOOGLE_MAPS_API,

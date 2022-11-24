@@ -28,8 +28,8 @@ export default class EditProfile extends Component {
 
     this.state = {
       region: {
-        latitude: -7.575667,
-        longitude: 110.824239,
+        latitude: dummyProfile.latitude,
+        longitude: dummyProfile.longitude,
       },
       openMaps: false,
       nama: dummyProfile.nama,
@@ -117,7 +117,7 @@ export default class EditProfile extends Component {
               </View>
             </DropShadow>
             <Inputan
-              label="Detail Alamat / Acuan"
+              label="Detail Alamat"
               value={detail_alamat}
             />
             <View style={styles.inputFoto}>

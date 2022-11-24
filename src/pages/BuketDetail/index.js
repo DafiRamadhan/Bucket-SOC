@@ -60,7 +60,7 @@ export default class BuketDetail extends Component {
                 textarea
                 labelfontSize={RFValue(18, heightMobileUI)}
                 formfontSize={RFValue(14, heightMobileUI)}
-                placeholder="Isi jika ingin melakukan kustomisasi terhadap pesanan Anda (warna, item, waktu kirim, dll) sesuai ketentuan pada deskripsi produk ini."
+                placeholder="Isi jika ingin melakukan kustomisasi terhadap pesanan Anda (jenis, warna, ucapan, dll) sesuai ketentuan pada deskripsi produk ini."
               />
             </View>
           </View>

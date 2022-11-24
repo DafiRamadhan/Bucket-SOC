@@ -44,7 +44,7 @@ export default class Profile extends Component {
               <View style={styles.containerData}>
                 <IconAlamat />
                 <Text style={styles.data} numberOfLines={5}>
-                  Alamat : {profile.alamat}, {profile.kelurahan}, Kec. {profile.kecamatan}, {profile.kota}
+                  Alamat : {profile.alamat}
                 </Text>
               </View>
             </View>

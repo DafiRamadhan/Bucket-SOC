@@ -66,7 +66,6 @@ export default class Register2 extends Component {
       openMaps,
       region,
       alamat,
-      detail_alamat,
       latitude,
       longitude,
     } = this.state;
@@ -203,6 +202,7 @@ const styles = StyleSheet.create({
     color: colors.navmenu,
     marginLeft: responsiveWidth(12),
     textAlign: 'justify',
+    flex: 1,
   },
   wrapInfo: {
     flex: 1,

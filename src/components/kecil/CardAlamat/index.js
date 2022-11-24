@@ -16,15 +16,15 @@ const CardAlamat = ({profile}) => {
         </TouchableOpacity>
       </View>
       <View>
-        <Text style={styles.alamat} numberOfLines={1}>
+        <Text style={styles.nama} numberOfLines={2}>
           {profile.nama} ({profile.nomerHp})
         </Text>
-        <Text style={styles.alamat} numberOfLines={1}>
+        <Text style={styles.alamat} numberOfLines={3}>
           {profile.alamat}
         </Text>
-        <Text style={styles.alamat}>{profile.kelurahan}</Text>
-        <Text style={styles.alamat}>Kec. {profile.kecamatan}</Text>
-        <Text style={styles.alamat}>{profile.kota}</Text>
+        <Text numberOfLines={3} style={styles.alamat}>
+          Detail Alamat : {profile.detail_alamat}
+        </Text>
       </View>
     </View>
   );
@@ -51,6 +51,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(18, heightMobileUI),
     color: colors.primary,
+  },
+  nama: {
+    fontFamily: fonts.primary.semibold,
+    fontSize: RFValue(14, heightMobileUI),
+    color: colors.black,
   },
   alamat: {
     fontFamily: fonts.primary.regular,
