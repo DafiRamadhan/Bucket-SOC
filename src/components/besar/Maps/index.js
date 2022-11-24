@@ -66,7 +66,7 @@ export default class Maps extends Component {
       })
       .catch(ex => {
         const {code, message} = ex;
-        console.warn(code, message);
+        //console.warn(code, message);
         // if (code === 'CANCELLED') {
         //   Alert.alert('Mohon Menunggu...');
         // }
@@ -110,7 +110,7 @@ export default class Maps extends Component {
             address: newAddress,
           });
         })
-        .catch(error => Alert.alert(error));
+        .catch(error => Alert.alert('Gagal mengambil data. Periksa jaringan Anda.'));
     } else {
       this.setState({
         search : false,
@@ -177,7 +177,9 @@ export default class Maps extends Component {
                   });
                   //console.log(address);
                 })
-                .catch(error => Alert.alert(error));
+                .catch(error =>
+                  Alert.alert('Gagal mengambil data. Periksa jaringan Anda.'),
+                );
             }}
             query={{
               key: GOOGLE_MAPS_API,
