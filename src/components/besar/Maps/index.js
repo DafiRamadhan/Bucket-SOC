@@ -98,7 +98,6 @@ export default class Maps extends Component {
       region,
     });
     if (this.state.search === true) {
-      Geocoder.init(this.state.GOOGLE_MAPS_API, {language: 'id'});
       Geocoder.from({
         latitude: region.latitude,
         longitude: region.longitude,
@@ -139,6 +138,7 @@ export default class Maps extends Component {
 
   render() {
     const {GOOGLE_MAPS_API, location, region, address} = this.state;
+    Geocoder.init(GOOGLE_MAPS_API, {language: 'id'});
     return (
       <View style={styles.map}>
         <MapView
@@ -154,12 +154,11 @@ export default class Maps extends Component {
           </Marker>
         </MapView>
         <View style={styles.searchBox}>
-          <View style={styles.iconSearch}>
-            <IconSearch />
-          </View>
           <GooglePlacesAutocomplete
             placeholder="Cari"
             minLength={2}
+            isRowScrollable={false}
+            numberOfLines={5}
             onPress={(data = null) => {
               //console.log(data);
               Geocoder.from(data.description)
@@ -199,6 +198,11 @@ export default class Maps extends Component {
                 fontFamily: fonts.primary.regular,
               },
             }}
+            renderLeftButton={() => (
+              <View style={styles.iconSearch}>
+                <IconSearch />
+              </View>
+            )}
             renderRightButton={() => (
               <View>
                 <TouchableOpacity

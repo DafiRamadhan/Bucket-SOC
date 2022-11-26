@@ -91,7 +91,7 @@ const Intro = () => {
 
 const Router = () => {
   return (
-    <Stack.Navigator initialRouteName="Intro">
+    <Stack.Navigator initialRouteName="MainApp">
       <Stack.Screen
         name="MainApp"
         component={MainApp}
