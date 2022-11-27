@@ -86,11 +86,11 @@ export default class PilihTanggal extends Component {
   setTime = (event, selectedTime) => {
     const newTime = new Date(selectedTime);
     var startTime = new Date();
-    startTime.setHours(8);
-    startTime.setMinutes(0);
+    startTime.setHours(7);
+    startTime.setMinutes(59);
     var finishTime = new Date();
     finishTime.setHours(20);
-    finishTime.setMinutes(0);
+    finishTime.setMinutes(1);
     if (selectedTime < startTime || selectedTime > finishTime) {
       Alert.alert('Waktu Pengiriman Tersedia Pukul 8 Pagi - 8 Malam');
       this.setState({
