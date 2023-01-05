@@ -20,7 +20,7 @@ import {SvgUri} from 'react-native-svg';
 import {connect} from 'react-redux';
 import {getProdukByKategori} from '../../../actions/ProdukAction';
 
-//'kategori' dikirim dari halaman ListKategori
+//'kategori' dikirim dari ListKategori
 const CardKategori = ({kategori, navigation, id, dispatch}) => {
   const ProdukByKategori = (id, namaKategori) => {
     //ke ProdukAction

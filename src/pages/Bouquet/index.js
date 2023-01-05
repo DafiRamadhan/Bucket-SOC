@@ -24,17 +24,20 @@ class Bouquet extends Component {
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
     const {idKategori} = this.props; //dari false menjadi data
-    if (
-      idKategori &&
-      prevProps.idKategori !== idKategori
-    ) {
-      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+    
+    //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+    if (idKategori && prevProps.idKategori !== idKategori) {
       this.props.dispatch(getListProduk(idKategori));
+
+      //jika nilainya false && nilai sebelumnya tidak sama dengan yang baru
+    } else if (idKategori === false && prevProps.idKategori !== idKategori) {
+      //tampilkan semua produk
+      this.props.dispatch(getListProduk());
     }
   }
 
   render() {
-    const {navigation, namaKategori} = this.props;
+    const {navigation} = this.props;
     return (
       <View style={styles.page}>
         <View style={styles.wrapTitle}>
@@ -50,7 +53,6 @@ class Bouquet extends Component {
           <View style={styles.body}>
             <View style={styles.pilihBuket}>
               <Text style={styles.label}>Pilih Buket Favorit Anda</Text>
-              <Text style={styles.label}>{namaKategori}</Text>
               <ListProduk navigation={navigation} />
             </View>
           </View>

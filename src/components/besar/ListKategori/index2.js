@@ -4,11 +4,13 @@ import {
   ScrollView,
   ActivityIndicator,
   Text,
+  TouchableOpacity,
 } from 'react-native';
 import React from 'react';
 import {CardKategori2} from '../../kecil';
 import {
   colors,
+  dropshadow,
   fonts,
   heightMobileUI,
   responsiveHeight,
@@ -16,9 +18,11 @@ import {
 } from '../../../utils';
 import {connect} from 'react-redux';
 import {RFValue} from 'react-native-responsive-fontsize';
+import DropShadow from 'react-native-drop-shadow';
+import { deleteProdukByKategori } from '../../../actions/ProdukAction';
 
 //pilihKateogri dikirim dari halaman Home
-const ListKategori2 = ({getListKategoriLoading, getListKategoriResult, navigation}) => {
+const ListKategori2 = ({getListKategoriLoading, getListKategoriResult, navigation, idKategori, dispatch}) => {
   return (
     <View>
       {getListKategoriResult ? (
@@ -27,9 +31,21 @@ const ListKategori2 = ({getListKategoriLoading, getListKategoriResult, navigatio
           showsHorizontalScrollIndicator={false}
           keyboardShouldPersistTaps="handled">
           <View style={styles.container}>
+            <DropShadow style={dropshadow.kategoriText}>
+              <TouchableOpacity
+                style={styles.semua(idKategori)}
+                onPress={() => dispatch(deleteProdukByKategori())}>
+                <Text style={styles.semuaText(idKategori)}>Semua</Text>
+              </TouchableOpacity>
+            </DropShadow>
             {Object.keys(getListKategoriResult).map(key => {
               return (
-                <CardKategori2 navigation={navigation} kategori={getListKategoriResult[key]} key={key} id={key}/>
+                <CardKategori2
+                  navigation={navigation}
+                  kategori={getListKategoriResult[key]}
+                  key={key}
+                  id={key}
+                />
               );
             })}
           </View>
@@ -51,6 +67,9 @@ const mapStateToProps = state => ({
   getListKategoriLoading: state.KategoriReducer.getListKategoriLoading,
   getListKategoriResult: state.KategoriReducer.getListKategoriResult,
   getListKategoriError: state.KategoriReducer.getListKategoriError,
+
+  idKategori: state.ProdukReducer.idKategori,
+  namaKategori: state.ProdukReducer.namaKategori,
 });
 
 export default connect(mapStateToProps, null)(ListKategori2);
@@ -61,6 +80,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: responsiveWidth(20),
     marginRight: responsiveWidth(10),
+    marginTop: responsiveHeight(3),
   },
   loading: {
     marginVertical: responsiveHeight(10),
@@ -74,4 +94,19 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.regular,
     fontSize: RFValue(14, heightMobileUI),
   },
+  semua: idKategori => ({
+    alignItems: 'center',
+    backgroundColor: idKategori ? colors.white : colors.primary,
+    marginRight: responsiveWidth(10),
+    borderRadius: 50,
+    paddingHorizontal: responsiveWidth(13),
+    paddingVertical: responsiveHeight(5),
+    marginBottom: responsiveHeight(15),
+  }),
+  semuaText: (idKategori) => ({
+    fontSize: RFValue(14, heightMobileUI),
+    fontFamily: fonts.primary.bold,
+    color: idKategori ? colors.desc : colors.white,
+    textAlign: 'center',
+  }),
 });
