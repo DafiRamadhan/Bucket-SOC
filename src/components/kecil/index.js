@@ -2,7 +2,7 @@ import KeranjangIcon from './KeranjangIcon';
 import Jarak from './Jarak';
 import CardKategori from './CardKategori';
 import CardKategori2 from './CardKategori/index2';
-import CardBuket from './CardBuket';
+import CardProduk from './CardProduk';
 import CardMenu from './CardMenu';
 import Inputan from './Inputan';
 import Pilihan from './Pilihan';
@@ -11,13 +11,14 @@ import Header from './Header';
 import CardAlamat from './CardAlamat';
 import PilihTanggal from './PilihTanggal';
 import CardOrders from './CardOrders';
+import Loading from './Loading';
 
 export {
   KeranjangIcon,
   Jarak,
   CardKategori,
   CardKategori2,
-  CardBuket,
+  CardProduk,
   CardMenu,
   Inputan,
   Pilihan,
@@ -26,4 +27,5 @@ export {
   CardAlamat,
   PilihTanggal,
   CardOrders,
+  Loading,
 };

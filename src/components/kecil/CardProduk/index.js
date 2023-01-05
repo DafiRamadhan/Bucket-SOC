@@ -5,18 +5,18 @@ import { colors, dropshadow, fonts, responsiveHeight, responsiveWidth } from '..
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightMobileUI } from '../../../utils/constant';
 
-const CardBuket = ({buket, navigation}) => {
+const CardProduk = ({produk, navigation}) => {
   return (
     <TouchableOpacity style={styles.container} onPress={() =>
-    navigation.navigate('BuketDetail', {buket})}>
+    navigation.navigate('DetailProduk', {produk})}>
       <DropShadow style={dropshadow.kategoriCard}>
         <View style={styles.card}>
-          <Image source={buket.gambar[0]} style={styles.gambar} />
+          <Image source={{uri: produk.gambar[0]}} style={styles.gambar} />
           <Text numberOfLines={2} style={styles.title}>
-            {buket.nama}
+            {produk.nama}
           </Text>
           <View style={styles.tombol}>
-            <Text style={styles.harga}>Rp{(buket.harga).toLocaleString('id-ID')}</Text>
+            <Text style={styles.harga}>Rp{produk.harga.toLocaleString('id-ID')}</Text>
           </View>
         </View>
       </DropShadow>
@@ -24,7 +24,7 @@ const CardBuket = ({buket, navigation}) => {
   );
 }
 
-export default CardBuket
+export default CardProduk
 
 const styles = StyleSheet.create({
   container: {

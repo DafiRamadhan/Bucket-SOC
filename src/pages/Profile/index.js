@@ -1,8 +1,8 @@
-import {Text, StyleSheet, View, Image, ScrollView} from 'react-native';
+import {Text, StyleSheet, View, Image, ScrollView, ActivityIndicator} from 'react-native';
 import React, {Component} from 'react';
 import {dummyProfile, Menu} from '../../data';
-import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
-import {IconAlamat, IconEmail, IconPhone} from '../../assets';
+import {colors, fonts, getData, responsiveHeight, responsiveWidth} from '../../utils';
+import {defaultProfile, IconAlamat, IconEmail, IconPhone} from '../../assets';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
 import {ListMenu} from '../../components/besar';
@@ -12,48 +12,93 @@ export default class Profile extends Component {
     super(props);
 
     this.state = {
-      profile: dummyProfile,
+      profile: false,
       menu: Menu,
     };
   }
+
+  //Dijalankan ketika komponen/halaman pertama kali di buka / di load
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.getUserData();
+    });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  //mendapatkan userData dari Async Storage
+  getUserData = () => {
+    //mendapatkan data dari parameter 'user'
+    getData('user').then(res => {
+      const data = res;
+      //jika datanya ada
+      if (data) {
+        this.setState({
+          profile: data,
+        });
+        //jika tidak ada data
+      } else {
+        this.props.navigation.replace('Login');
+      }
+    });
+  };
+
   render() {
     const {profile, menu} = this.state;
     return (
       <View style={styles.pages}>
-        <Text style={styles.title}>Profile Pribadi</Text>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.container}>
-            <View style={styles.header}>
-              <Image source={profile.avatar} style={styles.foto} />
-              <View style={styles.wrapNama}>
-                <Text style={styles.nama}>{profile.nama}</Text>
+        {profile ? (
+          <View>
+            <Text style={styles.title}>Profile Pribadi</Text>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <View style={styles.container}>
+                <View style={styles.header}>
+                  <Image
+                    source={
+                      profile.avatar ? {uri: profile.avatar} : defaultProfile
+                    }
+                    style={styles.foto}
+                  />
+                  <View style={styles.wrapNama}>
+                    <Text style={styles.nama}>{profile.nama}</Text>
+                  </View>
+                </View>
+                <View style={styles.pembatas}></View>
+                <View style={styles.detail}>
+                  <View style={styles.containerData}>
+                    <IconEmail />
+                    <Text style={styles.data} numberOfLines={2}>
+                      Email : {profile.email}
+                    </Text>
+                  </View>
+                  <View style={styles.containerData}>
+                    <IconPhone />
+                    <Text style={styles.data}>No. HP : {profile.nomerHp}</Text>
+                  </View>
+                  <View style={styles.containerData}>
+                    <IconAlamat />
+                    <Text style={styles.data} numberOfLines={5}>
+                      Alamat : {profile.alamat}
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.pembatas}></View>
+                <View style={styles.listmenu}>
+                  <ListMenu
+                    pilihMenu={menu}
+                    navigation={this.props.navigation}
+                  />
+                </View>
               </View>
-            </View>
-            <View style={styles.pembatas}></View>
-            <View style={styles.detail}>
-              <View style={styles.containerData}>
-                <IconEmail />
-                <Text style={styles.data} numberOfLines={2}>
-                  Email : {profile.email}
-                </Text>
-              </View>
-              <View style={styles.containerData}>
-                <IconPhone />
-                <Text style={styles.data}>No. HP : {profile.nomerHp}</Text>
-              </View>
-              <View style={styles.containerData}>
-                <IconAlamat />
-                <Text style={styles.data} numberOfLines={5}>
-                  Alamat : {profile.alamat}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.pembatas}></View>
-            <View style={styles.listmenu}>
-              <ListMenu pilihMenu={menu} navigation={this.props.navigation}/>
-            </View>
+            </ScrollView>
           </View>
-        </ScrollView>
+        ) : (
+          <View style={styles.blank}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
+        )}
       </View>
     );
   }
@@ -64,20 +109,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.primary,
   },
+  blank: {
+    flex: 1,
+    backgroundColor: colors.white,
+    justifyContent: 'center',
+  },
   title: {
     fontSize: RFValue(32, heightMobileUI),
     fontFamily: fonts.primary.bold,
     color: 'white',
     alignSelf: 'center',
     marginVertical: responsiveHeight(30),
-    position: 'absolute'
+    position: 'absolute',
   },
   container: {
     backgroundColor: colors.white,
     width: '100%',
     borderRadius: 50,
     paddingBottom: 120,
-    marginTop: responsiveHeight(100)
+    marginTop: responsiveHeight(100),
   },
   pembatas: {
     backgroundColor: '#E2E2E2',

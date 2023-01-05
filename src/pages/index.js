@@ -2,7 +2,7 @@ import Home from './Home';
 import Bouquet from './Bouquet';
 import Orders from './Orders';
 import Profile from './Profile';
-import BuketDetail from './BuketDetail';
+import DetailProduk from './DetailProduk';
 import Keranjang from './Keranjang';
 import Checkout from './Checkout';
 import EditProfile from './EditProfile';
@@ -23,7 +23,7 @@ export {
   Bouquet,
   Orders,
   Profile,
-  BuketDetail,
+  DetailProduk,
   Keranjang,
   Checkout,
   EditProfile,

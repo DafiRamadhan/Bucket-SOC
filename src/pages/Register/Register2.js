@@ -5,16 +5,19 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
+  Alert,
 } from 'react-native';
 import React, {Component} from 'react';
 import {IconBack, IconMarker, Register2Img} from '../../assets';
-import {Inputan, Maps} from '../../components';
+import {Inputan, Loading, Maps} from '../../components';
 import {colors, dropshadow, fonts, responsiveHeight, responsiveWidth} from '../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
 import DropShadow from 'react-native-drop-shadow';
+import { registerUser } from '../../actions/AuthAction';
+import { connect } from 'react-redux';
 
-export default class Register2 extends Component {
+class Register2 extends Component {
   constructor(props) {
     super(props);
 
@@ -27,6 +30,20 @@ export default class Register2 extends Component {
       search: true,
     };
   }
+  
+//Ketika suatu komponen terdapat perubahan
+componentDidUpdate(prevProps) {
+  const {registerResult} = this.props //dari false menjadi newData
+
+  if(registerResult && prevProps.registerResult !== registerResult) //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+  {
+    Alert.alert(
+      'Pendaftaran Akun Berhasil',
+      'Silakan lakukan Login!',
+    );
+    this.props.navigation.replace("Login")
+  }
+}
 
   clickMaps = () => {
     this.setState({
@@ -50,18 +67,42 @@ export default class Register2 extends Component {
     });
   };
 
+  onSubmit = () => {
+    const {alamat, detail_alamat, latitude, longitude} = this.state;
+    if(alamat && detail_alamat && latitude && longitude) {
+      const data = {
+        nama: this.props.route.params.nama,
+        email: this.props.route.params.email,
+        nomerHp: this.props.route.params.nomerHp,
+        alamat: alamat,
+        detail_alamat: detail_alamat,
+        latitude: latitude,
+        longitude: longitude,
+        status: 'user',
+        avatar: '',
+      };
+      //Ke Auth Action
+      this.props.dispatch(registerUser(data, this.props.route.params.password))
+    }else {
+      Alert.alert("Error", "Silahkan Isi Alamat dan Detail Alamat Anda!")
+    }
+  }
+
   render() {
     const {
       openMaps,
       search,
       alamat,
+      detail_alamat,
       latitude,
       longitude,
     } = this.state;
-    const {navigation} = this.props;
+    const {navigation, registerLoading} = this.props;
     return (
       <View style={styles.pages}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
           <TouchableOpacity
             style={styles.tombolBack}
             onPress={() => navigation.goBack()}>
@@ -88,11 +129,17 @@ export default class Register2 extends Component {
                     <View style={styles.wrapInfo}>
                       <Text style={styles.infoText}>{alamat}</Text>
                       <View style={styles.wrapCoordinate}>
-                        <Text numberOfLines={1} style={styles.coordinateText}>
+                        <Text
+                          numberOfLines={1}
+                          ellipsizeMode={'clip'}
+                          style={styles.latitudeText}>
                           {latitude}
                         </Text>
                         <Text style={styles.commaText}>, </Text>
-                        <Text numberOfLines={1} style={styles.coordinateText}>
+                        <Text
+                          numberOfLines={1}
+                          ellipsizeMode={'clip'}
+                          style={styles.longitudeText}>
                           {longitude}
                         </Text>
                       </View>
@@ -109,10 +156,12 @@ export default class Register2 extends Component {
                 icon={'building'}
                 noLabel
                 placeholder={'Detail Alamat (nomor, blok, lantai, dll)'}
+                value={detail_alamat}
+                onChangeText={detail_alamat => this.setState({detail_alamat})}
               />
               <TouchableOpacity
                 style={styles.btn}
-                onPress={() => navigation.navigate('Login')}>
+                onPress={() => this.onSubmit()}>
                 <Text style={styles.btnText}>Daftar</Text>
               </TouchableOpacity>
             </View>
@@ -130,10 +179,20 @@ export default class Register2 extends Component {
             goBack={() => this.goBack()}
           />
         </Modal>
+        {registerLoading ? <Loading /> : null}
       </View>
     );
   }
 }
+
+//mengubah state yang didapat dari redux (Reducer) menjadi props
+const mapStatetoProps = state => ({
+  registerLoading: state.AuthReducer.registerLoading,
+  registerResult: state.AuthReducer.registerResult,
+  registerError: state.AuthReducer.registerError,
+});
+
+export default connect(mapStatetoProps, null)(Register2);
 
 const styles = StyleSheet.create({
   pages: {
@@ -212,10 +271,17 @@ const styles = StyleSheet.create({
   wrapCoordinate: {
     flexDirection: 'row',
   },
-  coordinateText: {
+  latitudeText: {
     color: colors.black,
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(14, heightMobileUI),
+    width: responsiveWidth(66),
+  },
+  longitudeText: {
+    color: colors.black,
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(14, heightMobileUI),
+    width: responsiveWidth(76),
   },
   commaText: {
     color: colors.black,

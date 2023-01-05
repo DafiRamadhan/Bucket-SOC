@@ -10,34 +10,86 @@ import React, {Component} from 'react';
 import {
   BannerSlider,
   HeaderComponent,
-  ListBuket,
   ListKategori,
+  ListProduk,
 } from '../../components';
-import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
-import {dummyBuket, dummyKategori, dummyProfile} from '../../data';
+import {
+  colors,
+  fonts,
+  getData,
+  responsiveHeight,
+  responsiveWidth,
+} from '../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
+import {defaultProfile} from '../../assets';
+import {connect} from 'react-redux';
+import {getListKategori} from '../../actions/KategoriAction';
+import {getListBanner} from '../../actions/BannerAction';
+import {getListLimitProduk} from '../../actions/ProdukAction';
 
-export default class Home extends Component {
+class Home extends Component {
   //konstanta untuk mengambil data dari JSON
   constructor(props) {
     super(props);
 
     //state akan dioper ke List
     this.state = {
-      kategori: dummyKategori,
-      buket: dummyBuket,
-      profile: dummyProfile,
+      profile: false,
     };
   }
 
+  //Dijalankan ketika komponen/halaman pertama kali di buka / di load
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.props.dispatch(getListKategori());
+      this.props.dispatch(getListBanner());
+      this.props.dispatch(getListLimitProduk());
+      this.getUserData();
+    });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  //mendapatkan userData dari Async Storage
+  getUserData = () => {
+    //mendapatkan data dari parameter 'user'
+    getData('user').then(res => {
+      const data = res;
+      //jika datanya ada
+      if (data) {
+        this.setState({
+          profile: data,
+        });
+      } else {
+        this.getUser();
+      }
+    });
+  };
+
+  getUser = () => {
+    //mendapatkan data dari parameter 'user'
+    getData('user').then(res => {
+      const data = res;
+      //jika datanya ada
+      if (data) {
+        this.setState({
+          profile: data,
+        });
+      }
+    });
+  };
+
   render() {
-    //membuat konstanta 'pilihKategori' dan 'pilihBuket'
-    const {kategori, buket, profile} = this.state;
+    const {profile} = this.state;
     const {navigation} = this.props;
     return (
       <View style={styles.page}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
           <View style={styles.header}>
             <View style={styles.wrapTitle}>
               {profile.nama ? (
@@ -54,21 +106,24 @@ export default class Home extends Component {
             <TouchableOpacity
               onPress={() => navigation.navigate('Profile')}
               style={styles.fotoBtn}>
-              <Image style={styles.image} source={profile.avatar} />
+              <Image
+                style={styles.image}
+                source={profile.avatar ? {uri: profile.avatar} : defaultProfile}
+              />
             </TouchableOpacity>
           </View>
           <HeaderComponent navigation={navigation} />
           <View style={styles.body}>
             <View style={styles.pilihKategori}>
               <Text style={styles.label}>Pilih Kategori Buket</Text>
-              <ListKategori pilihKategori={kategori} />
+              <ListKategori navigation={navigation} />
             </View>
             <View>
               <BannerSlider />
             </View>
             <View style={styles.pilihBuket}>
               <Text style={styles.label}>Pilih Buket Favorit Anda</Text>
-              <ListBuket pilihBuket={buket} navigation={navigation} />
+              <ListProduk navigation={navigation} />
             </View>
             <TouchableOpacity
               style={styles.containerTombol}
@@ -83,6 +138,8 @@ export default class Home extends Component {
     );
   }
 }
+
+export default connect()(Home);
 
 const styles = StyleSheet.create({
   page: {
@@ -124,7 +181,7 @@ const styles = StyleSheet.create({
     paddingBottom: responsiveHeight(80),
   },
   pilihKategori: {
-    paddingBottom: responsiveHeight(25),
+    marginBottom: responsiveHeight(25),
   },
   pilihBuket: {
     marginTop: responsiveHeight(25),

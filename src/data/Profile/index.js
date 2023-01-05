@@ -1,4 +1,4 @@
-import {Profile} from '../../assets';
+import {defaultProfile} from '../../assets';
 
 export const dummyProfile = {
   nama: 'Caerel Steven C. A.',
@@ -9,5 +9,5 @@ export const dummyProfile = {
   detail_alamat: 'Samping warung Bu Tri',
   latitude: -7.5756666864396385,
   longitude: 110.82423878833652,
-  avatar: Profile,
+  avatar: defaultProfile,
 };

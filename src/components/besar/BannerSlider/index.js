@@ -6,13 +6,13 @@ import { dummyBanner } from '../../../data';
 import { Header } from '../../kecil';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightMobileUI } from '../../../utils/constant';
+import { connect } from 'react-redux';
 
-export default class BannerSlider extends Component {
+class BannerSlider extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      banner: dummyBanner,
       openImage: false,
       index: 0,
     };
@@ -26,47 +26,66 @@ export default class BannerSlider extends Component {
   };
 
   render() {
-    const {banner} = this.state;
     const {openImage, index} = this.state;
+    const {getListBannerResult} = this.props;
     let itemList = [];
-    banner.forEach(item => {
-      itemList.push(item.gambar);
+    let gambarList = [];
+    Object.keys(getListBannerResult).forEach(key => {
+      itemList.push(getListBannerResult[key]);
+      gambarList.push(getListBannerResult[key].gambar);
     });
     return (
       <View>
-        <SliderBox
-          autoplay
-          autoplayInterval={5000}
-          circleLoop
-          images={itemList}
-          sliderBoxHeight={responsiveHeight(150)}
-          ImageComponentStyle={styles.slider}
-          dotStyle={styles.dotStyle}
-          dotColor={colors.navmenu}
-          imageLoadingColor={colors.primary}
-          onCurrentImagePressed={index => this.clickPreview(index)}
-        />
-        <Modal
-          visible={openImage}
-          onRequestClose={() => this.setState({openImage: false})}>
-          <Header
-            title="Informasi"
-            goBack={() => this.setState({openImage: false})}
-          />
-          <View style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <Image source={dummyBanner[index].gambar} style={styles.gambar} />
-              <Text style={styles.titleText}>{dummyBanner[index].title}</Text>
-              <Text style={styles.deskripsiText}>
-                {dummyBanner[index].deskripsi}
-              </Text>
-            </ScrollView>
+        {getListBannerResult ? (
+          <View>
+            <SliderBox
+              autoplay
+              autoplayInterval={5000}
+              circleLoop
+              images={gambarList}
+              sliderBoxHeight={responsiveHeight(150)}
+              ImageComponentStyle={styles.slider}
+              dotStyle={styles.dotStyle}
+              dotColor={colors.navmenu}
+              imageLoadingColor={colors.primary}
+              onCurrentImagePressed={index => this.clickPreview(index)}
+            />
+            <Modal
+              visible={openImage}
+              onRequestClose={() => this.setState({openImage: false})}>
+              <Header
+                title="Informasi"
+                goBack={() => this.setState({openImage: false})}
+              />
+              <View style={styles.container}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  <Image
+                    source={{uri : gambarList[index]}}
+                    style={styles.gambar}
+                  />
+                  <Text style={styles.titleText}>
+                    {itemList[index].title}
+                  </Text>
+                  <Text style={styles.deskripsiText}>
+                    {itemList[index].deskripsi}
+                  </Text>
+                </ScrollView>
+              </View>
+            </Modal>
           </View>
-        </Modal>
+        ) : null}
       </View>
     );
   }
 }
+
+const mapStateToProps = state => ({
+  getListBannerLoading: state.BannerReducer.getListBannerLoading,
+  getListBannerResult: state.BannerReducer.getListBannerResult,
+  getListBannerError: state.BannerReducer.getListBannerError,
+});
+
+export default connect(mapStateToProps, null)(BannerSlider);
 
 const styles = StyleSheet.create({
   container: {

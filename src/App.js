@@ -4,6 +4,8 @@ import Router from './router';
 import { colors } from './utils';
 import { useEffect } from 'react';
 import SplashScreen from 'react-native-splash-screen';
+import { Provider } from 'react-redux';
+import store from './reducers/store';
 
 const MyTheme = {
   ...DefaultTheme,
@@ -19,9 +21,11 @@ function App() {
   })
   
   return (
-    <NavigationContainer theme={MyTheme}>
-      <Router />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer theme={MyTheme}>
+        <Router />
+      </NavigationContainer>
+    </Provider>
   );
 }
 

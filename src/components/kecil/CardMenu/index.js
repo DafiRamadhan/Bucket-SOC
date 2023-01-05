@@ -1,11 +1,31 @@
 import { StyleSheet, Text, TouchableOpacity, View, Linking } from 'react-native'
 import React from 'react'
 import { IconArrowRight } from '../../../assets'
-import { colors, fonts, responsiveHeight, responsiveWidth } from '../../../utils'
+import { clearData, colors, fonts, responsiveHeight, responsiveWidth } from '../../../utils'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { heightMobileUI } from '../../../utils/constant'
+import {signOut} from 'firebase/auth';
+import { auth } from '../../../config/FIREBASE';
 
 const CardMenu = ({pilihan, navigation}) => {
+
+  const onSubmit = () => {
+    if(pilihan.halaman === "Login") {
+      signOut(auth)
+        .then(() => {
+          // Sign-out successful.
+          clearData();
+          navigation.replace('Login');
+        })
+        .catch(error => {
+          // An error happened.
+          alert(error.message)
+        });
+  }else {
+    navigation.navigate(pilihan.halaman)
+  }
+}
+
   if (pilihan.nama == "Kontak Kami") {
   return (
     <TouchableOpacity
@@ -22,7 +42,7 @@ const CardMenu = ({pilihan, navigation}) => {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => navigation.navigate(pilihan.halaman)}>
+      onPress={() => onSubmit()}>
       <View style={styles.menu}>
         {pilihan.gambar}
         <Text style={styles.text}>{pilihan.nama}</Text>

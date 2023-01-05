@@ -1,29 +1,77 @@
-import {StyleSheet, View, ScrollView} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  ActivityIndicator,
+  Text,
+} from 'react-native';
 import React from 'react';
 import {CardKategori2} from '../../kecil';
-import { responsiveHeight, responsiveWidth } from '../../../utils';
+import {
+  colors,
+  fonts,
+  heightMobileUI,
+  responsiveHeight,
+  responsiveWidth,
+} from '../../../utils';
+import {connect} from 'react-redux';
+import {RFValue} from 'react-native-responsive-fontsize';
 
 //pilihKateogri dikirim dari halaman Home
-const ListKategori2 = ({pilihKategori}) => {
+const ListKategori2 = ({getListKategoriLoading, getListKategoriResult, navigation}) => {
   return (
-    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-      <View style={styles.container}>
-        {pilihKategori.map(buket => {
-          return <CardKategori2 kategori={buket} key={buket.id} />;
-        })}
-      </View>
-    </ScrollView>
+    <View>
+      {getListKategoriResult ? (
+        <ScrollView
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
+          <View style={styles.container}>
+            {Object.keys(getListKategoriResult).map(key => {
+              return (
+                <CardKategori2 navigation={navigation} kategori={getListKategoriResult[key]} key={key} id={key}/>
+              );
+            })}
+          </View>
+        </ScrollView>
+      ) : getListKategoriLoading ? (
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <View style={styles.wrapText}>
+          <Text style={styles.text}>Tidak Ada Kategori Yang Tersedia</Text>
+        </View>
+      )}
+    </View>
   );
 };
 
-export default ListKategori2;
+const mapStateToProps = state => ({
+  getListKategoriLoading: state.KategoriReducer.getListKategoriLoading,
+  getListKategoriResult: state.KategoriReducer.getListKategoriResult,
+  getListKategoriError: state.KategoriReducer.getListKategoriError,
+});
+
+export default connect(mapStateToProps, null)(ListKategori2);
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: responsiveWidth(20),
-    marginBottom: responsiveHeight(15),
-    marginTop: responsiveHeight(5),
+    marginLeft: responsiveWidth(20),
+    marginRight: responsiveWidth(10),
+  },
+  loading: {
+    marginVertical: responsiveHeight(10),
+  },
+  wrapText: {
+    alignItems: 'center',
+    marginVertical: responsiveHeight(10),
+  },
+  text: {
+    color: colors.black,
+    fontFamily: fonts.primary.regular,
+    fontSize: RFValue(14, heightMobileUI),
   },
 });

@@ -6,7 +6,7 @@ import {
   Bouquet,
   Orders,
   Profile,
-  BuketDetail,
+  DetailProduk,
   Keranjang,
   Checkout,
   EditProfile,
@@ -98,8 +98,8 @@ const Router = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="BuketDetail"
-        component={BuketDetail}
+        name="DetailProduk"
+        component={DetailProduk}
         options={{headerShown: false}}
       />
       <Stack.Screen

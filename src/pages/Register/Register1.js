@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import React, {Component} from 'react';
 import {IconBack, Register1Img} from '../../assets';
@@ -13,11 +14,54 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
 
 export default class Register1 extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      nama: '',
+      email: '',
+      nomerHp: '',
+      password: '',
+      confirmPassword: '',
+    };
+  }
+
+  validateEmail = email => {
+    var validEmail =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return validEmail.test(email);
+  };
+
+  validatePassword = password => {
+    var validPassword = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
+    return validPassword.test(password);
+  };
+
+  onContinue = () => {
+    const {nama, email, nomerHp, password, confirmPassword} = this.state;
+    if (nama && email && nomerHp && password && confirmPassword) {
+      if (!this.validateEmail(email)) {
+        Alert.alert('Error', 'Format Email salah!');
+      }else if (!this.validatePassword(password)) {
+        Alert.alert('Error', 'Password harus terdiri dari minimal 8 karakter, mengandung huruf kecil, huruf besar, dan angka!');
+      } else if (password !== confirmPassword) {
+        Alert.alert('Error', 'Password dan Konfirmasi Password harus sama!');
+      } else {
+        this.props.navigation.navigate('Register2', this.state);
+      }
+    } else {
+      Alert.alert('Error', 'Seluruh data harus diisi!');
+    }
+  };
+
   render() {
+    const {nama, email, nomerHp, password, confirmPassword} = this.state;
     const {navigation} = this.props;
     return (
       <View style={styles.pages}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
           <TouchableOpacity
             style={styles.tombolBack}
             onPress={() => navigation.goBack()}>
@@ -29,27 +73,47 @@ export default class Register1 extends Component {
           <View style={styles.card}>
             <Text style={styles.titleText}>Register</Text>
             <View>
-              <Inputan icon={'profile'} noLabel placeholder={'Nama Lengkap'} />
-              <Inputan icon={'email'} noLabel placeholder={'Email'} />
+              <Inputan
+                icon={'profile'}
+                noLabel
+                placeholder={'Nama Lengkap'}
+                value={nama}
+                onChangeText={nama => this.setState({nama})}
+              />
+              <Inputan
+                icon={'email'}
+                noLabel
+                placeholder={'Email'}
+                value={email}
+                onChangeText={email => this.setState({email})}
+              />
               <Inputan
                 icon={'phone'}
                 noLabel
                 keyboardType="number-pad"
                 placeholder={'Nomor HP'}
+                value={nomerHp}
+                onChangeText={nomerHp => this.setState({nomerHp})}
               />
               <Inputan
                 icon={'password'}
                 passwordNoLabel
                 placeholder={'Password'}
+                value={password}
+                onChangeText={password => this.setState({password})}
               />
               <Inputan
                 icon={'confirm-password'}
                 passwordNoLabel
                 placeholder={'Konfirmasi Password'}
+                value={confirmPassword}
+                onChangeText={confirmPassword =>
+                  this.setState({confirmPassword})
+                }
               />
               <TouchableOpacity
                 style={styles.btn}
-                onPress={() => navigation.navigate('Register2')}>
+                onPress={() => this.onContinue()}>
                 <Text style={styles.btnText}>Selanjutnya</Text>
               </TouchableOpacity>
             </View>

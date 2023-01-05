@@ -21,22 +21,24 @@ import DropShadow from 'react-native-drop-shadow';
 import Counter from 'react-native-counters';
 import BuketSlider from '../../components/besar/BuketSlider';
 
-export default class BuketDetail extends Component {
+export default class DetailProduk extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      buket: this.props.route.params.buket,
-      images: this.props.route.params.buket.gambar,
+      produk: this.props.route.params.produk,
+      images: this.props.route.params.produk.gambar,
       value: 1,
     };
   }
 
   render() {
     const {navigation} = this.props;
-    const {buket, images} = this.state;
+    const {produk, images} = this.state;
     return (
       <View style={styles.page}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
           <TouchableOpacity
             style={styles.tombolBack}
             onPress={() => navigation.goBack()}>
@@ -46,14 +48,14 @@ export default class BuketDetail extends Component {
           <View style={styles.container}>
             <View style={styles.desc}>
               <Text style={styles.harga}>
-                Rp{buket.harga.toLocaleString('id-ID')}
+                Rp{produk.harga.toLocaleString('id-ID')}
               </Text>
-              <Text style={styles.nama}>{buket.nama}</Text>
+              <Text style={styles.nama}>{produk.nama}</Text>
               <View style={styles.garis} />
               <Text style={styles.subtitle}>Deskripsi Produk : </Text>
-              <Text style={styles.deskripsi}>{buket.deskripsi}</Text>
+              <Text style={styles.deskripsi}>{produk.deskripsi}</Text>
               <Text style={styles.subtitle}>
-                Kategori Buket : {buket.kategori.nama}
+                Kategori Buket : {produk.kategori.nama}
               </Text>
               <Inputan
                 label="Catatan"

@@ -1,26 +1,26 @@
 import {StyleSheet, View, Text, ScrollView} from 'react-native';
 import React, {Component} from 'react';
-import {HeaderComponent, ListBuket, ListKategori2} from '../../components';
+import {HeaderComponent, ListKategori2, ListProduk} from '../../components';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
-import {dummyBuket, dummyKategori} from '../../data';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
+import {connect} from 'react-redux';
+import {getListKategori} from '../../actions/KategoriAction';
+import {getListProduk} from '../../actions/ProdukAction';
 
-export default class Bouquet extends Component {
-  //konstanta untuk mengambil data dari JSON
-  constructor(props) {
-    super(props);
+class Bouquet extends Component {
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.props.dispatch(getListKategori());
+      this.props.dispatch(getListProduk());
+    });
+  }
 
-    //state akan dioper ke ListKategori
-    this.state = {
-      kategori: dummyKategori,
-      buket: dummyBuket,
-    };
+  componentWillUnmount() {
+    this._unsubscribe();
   }
 
   render() {
-    //membuat konstanta 'pilihKategori' dan 'pilihBuket'
-    const {kategori, buket} = this.state;
     const {navigation} = this.props;
     return (
       <View style={styles.page}>
@@ -29,13 +29,15 @@ export default class Bouquet extends Component {
         </View>
         <HeaderComponent navigation={navigation} />
         <View style={styles.pilihKategori}>
-          <ListKategori2 pilihKategori={kategori} />
+          <ListKategori2 navigation={navigation} />
         </View>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
           <View style={styles.body}>
             <View style={styles.pilihBuket}>
               <Text style={styles.label}>Pilih Buket Favorit Anda</Text>
-              <ListBuket pilihBuket={buket} navigation={navigation} />
+              <ListProduk navigation={navigation} />
             </View>
           </View>
         </ScrollView>
@@ -43,6 +45,8 @@ export default class Bouquet extends Component {
     );
   }
 }
+
+export default connect()(Bouquet);
 
 const styles = StyleSheet.create({
   page: {

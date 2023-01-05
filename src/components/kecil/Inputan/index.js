@@ -26,6 +26,8 @@ const Inputan = ({
   secureTextEntry,
   icon,
   keyboardType,
+  onChangeText,
+  disabled,
 }) => {
   const [hidePass, setHidePass] = useState(true);
   const Icon = () => {
@@ -60,6 +62,8 @@ const Inputan = ({
           numberOfLines={5}
           placeholder={placeholder}
           value={value}
+          onChangeText={onChangeText}
+          editable={disabled ? false : true}
         />
       </View>
     );
@@ -74,6 +78,8 @@ const Inputan = ({
             value={value}
             secureTextEntry={hidePass ? true : false}
             placeholder={placeholder}
+            onChangeText={onChangeText}
+            editable={disabled ? false : true}
           />
           <View style={styles.iconEye}>
             <TouchableOpacity
@@ -96,6 +102,8 @@ const Inputan = ({
           secureTextEntry={secureTextEntry}
           placeholder={placeholder}
           keyboardType={keyboardType}
+          onChangeText={onChangeText}
+          editable={disabled ? false : true}
         />
       </View>
     );
@@ -112,6 +120,8 @@ const Inputan = ({
             value={value}
             secureTextEntry={hidePass ? true : false}
             placeholder={placeholder}
+            onChangeText={onChangeText}
+            editable={disabled ? false : true}
           />
           <View style={styles.iconEye}>
             <TouchableOpacity
@@ -128,11 +138,13 @@ const Inputan = ({
     <View style={styles.container}>
       <Text style={styles.label(labelfontSize)}>{label} :</Text>
       <TextInput
-        style={styles.input(width, height, formfontSize)}
+        style={styles.input(width, height, formfontSize, disabled)}
         value={value}
         secureTextEntry={secureTextEntry}
         placeholder={placeholder}
         keyboardType={keyboardType}
+        onChangeText={onChangeText}
+        editable={disabled ? false : true}
       />
     </View>
   );
@@ -168,8 +180,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginTop: responsiveHeight(7),
   }),
-  inputPass: (width, height, fontSize) => ({
-    fontSize: fontSize ? fontSize : RFValue(16, heightMobileUI),
+  inputPass: (width, height, formfontSize) => ({
+    fontSize: formfontSize ? formfontSize : RFValue(16, heightMobileUI),
     fontFamily: fonts.primary.regular,
     color: colors.black,
     width: width,
@@ -179,8 +191,8 @@ const styles = StyleSheet.create({
     marginTop: responsiveHeight(7),
     flex: 1,
   }),
-  inputNoLabel: (width, height, fontSize) => ({
-    fontSize: fontSize ? fontSize : RFValue(16, heightMobileUI),
+  inputNoLabel: (width, height, formfontSize) => ({
+    fontSize: formfontSize ? formfontSize : RFValue(16, heightMobileUI),
     fontFamily: fonts.primary.regular,
     color: colors.black,
     width: width,
@@ -191,8 +203,8 @@ const styles = StyleSheet.create({
     borderColor: colors.borderInput,
     flex: 1,
   }),
-  inputPassNoLabel: (width, height, fontSize) => ({
-    fontSize: fontSize ? fontSize : RFValue(16, heightMobileUI),
+  inputPassNoLabel: (width, height, formfontSize) => ({
+    fontSize: formfontSize ? formfontSize : RFValue(16, heightMobileUI),
     fontFamily: fonts.primary.regular,
     color: colors.black,
     width: width,
@@ -200,10 +212,10 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     flex: 1,
   }),
-  input: (width, height, fontSize) => ({
-    fontSize: fontSize ? fontSize : RFValue(16, heightMobileUI),
+  input: (width, height, formfontSize, disabled) => ({
+    fontSize: formfontSize ? formfontSize : RFValue(16, heightMobileUI),
     fontFamily: fonts.primary.regular,
-    color: colors.black,
+    color: disabled ? colors.navmenu : colors.black,
     width: width,
     height: height ? height : responsiveHeight(43),
     paddingVertical: 5,

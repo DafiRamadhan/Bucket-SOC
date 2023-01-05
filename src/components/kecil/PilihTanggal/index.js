@@ -69,7 +69,10 @@ export default class PilihTanggal extends Component {
       ' ' +
       year;
     if (custom_hari[dayName] == 'Minggu') {
-      Alert.alert('Tidak Ada Pengiriman di Hari Minggu');
+      Alert.alert(
+        'Tidak Dapat Memilih Tanggal',
+        'Mohon Maaf, Tidak Ada Pengiriman di Hari Minggu',
+      );
       this.setState({
         showDate: false,
       });
@@ -92,7 +95,7 @@ export default class PilihTanggal extends Component {
     finishTime.setHours(20);
     finishTime.setMinutes(1);
     if (selectedTime < startTime || selectedTime > finishTime) {
-      Alert.alert('Waktu Pengiriman Tersedia Pukul 8 Pagi - 8 Malam');
+      Alert.alert('Tidak Dapat Memilih Waktu', 'Mohon Maaf, Waktu Pengiriman Tersedia Pukul 8 Pagi - 8 Malam');
       this.setState({
         showTime: false,
       });

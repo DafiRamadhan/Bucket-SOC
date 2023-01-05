@@ -6,7 +6,7 @@
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
         <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
         <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItem</item>
-        <item name="android:alertDialogTheme">@style/AlertDialogTheme</item>
+        <!-- <item name="android:alertDialogTheme">@style/AlertDialogTheme</item> -->
         <item name="android:datePickerDialogTheme">@style/CalendarDialog.Theme</item>
        <item name="android:timePickerDialogTheme">@style/TimeDialog.Theme</item>
     </style>
@@ -15,6 +15,7 @@
     <style name="SpinnerItem" parent="Theme.AppCompat.Light.NoActionBar">
      <item name="android:fontFamily">Nunito-Regular</item>
      <item name="android:textSize">16dp</item>
+     <item name="android:textColor">#000000</item>
     </style>
 
     <!-- Dropdown options font. -->
@@ -22,16 +23,17 @@
       <item name="android:fontFamily">Nunito-Regular</item>
       <item name="android:padding">8dp</item>
       <item name="android:textSize">16dp</item>
+      <item name="android:textColor">#000000</item>
     </style>
 
     <!-- Alert font. -->
-    <style name="AlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+    <!-- <style name="AlertDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
        <item name="android:fontFamily">Nunito-Regular</item>
        <item name="android:textSize">16dp</item>
        <item name="android:textColor">#000000</item>
        <item name="android:buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
        <item name="android:buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
-    </style>
+    </style> -->
 
     <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
        <item name="android:textColor">#F69D93</item>

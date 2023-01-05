@@ -25,15 +25,17 @@ import {
   PilihTanggal,
 } from '../../components/kecil';
 import {dummyPesanan, dummyProfile} from '../../data';
+import { connect } from 'react-redux';
+import { postOngkir } from '../../actions/BiteshipAction';
 
-export default class Checkout extends Component {
+class Checkout extends Component {
   constructor(props) {
     super(props);
     this.state = {
       profile: dummyProfile,
       pesanan: dummyPesanan[0],
-      ekspedisi: ['Go-Send Instant', 'GrabExpress Instant', 'Ambil di Toko'],
-      dataPengiriman: '',
+      ekspedisi: ['gojek', 'grab'],
+      selectedEkspedisi: '',
       selectedPengirimanIndex: '',
       pilihTanggal: '',
       pilihWaktu: '',
@@ -52,9 +54,37 @@ export default class Checkout extends Component {
     });
   };
 
+  pilihEkspedisi = selectedEkspedisi => {
+    if (selectedEkspedisi) {
+      this.setState({
+        selectedEkspedisi: selectedEkspedisi,
+      });
+      const data = JSON.stringify({
+        origin_latitude: -7.5584244,
+        origin_longitude: 110.7841043,
+        destination_latitude: -7.5433613,
+        destination_longitude: 110.7655909,
+        couriers: selectedEkspedisi,
+        items: [
+          {
+            name: 'Shoes',
+            description: 'Black colored size 45',
+            value: 165000,
+            length: 40,
+            width: 40,
+            height: 40,
+            weight: 300,
+            quantity: 1,
+          },
+        ],
+      });
+      this.props.dispatch(postOngkir(data));
+    }
+  };
+
   render() {
-    const {profile, ekspedisi, pesanan, dataPengiriman} = this.state;
-    const {navigation} = this.props;
+    const {profile, ekspedisi, pesanan, selectedEkspedisi} = this.state;
+    const {navigation, ongkirResult} = this.props;
     return (
       <View style={styles.pages}>
         <Header
@@ -74,13 +104,10 @@ export default class Checkout extends Component {
             <Pilihan
               label="Pilih Metode Pengiriman"
               datas={ekspedisi}
-              selectedValue={dataPengiriman}
-              onValueChange={(itemValue, itemIndex) => {
-                this.setState({
-                  dataPengiriman: itemValue,
-                  selectedPengirimanIndex: itemIndex,
-                });
-              }}
+              selectedValue={selectedEkspedisi}
+              onValueChange={selectedEkspedisi =>
+                this.pilihEkspedisi(selectedEkspedisi)
+              }
             />
           </View>
           <Jarak width={'100%'} height={responsiveHeight(20)} />
@@ -111,17 +138,21 @@ export default class Checkout extends Component {
               </View>
               <View style={styles.totalHarga}>
                 <Text style={styles.totalText}>Total Ongkos Kirim</Text>
-                <Text style={styles.totalText}>
-                  Rp{pesanan.ongkir.toLocaleString('id-ID')}
-                </Text>
+                {ongkirResult ? (
+                  <Text style={styles.totalText}>
+                    Rp{ongkirResult.toLocaleString('id-ID')}
+                  </Text>
+                ) : (
+                  <Text style={styles.totalText}>
+                    Rp0
+                  </Text>
+                )}
               </View>
               <View style={styles.totalHarga}>
                 <Text style={styles.tagihan}>Total Tagihan</Text>
                 <Text style={styles.tagihan}>
                   Rp
-                  {(pesanan.totalHarga + pesanan.ongkir).toLocaleString(
-                    'id-ID',
-                  )}
+                  {(pesanan.totalHarga + ongkirResult).toLocaleString('id-ID')}
                 </Text>
               </View>
             </View>
@@ -147,6 +178,12 @@ export default class Checkout extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  ongkirResult: state.BiteshipReducer.ongkirResult,
+});
+
+export default connect(mapStateToProps, null)(Checkout);
 
 const styles = StyleSheet.create({
   pages: {

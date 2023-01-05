@@ -1,28 +1,74 @@
-import { Text, StyleSheet, View, Image, ScrollView, TouchableOpacity } from 'react-native'
-import React, { Component } from 'react'
-import { LoginImg } from '../../assets';
-import { colors, fonts, responsiveHeight, responsiveWidth } from '../../utils';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { heightMobileUI } from '../../utils/constant';
-import { Inputan } from '../../components';
+import {
+  Text,
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import React, {Component} from 'react';
+import {LoginImg} from '../../assets';
+import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {heightMobileUI} from '../../utils/constant';
+import {Inputan, Loading} from '../../components';
+import { loginUser } from '../../actions/AuthAction';
+import { connect } from 'react-redux';
 
-export default class Login extends Component {
+class Login extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      email: '',
+      password: '',
+    };
+  }
+
+  //Ketika suatu komponen terdapat perubahan
+  componentDidUpdate(prevProps) {
+    const {loginResult} = this.props;
+    if (loginResult && prevProps.loginResult !== loginResult) {
+      this.props.navigation.replace('MainApp');
+    }
+  }
+
+  onSubmit = () => {
+    const {email, password} = this.state;
+    if (email && password) {
+      this.props.dispatch(loginUser(email, password));
+    } else {
+      Alert.alert('Error', 'Email dan Password harus diisi!');
+    }
+  };
+
   render() {
-    const {navigation} = this.props
+    const {email, password} = this.state;
+    const {navigation, loginLoading} = this.props;
     return (
       <View style={styles.pages}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
           <View style={styles.images}>
             <LoginImg />
           </View>
           <View style={styles.card}>
             <Text style={styles.loginText}>Login</Text>
             <View>
-              <Inputan icon={'email'} noLabel placeholder={'Email'} />
+              <Inputan
+                icon={'email'}
+                noLabel
+                placeholder={'Email'}
+                value={email}
+                onChangeText={email => this.setState({email})}
+              />
               <Inputan
                 icon={'password'}
                 passwordNoLabel
                 placeholder={'Password'}
+                value={password}
+                onChangeText={password => this.setState({password})}
               />
               <TouchableOpacity
                 style={styles.forgotBtn}
@@ -30,7 +76,7 @@ export default class Login extends Component {
                 <Text style={styles.forgotText}>Lupa Password ?</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate('MainApp')}
+                onPress={() => this.onSubmit()}
                 style={styles.loginBtn}>
                 <Text style={styles.btnText}>Login</Text>
               </TouchableOpacity>
@@ -43,10 +89,20 @@ export default class Login extends Component {
             </TouchableOpacity>
           </View>
         </ScrollView>
+        {loginLoading ? <Loading /> : null}
       </View>
     );
   }
 }
+
+//mengambil data dari AuthReducer dan mengubah menjadi props
+const mapStatetoProps = state => ({
+  loginLoading: state.AuthReducer.loginLoading,
+  loginResult: state.AuthReducer.loginResult,
+  loginError: state.AuthReducer.loginError,
+});
+
+export default connect(mapStatetoProps, null)(Login)
 
 const styles = StyleSheet.create({
   pages: {

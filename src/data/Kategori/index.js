@@ -1,5 +1,3 @@
-import { Bunga, Uang, Snack, Balon, GiftBox, Bunga2, Uang2, Snack2, GiftBox2, Balon2 } from "../../assets";
-
 export const dummyKategori = [
   {
     id: 1,

@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {
   Alert,
+  Keyboard,
   Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
@@ -33,7 +35,7 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 
 export default class Maps extends Component {
   state = {
-    GOOGLE_MAPS_API: 'AIzaSyAeMwbNSLvxapRSoWXY2RY1tfq97J8mU_E',
+    GOOGLE_MAPS_API: 'AIzaSyBT4fsHQVZ-hgBoDpps2osek_96lbvKCNM',
     location: {
       latitude: 0,
       longitude: 0,
@@ -85,10 +87,10 @@ export default class Maps extends Component {
           }
         }
         if (code === 'TIMEOUT') {
-          Alert.alert('Location request timed out');
+          Alert.alert('Timeout', 'Location request timed out');
         }
         if (code === 'UNAUTHORIZED') {
-          Alert.alert('Authorization denied');
+          Alert.alert('Unauthorized', 'Authorization denied');
         }
       });
   };
@@ -110,7 +112,10 @@ export default class Maps extends Component {
           });
         })
         .catch(error =>
-          Alert.alert('Gagal mengambil data. Mohon periksa jaringan Anda.'),
+          Alert.alert(
+            'Error',
+            'Gagal mengambil data. Mohon periksa jaringan Anda!.',
+          ),
         );
     } else {
       this.setState({
@@ -126,7 +131,10 @@ export default class Maps extends Component {
       this.state.region.longitude < 110.6435949 ||
       this.state.region.longitude > 111.0134088
     ) {
-      Alert.alert('Mohon Maaf. Belum tersedia untuk lokasi Anda.');
+      Alert.alert(
+        'Tidak Dapat Memilih Lokasi',
+        'Mohon Maaf. Belum tersedia untuk lokasi Anda!.',
+      );
     } else {
       this.props.updateLocation(this.state);
     }
@@ -140,117 +148,120 @@ export default class Maps extends Component {
     const {GOOGLE_MAPS_API, location, region, address} = this.state;
     Geocoder.init(GOOGLE_MAPS_API, {language: 'id'});
     return (
-      <View style={styles.map}>
-        <MapView
-          style={styles.map}
-          region={region}
-          onRegionChangeComplete={this.onRegionChange}>
-          <Marker
-            coordinate={{
-              latitude: location.latitude,
-              longitude: location.longitude,
-            }}>
-            <IconBlueDots />
-          </Marker>
-        </MapView>
-        <View style={styles.searchBox}>
-          <GooglePlacesAutocomplete
-            placeholder="Cari"
-            minLength={2}
-            isRowScrollable={false}
-            numberOfLines={5}
-            onPress={(data = null) => {
-              //console.log(data);
-              Geocoder.from(data.description)
-                .then(json => {
-                  var places = json.results[0].geometry.location;
-                  var address = data.description.replace(', Indonesia', '');
-                  this.setState({
-                    region: {
-                      latitude: places.lat,
-                      longitude: places.lng,
-                      latitudeDelta: 0.009,
-                      longitudeDelta: 0.009,
-                    },
-                    search: false,
-                    address: address,
-                  });
-                  //console.log(address);
-                })
-                .catch(error =>
-                  Alert.alert(
-                    'Gagal mengambil data. Mohon periksa jaringan Anda.',
-                  ),
-                );
-            }}
-            query={{
-              key: GOOGLE_MAPS_API,
-              language: 'id',
-              components: 'country:id',
-            }}
-            ref={instance => {
-              this.GooglePlacesRef = instance;
-            }}
-            styles={{
-              textInput: {
-                color: colors.black,
-                fontSize: RFValue(16, heightMobileUI),
-                fontFamily: fonts.primary.regular,
-              },
-            }}
-            renderLeftButton={() => (
-              <View style={styles.iconSearch}>
-                <IconSearch />
-              </View>
-            )}
-            renderRightButton={() => (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={styles.map}>
+          <MapView
+            style={styles.map}
+            region={region}
+            onRegionChangeComplete={this.onRegionChange}>
+            <Marker
+              coordinate={{
+                latitude: location.latitude,
+                longitude: location.longitude,
+              }}>
+              <IconBlueDots />
+            </Marker>
+          </MapView>
+          <View style={styles.searchBox}>
+            <GooglePlacesAutocomplete
+              placeholder="Cari"
+              minLength={2}
+              numberOfLines={5}
+              isRowScrollable={false}
+              onPress={(data = null) => {
+                //console.log(data);
+                Geocoder.from(data.description)
+                  .then(json => {
+                    var places = json.results[0].geometry.location;
+                    var address = data.description.replace(', Indonesia', '');
+                    this.setState({
+                      region: {
+                        latitude: places.lat,
+                        longitude: places.lng,
+                        latitudeDelta: 0.009,
+                        longitudeDelta: 0.009,
+                      },
+                      search: false,
+                      address: address,
+                    });
+                    //console.log(address);
+                  })
+                  .catch(error =>
+                    Alert.alert(
+                      'Error',
+                      'Gagal mengambil data. Mohon periksa jaringan Anda!.',
+                    ),
+                  );
+              }}
+              query={{
+                key: GOOGLE_MAPS_API,
+                language: 'id',
+                components: 'country:id',
+              }}
+              ref={instance => {
+                this.GooglePlacesRef = instance;
+              }}
+              styles={{
+                textInput: {
+                  color: colors.black,
+                  fontSize: RFValue(16, heightMobileUI),
+                  fontFamily: fonts.primary.regular,
+                },
+              }}
+              renderLeftButton={() => (
+                <View style={styles.iconSearch}>
+                  <IconSearch />
+                </View>
+              )}
+              renderRightButton={() => (
+                <View>
+                  <TouchableOpacity
+                    style={styles.iconClear}
+                    onPress={() => {
+                      this.GooglePlacesRef.setAddressText('');
+                    }}>
+                    <IconClearText />
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
+          </View>
+          <DropShadow style={dropshadow.footer}>
+            <TouchableOpacity style={styles.tombolBack} onPress={this.goBack}>
+              <IconBack />
+            </TouchableOpacity>
+          </DropShadow>
+          <View style={styles.markerFixed}>
+            <Text style={styles.markerText}>Titik Alamat Anda</Text>
+            <IconMarker />
+          </View>
+          <DropShadow style={dropshadow.navmenubar}>
+            <TouchableOpacity
+              style={styles.currentBtn}
+              onPress={this.requestLocation}>
+              <IconLocation />
+            </TouchableOpacity>
+          </DropShadow>
+          <View style={styles.infoBox}>
+            <IconMarker />
+            <View style={styles.wrapInfo}>
               <View>
-                <TouchableOpacity
-                  style={styles.iconClear}
-                  onPress={() => {
-                    this.GooglePlacesRef.setAddressText('');
-                  }}>
-                  <IconClearText />
-                </TouchableOpacity>
+                <Text numberOfLines={3} style={styles.infoText}>
+                  {address}
+                </Text>
               </View>
-            )}
-          />
-        </View>
-        <DropShadow style={dropshadow.footer}>
-          <TouchableOpacity style={styles.tombolBack} onPress={this.goBack}>
-            <IconBack />
-          </TouchableOpacity>
-        </DropShadow>
-        <View style={styles.markerFixed}>
-          <Text style={styles.markerText}>Titik Alamat Anda</Text>
-          <IconMarker />
-        </View>
-        <DropShadow style={dropshadow.navmenubar}>
-          <TouchableOpacity
-            style={styles.currentBtn}
-            onPress={this.requestLocation}>
-            <IconLocation />
-          </TouchableOpacity>
-        </DropShadow>
-        <View style={styles.infoBox}>
-          <IconMarker />
-          <View style={styles.wrapInfo}>
-            <View>
-              <Text numberOfLines={3} style={styles.infoText}>
-                {address}
-              </Text>
             </View>
           </View>
-        </View>
-        <TouchableOpacity
-          style={styles.simpan}
-          region={region}
-          onPress={this.saveLocation}>
-          <Text style={styles.simpanText}>Pilih</Text>
-        </TouchableOpacity>
-        {/* <Text style={styles.location}>{JSON.stringify(region, 0, 2)}</Text>
+          <TouchableOpacity
+            style={styles.simpan}
+            region={region}
+            onPress={this.saveLocation}>
+            <Text style={styles.simpanText}>Pilih</Text>
+          </TouchableOpacity>
+          {/* <Text style={styles.location}>{JSON.stringify(region, 0, 2)}</Text>
         <Text style={styles.location2}>{JSON.stringify(location, 0, 2)}</Text> */}
-      </View>
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -384,6 +395,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     bottom: responsiveHeight(50),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.39,
+    shadowRadius: 8.3,
+    elevation: 8,
   },
   simpanText: {
     color: colors.white,

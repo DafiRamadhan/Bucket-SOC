@@ -2,7 +2,7 @@ import Logo from './Logo.png';
 import Slider1 from './slider1.png';
 import Slider2 from './slider2.png';
 import Slider3 from './slider3.png';
-import Profile from './Profile.png';
+import defaultProfile from './Profile.png';
 import LoginImg from './LoginImg.js';
 import Register1Img from './Register1Img.js';
 import Register2Img from './Register2Img.js';
@@ -18,7 +18,7 @@ export {
   Slider1,
   Slider2,
   Slider3,
-  Profile,
+  defaultProfile,
   LoginImg,
   Register1Img,
   Register2Img,

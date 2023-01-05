@@ -78,7 +78,7 @@ export const dummyBuket = [
       gambar: Bunga,
     },
     harga: 130000,
-    deskripsi: 'Buket Florist',
+    deskripsi: 'Buket Florist diskon 50% khusus bulan ini',
     ready: true,
   },
 ];

@@ -5,14 +5,15 @@ import DropShadow from 'react-native-drop-shadow';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { heightMobileUI } from '../../../utils/constant';
 import { SvgUri } from 'react-native-svg';
+import { connect } from 'react-redux';
 
 //'kategori' dikirim dari halaman ListKategori
-const CardKategori = ({kategori}) => {
+const CardKategori = ({kategori, navigation, id, dispatch}) => {
+
   return (
     <TouchableOpacity style={styles.container}>
       <DropShadow style={dropshadow.kategoriCard}>
         <View style={styles.card}>
-          {/* <Image source={kategori.gambar} style={styles.logo} /> */}
           <SvgUri
             style={styles.logo}
             uri={kategori.gambar}
@@ -26,7 +27,7 @@ const CardKategori = ({kategori}) => {
   );
 }
 
-export default CardKategori
+export default connect()(CardKategori)
 
 const styles = StyleSheet.create({
   container: {
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: RFValue(15, heightMobileUI),
     fontFamily: fonts.primary.regular,
-    marginTop: 3,
+    marginTop: responsiveHeight(3),
     width: responsiveWidth(80),
     textAlign: 'center',
     color: 'black',

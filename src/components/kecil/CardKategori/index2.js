@@ -16,7 +16,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../../utils/constant';
 
 //'kategori' dikirim dari halaman ListKategori
-const CardKategori2 = ({kategori}) => {
+const CardKategori2 = ({kategori, navigation, id}) => {
   return (
     <DropShadow style={dropshadow.kategoriText}>
       <TouchableOpacity style={styles.container}>
@@ -34,10 +34,11 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     backgroundColor: colors.primary,
-    marginRight: 10,
+    marginRight: responsiveWidth(10),
     borderRadius: 50,
-    paddingHorizontal: 13,
-    paddingVertical: 4,
+    paddingHorizontal: responsiveWidth(13),
+    paddingVertical: responsiveHeight(5),
+    marginBottom: responsiveHeight(15),
   },
   label: {
     fontSize: RFValue(14, heightMobileUI),
