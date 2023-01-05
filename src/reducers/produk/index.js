@@ -1,9 +1,16 @@
-import {GET_LIST_PRODUK} from '../../actions/ProdukAction';
+import {
+  GET_LIST_PRODUK,
+  GET_LIST_PRODUK_BY_KATEGORI,
+  DELETE_LIST_PRODUK_BY_KATEGORI,
+} from '../../actions/ProdukAction';
 
 const initialState = {
   getListProdukLoading: false,
   getListProdukResult: false,
   getListProdukError: false,
+
+  idKategori: false,
+  namaKategori: false,
 };
 
 export default function (state = initialState, action) {
@@ -14,6 +21,20 @@ export default function (state = initialState, action) {
         getListProdukLoading: action.payload.loading,
         getListProdukResult: action.payload.data,
         getListProdukError: action.payload.errorMessage,
+      };
+
+    case GET_LIST_PRODUK_BY_KATEGORI:
+      return {
+        ...state,
+        idKategori: action.payload.idKategori,
+        namaKategori: action.payload.namaKategori,
+      };
+
+    case DELETE_LIST_PRODUK_BY_KATEGORI:
+      return {
+        ...state,
+        idKategori: false,
+        namaKategori: false,
       };
 
     default:

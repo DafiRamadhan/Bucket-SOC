@@ -11,8 +11,9 @@ import {getListProduk} from '../../actions/ProdukAction';
 class Bouquet extends Component {
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      const {idKategori} = this.props;
       this.props.dispatch(getListKategori());
-      this.props.dispatch(getListProduk());
+      this.props.dispatch(getListProduk(idKategori));
     });
   }
 
@@ -20,8 +21,20 @@ class Bouquet extends Component {
     this._unsubscribe();
   }
 
+  //Ketika suatu komponen terdapat perubahan
+  componentDidUpdate(prevProps) {
+    const {idKategori} = this.props; //dari false menjadi data
+    if (
+      idKategori &&
+      prevProps.idKategori !== idKategori
+    ) {
+      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+      this.props.dispatch(getListProduk(idKategori));
+    }
+  }
+
   render() {
-    const {navigation} = this.props;
+    const {navigation, namaKategori} = this.props;
     return (
       <View style={styles.page}>
         <View style={styles.wrapTitle}>
@@ -37,6 +50,7 @@ class Bouquet extends Component {
           <View style={styles.body}>
             <View style={styles.pilihBuket}>
               <Text style={styles.label}>Pilih Buket Favorit Anda</Text>
+              <Text style={styles.label}>{namaKategori}</Text>
               <ListProduk navigation={navigation} />
             </View>
           </View>
@@ -46,7 +60,12 @@ class Bouquet extends Component {
   }
 }
 
-export default connect()(Bouquet);
+const mapStateToProps = state => ({
+  idKategori: state.ProdukReducer.idKategori,
+  namaKategori: state.ProdukReducer.namaKategori,
+});
+
+export default connect(mapStateToProps, null)(Bouquet);
 
 const styles = StyleSheet.create({
   page: {

@@ -3,8 +3,10 @@ import {View, StyleSheet} from 'react-native';
 import TabItem from '../TabItem';
 import DropShadow from 'react-native-drop-shadow';
 import { dropshadow } from '../../../utils';
+import { connect } from 'react-redux';
+import { deleteProdukByKategori } from '../../../actions/ProdukAction';
 
-const BottomNavigator = ({state, descriptors, navigation}) => {
+const BottomNavigator = ({state, descriptors, navigation, dispatch}) => {
     const focusedOptions = descriptors[state.routes[state.index].key].options;
 
     if (focusedOptions.tabBarVisible == false) {
@@ -37,6 +39,12 @@ const BottomNavigator = ({state, descriptors, navigation}) => {
               // The `merge: true` option makes sure that the params inside the tab screen are preserved
               navigation.navigate(route.name);
             }
+
+            //jika nama halamannya buka "Bouquet" maka akan menghapus state kategori
+            if(route.name !== "Bouquet") {
+              dispatch(deleteProdukByKategori());
+            }
+
           };
 
           const onLongPress = () => {
@@ -61,7 +69,7 @@ const BottomNavigator = ({state, descriptors, navigation}) => {
   );
 }
 
-export default BottomNavigator
+export default connect()(BottomNavigator)
 
 const styles = StyleSheet.create({
   container: {

@@ -1,23 +1,42 @@
-import { StyleSheet, Text, Image, View, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
-import { dropshadow, fonts, responsiveHeight, responsiveWidth } from '../../../utils';
+import {
+  StyleSheet,
+  Text,
+  Image,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+import React from 'react';
+import {
+  dropshadow,
+  fonts,
+  responsiveHeight,
+  responsiveWidth,
+} from '../../../utils';
 import DropShadow from 'react-native-drop-shadow';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { heightMobileUI } from '../../../utils/constant';
-import { SvgUri } from 'react-native-svg';
-import { connect } from 'react-redux';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {heightMobileUI} from '../../../utils/constant';
+import {SvgUri} from 'react-native-svg';
+import {connect} from 'react-redux';
+import {getProdukByKategori} from '../../../actions/ProdukAction';
 
 //'kategori' dikirim dari halaman ListKategori
 const CardKategori = ({kategori, navigation, id, dispatch}) => {
+  const ProdukByKategori = (id, namaKategori) => {
+    //ke ProdukAction
+    dispatch(getProdukByKategori(id, namaKategori));
+
+    //navigate ke halaman Bouquet
+    navigation.navigate('Bouquet');
+  };
 
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => ProdukByKategori(id, kategori.nama)}>
       <DropShadow style={dropshadow.kategoriCard}>
         <View style={styles.card}>
-          <SvgUri
-            style={styles.logo}
-            uri={kategori.gambar}
-          />
+          <SvgUri style={styles.logo} uri={kategori.gambar} />
         </View>
       </DropShadow>
       <Text numberOfLines={2} style={styles.label}>
@@ -25,9 +44,9 @@ const CardKategori = ({kategori, navigation, id, dispatch}) => {
       </Text>
     </TouchableOpacity>
   );
-}
+};
 
-export default connect()(CardKategori)
+export default connect()(CardKategori);
 
 const styles = StyleSheet.create({
   container: {
