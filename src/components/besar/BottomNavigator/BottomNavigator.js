@@ -4,7 +4,7 @@ import TabItem from '../TabItem';
 import DropShadow from 'react-native-drop-shadow';
 import { dropshadow } from '../../../utils';
 import { connect } from 'react-redux';
-import { deleteProdukByKategori } from '../../../actions/ProdukAction';
+import { deleteProdukFilter } from '../../../actions/ProdukAction';
 
 const BottomNavigator = ({state, descriptors, navigation, dispatch}) => {
     const focusedOptions = descriptors[state.routes[state.index].key].options;
@@ -42,7 +42,7 @@ const BottomNavigator = ({state, descriptors, navigation, dispatch}) => {
 
             //jika nama halamannya buka "Bouquet" maka akan menghapus state kategori
             if(route.name !== "Bouquet") {
-              dispatch(deleteProdukByKategori());
+              dispatch(deleteProdukFilter());
             }
 
           };

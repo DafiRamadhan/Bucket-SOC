@@ -1,30 +1,46 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import DropShadow from 'react-native-drop-shadow';
-import { colors, dropshadow, fonts, responsiveHeight, responsiveWidth } from '../../../utils';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { heightMobileUI } from '../../../utils/constant';
+import {
+  colors,
+  dropshadow,
+  fonts,
+  responsiveHeight,
+  responsiveWidth,
+} from '../../../utils';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {heightMobileUI} from '../../../utils/constant';
+import {connect} from 'react-redux';
 
 const CardProduk = ({produk, navigation}) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={() =>
-    navigation.navigate('DetailProduk', {produk})}>
-      <DropShadow style={dropshadow.kategoriCard}>
-        <View style={styles.card}>
-          <Image source={{uri: produk.gambar[0]}} style={styles.gambar} />
-          <Text numberOfLines={2} style={styles.title}>
-            {produk.nama}
-          </Text>
-          <View style={styles.tombol}>
-            <Text style={styles.harga}>Rp{produk.harga.toLocaleString('id-ID')}</Text>
+    <View>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={() => navigation.navigate('DetailProduk', {produk})}>
+        <DropShadow style={dropshadow.kategoriCard}>
+          <View style={styles.card}>
+            <Image source={{uri: produk.gambar[0]}} style={styles.gambar} />
+            <Text numberOfLines={2} style={styles.title}>
+              {produk.nama}
+            </Text>
+            <View style={styles.tombol}>
+              <Text style={styles.harga}>
+                Rp{produk.harga.toLocaleString('id-ID')}
+              </Text>
+            </View>
           </View>
-        </View>
-      </DropShadow>
-    </TouchableOpacity>
+        </DropShadow>
+      </TouchableOpacity>
+    </View>
   );
-}
+};
 
-export default CardProduk
+const mapStateToProps = state => ({
+  keyword: state.ProdukReducer.keyword,
+});
+
+export default connect(mapStateToProps, null)(CardProduk);
 
 const styles = StyleSheet.create({
   container: {
@@ -47,6 +63,7 @@ const styles = StyleSheet.create({
     fontSize: RFValue(14, heightMobileUI),
     fontFamily: fonts.primary.bold,
     textAlign: 'center',
+    textTransform: 'capitalize',
     marginTop: 5,
     paddingHorizontal: 10,
     color: 'black',

@@ -35,7 +35,7 @@ const MainApp = () => {
       <Tab.Screen
         name="Bouquet"
         component={Bouquet}
-        options={{headerShown: false}}
+        options={{headerShown: false, unmountOnBlur: true}}
       />
       <Tab.Screen
         name="Orders"

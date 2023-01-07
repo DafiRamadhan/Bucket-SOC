@@ -13,18 +13,17 @@ export const getListBanner = () => {
     return onValue(
       ref(db, '/banner/'),
       snapshot => {
-        if (snapshot.val()) {
-          const data = snapshot.val();
-          //SUKSES
-          dispatchSuccess(dispatch, GET_LIST_BANNER, data);
-        } else {
-          //ERROR
-          dispatchError(dispatch, GET_LIST_BANNER, error.message);
-          Alert.alert('Error', error.message);
-        }
+        const data = snapshot.val();
+        //SUKSES
+        dispatchSuccess(dispatch, GET_LIST_BANNER, data);
       },
       {
         onlyOnce: true,
+      },
+      error => {
+        //ERROR
+        dispatchError(dispatch, GET_LIST_BANNER, error.message);
+        Alert.alert('Error', error.message);
       },
     );
   };

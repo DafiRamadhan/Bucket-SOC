@@ -11,9 +11,9 @@ import {getListProduk} from '../../actions/ProdukAction';
 class Bouquet extends Component {
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      const {idKategori} = this.props;
+      const {idKategori, keyword} = this.props;
       this.props.dispatch(getListKategori());
-      this.props.dispatch(getListProduk(idKategori));
+      this.props.dispatch(getListProduk(idKategori, keyword));
     });
   }
 
@@ -23,27 +23,38 @@ class Bouquet extends Component {
 
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
-    const {idKategori} = this.props; //dari false menjadi data
-    
-    //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
-    if (idKategori && prevProps.idKategori !== idKategori) {
-      this.props.dispatch(getListProduk(idKategori));
+    const {idKategori, keyword} = this.props;
 
-      //jika nilainya false && nilai sebelumnya tidak sama dengan yang baru
+    //jika nilai idKategori true && nilai sebelumnya tidak sama dengan yang baru
+    if (idKategori && prevProps.idKategori !== idKategori) {
+      //tampilkan produk By Kategori
+      this.props.dispatch(getListProduk(idKategori, keyword));
+
+      //jika nilai idKategori false && nilai sebelumnya tidak sama dengan yang baru
     } else if (idKategori === false && prevProps.idKategori !== idKategori) {
+      //tampilkan semua produk
+      this.props.dispatch(getListProduk());
+
+      //jika nilai keyword true && nilai sebelumnya tidak sama dengan yang baru
+    } else if (keyword && prevProps.keyword !== keyword) {
+      //tampilkan produk by keyword
+      this.props.dispatch(getListProduk(idKategori, keyword));
+
+      //jika nilai keyword false && nilai sebelumnya tidak sama dengan yang baru
+    } else if (keyword === false && prevProps.keyword !== keyword) {
       //tampilkan semua produk
       this.props.dispatch(getListProduk());
     }
   }
 
   render() {
-    const {navigation} = this.props;
+    const {navigation, keyword} = this.props;
     return (
       <View style={styles.page}>
         <View style={styles.wrapTitle}>
           <Text style={styles.titleText}>Katalog Buket</Text>
         </View>
-        <HeaderComponent navigation={navigation} />
+        <HeaderComponent navigation={navigation} page="Bouquet" />
         <View style={styles.pilihKategori}>
           <ListKategori2 navigation={navigation} />
         </View>
@@ -52,7 +63,14 @@ class Bouquet extends Component {
           keyboardShouldPersistTaps="handled">
           <View style={styles.body}>
             <View style={styles.pilihBuket}>
-              <Text style={styles.label}>Pilih Buket Favorit Anda</Text>
+              {keyword ? (
+                <Text style={styles.label}>
+                  Menampilkan hasil untuk "{keyword}"
+                </Text>
+              ) : (
+                <Text style={styles.label}>Pilih Buket Favorit Anda</Text>
+              )}
+
               <ListProduk navigation={navigation} />
             </View>
           </View>
@@ -65,6 +83,7 @@ class Bouquet extends Component {
 const mapStateToProps = state => ({
   idKategori: state.ProdukReducer.idKategori,
   namaKategori: state.ProdukReducer.namaKategori,
+  keyword: state.ProdukReducer.keyword,
 });
 
 export default connect(mapStateToProps, null)(Bouquet);

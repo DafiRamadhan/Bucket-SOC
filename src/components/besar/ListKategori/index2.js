@@ -19,7 +19,7 @@ import {
 import {connect} from 'react-redux';
 import {RFValue} from 'react-native-responsive-fontsize';
 import DropShadow from 'react-native-drop-shadow';
-import { deleteProdukByKategori } from '../../../actions/ProdukAction';
+import { deleteProdukFilter } from '../../../actions/ProdukAction';
 
 //pilihKateogri dikirim dari halaman Home
 const ListKategori2 = ({getListKategoriLoading, getListKategoriResult, navigation, idKategori, dispatch}) => {
@@ -34,7 +34,7 @@ const ListKategori2 = ({getListKategoriLoading, getListKategoriResult, navigatio
             <DropShadow style={dropshadow.kategoriText}>
               <TouchableOpacity
                 style={styles.semua(idKategori)}
-                onPress={() => dispatch(deleteProdukByKategori())}>
+                onPress={() => dispatch(deleteProdukFilter())}>
                 <Text style={styles.semuaText(idKategori)}>Semua</Text>
               </TouchableOpacity>
             </DropShadow>

@@ -1,21 +1,103 @@
-import {StyleSheet, View, TextInput} from 'react-native';
+import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
 import React, {Component} from 'react';
-import {fonts, responsiveHeight} from '../../../utils';
-import {IconSearch} from '../../../assets';
+import {fonts, responsiveHeight, responsiveWidth} from '../../../utils';
+import {IconClearText, IconSearch} from '../../../assets';
 import {KeranjangIcon} from '../../kecil';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../../utils/constant';
+import {changeFocus, deleteProdukFilter, searchProduk} from '../../../actions/ProdukAction';
+import {connect} from 'react-redux';
 
-export default class HeaderComponent extends Component {
+class HeaderComponent extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      search: '',
+    };
+  }
+
+  onSubmit = keyword => {
+    const {dispatch} = this.props;
+
+    //jalankan agar jika ada kategori terfliter sebelumnya dapat direset
+    dispatch(deleteProdukFilter());
+
+    //jika keyword yang dimasukkan tidak kosong
+    if (keyword.search) {
+      //jalankan fungsi pada Action
+      dispatch(searchProduk(keyword.search));
+    } else {
+      dispatch(deleteProdukFilter());
+    }
+  };
+
+  //dijalankan ketika form search diklik
+  changeSearch = () => {
+    const {dispatch} = this.props;
+
+    //menghapus props 'keyword' agar tidak aktif
+    dispatch(deleteProdukFilter());
+  };
+
+  //dijalankan ketika icon clear diklik
+  clearText = () => {
+    const {dispatch} = this.props;
+    this.setState({
+      search: '',
+    });
+    dispatch(deleteProdukFilter());
+  };
+
+  
+  //dijalankan ketika mengkilk form search dari halaman Home agar focus aktif
+  focus = () => {
+    const {dispatch} = this.props;
+    dispatch(changeFocus());
+  }
+
   render() {
-    const {navigation} = this.props;
+    const {search} = this.state;
+    const {navigation, page, isFocus} = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.wrapperHeader}>
           {/* search bar */}
           <View style={styles.searchBar}>
             <IconSearch />
-            <TextInput placeholder="Cari..." style={styles.input} />
+            {page === 'Bouquet' ? (
+              <TextInput
+                placeholder="Cari..."
+                style={styles.input}
+                value={search}
+                autoFocus={isFocus===true ? true : false}
+                onFocus={() => this.changeSearch()}
+                onChangeText={search => {
+                  this.setState({search});
+                  this.onSubmit({search});
+                }}
+              />
+            ) : (
+              <TouchableOpacity
+                style={styles.bar}
+                onPress={() => {
+                  navigation.navigate('Bouquet');
+                  this.focus();
+                }}>
+                <TextInput
+                  placeholder="Cari..."
+                  style={styles.input}
+                  editable={false}
+                />
+              </TouchableOpacity>
+            )}
+            {search ? (
+              <TouchableOpacity
+                style={styles.iconClear}
+                onPress={() => this.clearText()}>
+                <IconClearText />
+              </TouchableOpacity>
+            ) : null}
           </View>
           {/* Tombol Keranjang */}
           <KeranjangIcon
@@ -28,6 +110,12 @@ export default class HeaderComponent extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  isFocus: state.ProdukReducer.isFocus,
+});
+
+export default connect(mapStateToProps, null)(HeaderComponent);
 
 const styles = StyleSheet.create({
   container: {
@@ -51,7 +139,15 @@ const styles = StyleSheet.create({
   },
   input: {
     fontSize: RFValue(18, heightMobileUI),
-    width: 260,
+    width: responsiveWidth(250),
     fontFamily: fonts.primary.regular,
+  },
+  iconClear: {
+    padding: 5,
+  },
+  bar: {
+    flex: 1,
+    height: '100%',
+    borderRadius: 40,
   },
 });

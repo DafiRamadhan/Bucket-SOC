@@ -112,7 +112,7 @@ class Home extends Component {
               />
             </TouchableOpacity>
           </View>
-          <HeaderComponent navigation={navigation} />
+          <HeaderComponent navigation={navigation} page="Home" />
           <View style={styles.body}>
             <View style={styles.pilihKategori}>
               <Text style={styles.label}>Pilih Kategori Buket</Text>

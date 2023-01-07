@@ -1,4 +1,5 @@
 import {
+  endAt,
   equalTo,
   getDatabase,
   limitToLast,
@@ -6,16 +7,19 @@ import {
   orderByChild,
   query,
   ref,
+  startAt,
 } from 'firebase/database';
 import {Alert} from 'react-native';
 import {dispatchError, dispatchLoading, dispatchSuccess} from '../utils';
 
 export const GET_LIST_PRODUK = 'GET_LIST_PRODUK';
 export const GET_LIST_PRODUK_BY_KATEGORI = 'GET_LIST_PRODUK_BY_KATEGORI';
-export const DELETE_LIST_PRODUK_BY_KATEGORI = 'DELETE_LIST_PRODUK_BY_KATEGORI';
+export const DELETE_PRODUK_FILTER = 'DELETE_PRODUK_FILTER';
+export const SEARCH_PRODUK = 'SEARCH_PRODUK';
+export const CHANGE_FOCUS = 'CHANGE_FOCUS';
 //const db = getDatabase();
 
-export const getListProduk = idKategori => {
+export const getListProduk = (idKategori, keyword) => {
   return dispatch => {
     //LOADING
     dispatchLoading(dispatch, GET_LIST_PRODUK);
@@ -29,36 +33,58 @@ export const getListProduk = idKategori => {
           equalTo(idKategori),
         ),
         snapshot => {
-          if (snapshot.val()) {
-            const data = snapshot.val();
-            //SUKSES
-            dispatchSuccess(dispatch, GET_LIST_PRODUK, data);
-          } else {
-            //ERROR
-            dispatchError(dispatch, GET_LIST_PRODUK, error.message);
-            Alert.alert('Error', error.message);
-          }
+          const data = snapshot.val();
+          //SUKSES
+          dispatchSuccess(dispatch, GET_LIST_PRODUK, data);
         },
         {
           onlyOnce: true,
+        },
+        error => {
+          //ERROR
+          dispatchError(dispatch, GET_LIST_PRODUK, error.message);
+          Alert.alert('Error', error.message);
+        },
+      );
+
+      //jika dilakukan pencarian keyword
+    } else if (keyword) {
+      return onValue(
+        query(
+          ref(getDatabase(), '/produk/'),
+          orderByChild('nama'),
+          startAt(keyword.toUpperCase()),
+          endAt(keyword.toUpperCase() + '\uf8ff'),
+        ),
+        snapshot => {
+          const data = snapshot.val();
+          //SUKSES
+          dispatchSuccess(dispatch, GET_LIST_PRODUK, data);
+        },
+        {
+          onlyOnce: true,
+        },
+        error => {
+          //ERROR
+          dispatchError(dispatch, GET_LIST_PRODUK, error.message);
+          Alert.alert('Error', error.message);
         },
       );
     } else {
       return onValue(
         ref(getDatabase(), '/produk/'),
         snapshot => {
-          if (snapshot.val()) {
-            const data = snapshot.val();
-            //SUKSES
-            dispatchSuccess(dispatch, GET_LIST_PRODUK, data);
-          } else {
-            //ERROR
-            dispatchError(dispatch, GET_LIST_PRODUK, error.message);
-            Alert.alert('Error', error.message);
-          }
+          const data = snapshot.val();
+          //SUKSES
+          dispatchSuccess(dispatch, GET_LIST_PRODUK, data);
         },
         {
           onlyOnce: true,
+        },
+        error => {
+          //ERROR
+          dispatchError(dispatch, GET_LIST_PRODUK, error.message);
+          Alert.alert('Error', error.message);
         },
       );
     }
@@ -73,18 +99,17 @@ export const getListLimitProduk = () => {
     return onValue(
       query(ref(getDatabase(), 'produk'), limitToLast(10)),
       snapshot => {
-        if (snapshot.val()) {
-          const data = snapshot.val();
-          //SUKSES
-          dispatchSuccess(dispatch, GET_LIST_PRODUK, data);
-        } else {
-          //ERROR
-          dispatchError(dispatch, GET_LIST_PRODUK, error.message);
-          Alert.alert('Error', error.message);
-        }
+        const data = snapshot.val();
+        //SUKSES
+        dispatchSuccess(dispatch, GET_LIST_PRODUK, data);
       },
       {
         onlyOnce: true,
+      },
+      error => {
+        //ERROR
+        dispatchError(dispatch, GET_LIST_PRODUK, error.message);
+        Alert.alert('Error', error.message);
       },
     );
   };
@@ -98,6 +123,17 @@ export const getProdukByKategori = (id, namaKategori) => ({
   },
 });
 
-export const deleteProdukByKategori = () => ({
-  type: DELETE_LIST_PRODUK_BY_KATEGORI,
+export const deleteProdukFilter = () => ({
+  type: DELETE_PRODUK_FILTER,
 });
+
+export const searchProduk = search => ({
+  type: SEARCH_PRODUK,
+  payload: {
+    data: search,
+  },
+});
+
+export const changeFocus = () => ({
+  type: CHANGE_FOCUS,
+})

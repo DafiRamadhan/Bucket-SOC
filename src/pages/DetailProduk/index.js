@@ -20,8 +20,10 @@ import Inputan from '../../components/kecil/Inputan';
 import DropShadow from 'react-native-drop-shadow';
 import Counter from 'react-native-counters';
 import BuketSlider from '../../components/besar/BuketSlider';
+import { connect } from 'react-redux';
+import { getDetailKategori } from '../../actions/KategoriAction';
 
-export default class DetailProduk extends Component {
+class DetailProduk extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,8 +33,15 @@ export default class DetailProduk extends Component {
     };
   }
 
+  //dijalankan untuk mendapatkan nama kategori dari masing2 produk
+  componentDidMount() {
+    const {produk} = this.state;
+    const {dispatch} = this.props;
+    dispatch(getDetailKategori(produk.kategori))
+  }
+
   render() {
-    const {navigation} = this.props;
+    const {navigation, getDetailKategoriResult} = this.props;
     const {produk, images} = this.state;
     return (
       <View style={styles.page}>
@@ -55,7 +64,7 @@ export default class DetailProduk extends Component {
               <Text style={styles.subtitle}>Deskripsi Produk : </Text>
               <Text style={styles.deskripsi}>{produk.deskripsi}</Text>
               <Text style={styles.subtitle}>
-                Kategori Buket : {produk.kategori.nama}
+                Kategori Buket : {getDetailKategoriResult.nama}
               </Text>
               <Inputan
                 label="Catatan"
@@ -94,6 +103,12 @@ export default class DetailProduk extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  getDetailKategoriResult: state.KategoriReducer.getDetailKategoriResult,
+});
+
+export default connect(mapStateToProps, null)(DetailProduk)
+
 const styles = StyleSheet.create({
   page: {
     flex: 1,
@@ -126,6 +141,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.semibold,
     color: 'black',
     textAlign: 'justify',
+    textTransform: 'capitalize',
   },
   garis: {
     height: 0.5,
