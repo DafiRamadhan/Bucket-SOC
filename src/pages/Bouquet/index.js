@@ -7,6 +7,8 @@ import {heightMobileUI} from '../../utils/constant';
 import {connect} from 'react-redux';
 import {getListKategori} from '../../actions/KategoriAction';
 import {getListProduk} from '../../actions/ProdukAction';
+import { LogBox } from 'react-native';
+LogBox.ignoreAllLogs();
 
 class Bouquet extends Component {
   componentDidMount() {
@@ -48,7 +50,7 @@ class Bouquet extends Component {
   }
 
   render() {
-    const {navigation, keyword} = this.props;
+    const {navigation, keyword, namaKategori} = this.props;
     return (
       <View style={styles.page}>
         <View style={styles.wrapTitle}>
@@ -67,10 +69,13 @@ class Bouquet extends Component {
                 <Text style={styles.label}>
                   Menampilkan hasil untuk "{keyword}"
                 </Text>
+              ) : namaKategori ? (
+                <Text style={styles.label}>
+                  Menampilkan Buket dengan kategori "{namaKategori}"
+                </Text>
               ) : (
                 <Text style={styles.label}>Pilih Buket Favorit Anda</Text>
               )}
-
               <ListProduk navigation={navigation} />
             </View>
           </View>

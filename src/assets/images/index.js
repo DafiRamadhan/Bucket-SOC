@@ -12,6 +12,7 @@ import Intro2Img from './Intro2Img.js';
 import Intro3Img from './Intro3Img.js';
 import Intro4Img from './Intro4Img.js';
 import Intro5Img from './Intro5Img.js';
+import EmptyCart from './EmptyCart';
 
 export {
   Logo,
@@ -28,4 +29,5 @@ export {
   Intro3Img,
   Intro4Img,
   Intro5Img,
+  EmptyCart,
 };

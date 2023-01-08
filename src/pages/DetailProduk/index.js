@@ -4,12 +4,14 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import React, {Component} from 'react';
 import {
   colors,
   dropshadow,
   fonts,
+  getData,
   responsiveHeight,
   responsiveWidth,
 } from '../../utils';
@@ -22,6 +24,8 @@ import Counter from 'react-native-counters';
 import BuketSlider from '../../components/besar/BuketSlider';
 import { connect } from 'react-redux';
 import { getDetailKategori } from '../../actions/KategoriAction';
+import { masukKeranjang } from '../../actions/KeranjangAction';
+import { Loading } from '../../components';
 
 class DetailProduk extends Component {
   constructor(props) {
@@ -30,6 +34,8 @@ class DetailProduk extends Component {
       produk: this.props.route.params.produk,
       images: this.props.route.params.produk.gambar,
       value: 1,
+      catatan: '',
+      uid: '',
     };
   }
 
@@ -37,12 +43,54 @@ class DetailProduk extends Component {
   componentDidMount() {
     const {produk} = this.state;
     const {dispatch} = this.props;
-    dispatch(getDetailKategori(produk.kategori))
+    dispatch(getDetailKategori(produk.kategori));
   }
 
+  //Ketika suatu komponen terdapat perubahan
+  componentDidUpdate(prevProps) {
+    const {saveKeranjangResult} = this.props;
+    if (
+      saveKeranjangResult &&
+      prevProps.saveKeranjangResult !== saveKeranjangResult
+    ) {
+      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+      this.props.navigation.navigate('Keranjang')
+    }
+  }
+
+  masukKeranjang = () => {
+    const {catatan} = this.state;
+    const {navigation, dispatch, getDetailKategoriResult} = this.props;
+    getData('user').then(res => {
+      //jika data user ditemukan (user sudah Login)
+      if (res) {
+        //simpan uid di Local storage ke state
+        this.setState({
+          uid: res.uid,
+        });
+
+        //validasi form jika catatan sudah diisi
+        if (catatan) {
+          const data = {
+            ...this.state,
+            kategori: getDetailKategoriResult.nama,
+          };
+          //masuk ke KeranjangAction
+          dispatch(masukKeranjang(data));
+        } else {
+          Alert.alert('Alert', 'Catatan harus diisi!');
+        }
+        //jika user belum Login
+      } else {
+        Alert.alert('Alert', 'Silakan Login Terlebih Dahulu!');
+        navigation.replace('Login');
+      }
+    });
+  };
+
   render() {
-    const {navigation, getDetailKategoriResult} = this.props;
-    const {produk, images} = this.state;
+    const {navigation, getDetailKategoriResult, saveKeranjangLoading} = this.props;
+    const {produk, images, catatan} = this.state;
     return (
       <View style={styles.page}>
         <ScrollView
@@ -71,6 +119,8 @@ class DetailProduk extends Component {
                 textarea
                 labelfontSize={RFValue(18, heightMobileUI)}
                 formfontSize={RFValue(14, heightMobileUI)}
+                value={catatan}
+                onChangeText={catatan => this.setState({catatan})}
                 placeholder="Isi jika ingin melakukan kustomisasi terhadap pesanan Anda (jenis, warna, ucapan, dll) sesuai ketentuan pada deskripsi produk ini."
               />
             </View>
@@ -92,12 +142,13 @@ class DetailProduk extends Component {
             </View>
             <TouchableOpacity
               style={styles.tombolKeranjang}
-              onPress={() => navigation.navigate('Keranjang')}>
+              onPress={() => this.masukKeranjang()}>
               <IconAddCart />
               <Text style={styles.keranjangText}>Keranjang</Text>
             </TouchableOpacity>
           </View>
         </DropShadow>
+        {saveKeranjangLoading ? <Loading /> : null}
       </View>
     );
   }
@@ -105,6 +156,10 @@ class DetailProduk extends Component {
 
 const mapStateToProps = state => ({
   getDetailKategoriResult: state.KategoriReducer.getDetailKategoriResult,
+
+  saveKeranjangLoading: state.KeranjangReducer.saveKeranjangLoading,
+  saveKeranjangResult: state.KeranjangReducer.saveKeranjangResult,
+  saveKeranjangError: state.KeranjangReducer.saveKeranjangError,
 });
 
 export default connect(mapStateToProps, null)(DetailProduk)

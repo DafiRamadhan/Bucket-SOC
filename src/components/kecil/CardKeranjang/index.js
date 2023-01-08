@@ -4,43 +4,49 @@ import {colors, fonts, responsiveHeight, responsiveWidth} from '../../../utils';
 import {IconTrash} from '../../../assets';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../../utils/constant';
+import { connect } from 'react-redux';
+import { deleteKeranjang } from '../../../actions/KeranjangAction';
 
-const CardKeranjang = ({keranjang}) => {
+const CardKeranjang = ({item, dispatch, id, keranjang}) => {
+
+  const hapusKeranjang = () => {
+    dispatch(deleteKeranjang(id, keranjang, item))
+  }
   return (
     <View style={styles.container}>
       <View style={styles.box}>
-        <Image source={keranjang.product.gambar[0]} style={styles.gambar} />
+        <Image source={{uri : item.produk.gambar[0]}} style={styles.gambar} />
         <View style={styles.desc}>
           <View style={styles.title}>
-            <Text numberOfLines={1} style={styles.nama}>
-              {keranjang.product.nama}
+            <Text style={styles.nama}>
+              {item.produk.nama}
             </Text>
             <Text style={styles.harga}>
-              Rp{keranjang.product.harga.toLocaleString('id-ID')}
+              Rp{item.produk.harga.toLocaleString('id-ID')}
             </Text>
           </View>
           <View style={styles.deskripsi}>
             <View style={styles.deskripsiWrap}>
               <Text style={styles.deskripsiTitle}>Jumlah : </Text>
-              <Text style={styles.deskripsiText}>{keranjang.jumlahPesan}</Text>
+              <Text style={styles.deskripsiText}>{item.jumlah}</Text>
             </View>
             <View style={styles.deskripsiWrap}>
               <Text style={styles.deskripsiTitle}>Kategori Buket : </Text>
               <Text style={styles.deskripsiText}>
-                {keranjang.product.kategori.nama}
+                {item.kategori}
               </Text>
             </View>
-            {keranjang.catatan ? (
+            {item.catatan ? (
               <Text style={styles.deskripsiTitle}>Catatan :</Text>
             ) : (
               <Text></Text>
             )}
-            <Text style={styles.deskripsiText} numberOfLines={2}>
-              {keranjang.catatan}
+            <Text style={styles.deskripsiText}>
+              {item.catatan}
             </Text>
           </View>
         </View>
-        <TouchableOpacity style={styles.hapus}>
+        <TouchableOpacity style={styles.hapus} onPress={() => hapusKeranjang()}>
           <IconTrash />
         </TouchableOpacity>
       </View>
@@ -48,14 +54,12 @@ const CardKeranjang = ({keranjang}) => {
   );
 };
 
-export default CardKeranjang;
+export default connect()(CardKeranjang);
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    //backgroundColor: colors.primary,
     borderBottomColor: '#E7E7E7',
-    height: responsiveHeight(171),
     borderBottomWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
@@ -63,8 +67,6 @@ const styles = StyleSheet.create({
   },
   box: {
     flexDirection: 'row',
-    //backgroundColor: colors.primary,
-    height: responsiveHeight(141),
     marginVertical: responsiveHeight(15),
   },
   gambar: {
@@ -78,9 +80,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-end',
   },
-  desc: {
-    //alignSelf: 'center',
-  },
   title: {
     width: responsiveWidth(225),
     marginBottom: responsiveHeight(8),
@@ -92,6 +91,8 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.regular,
     fontSize: RFValue(15, heightMobileUI),
     color: colors.black,
+    textTransform: 'capitalize',
+    textAlign: 'justify',
   },
   harga: {
     fontFamily: fonts.primary.bold,

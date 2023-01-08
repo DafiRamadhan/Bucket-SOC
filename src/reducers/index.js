@@ -4,6 +4,7 @@ import ProfileReducer from './profile';
 import KategoriReducer from './kategori';
 import BannerReducer from './banner';
 import ProdukReducer from './produk';
+import KeranjangReducer from './keranjang';
 import BiteshipReducer from './biteship';
 
 const rootReducer = combineReducers({
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
     KategoriReducer,
     BannerReducer,
     ProdukReducer,
+    KeranjangReducer,
     BiteshipReducer,
 });
 

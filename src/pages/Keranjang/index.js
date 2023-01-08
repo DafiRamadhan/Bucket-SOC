@@ -4,34 +4,77 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import React, {Component} from 'react';
-import {dummyPesanan} from '../../data';
 import {ListKeranjang} from '../../components';
 import {
   colors,
   dropshadow,
   fonts,
+  getData,
   responsiveHeight,
   responsiveWidth,
 } from '../../utils';
 import DropShadow from 'react-native-drop-shadow';
-import {IconBack, IconCheckout} from '../../assets';
+import {EmptyCart, IconBack, IconCheckout} from '../../assets';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
+import {connect} from 'react-redux';
+import {getListKeranjang} from '../../actions/KeranjangAction';
 
-export default class Keranjang extends Component {
+class Keranjang extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      pesanan: dummyPesanan[0],
+      profile: false,
     };
   }
 
+  componentDidMount() {
+    const {dispatch, navigation} = this.props;
+    getData('user').then(res => {
+      //cek apakah user sudah Login
+      if (res) {
+        this.setState({
+          profile: res,
+        });
+        //masuk ke KeranjangAction
+        dispatch(getListKeranjang(res.uid));
+      } else {
+        navigation.replace('Login');
+      }
+    });
+  }
+
+  //Ketika suatu komponen terdapat perubahan
+  componentDidUpdate(prevProps) {
+    const {deleteKeranjangResult, dispatch} = this.props;
+    if (
+      deleteKeranjangResult &&
+      prevProps.deleteKeranjangResult !== deleteKeranjangResult
+    ) {
+      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+      getData('user').then(res => {
+        //cek apakah user sudah Login
+        if (res) {
+          this.setState({
+            profile: res,
+          });
+          //masuk ke KeranjangAction
+          dispatch(getListKeranjang(res.uid));
+        } else {
+          navigation.replace('Login');
+        }
+      });
+    }
+  }
+
   render() {
-    const {pesanan} = this.state;
-    const {navigation} = this.props;
+    const {profile} = this.state;
+    const {navigation, getListKeranjangLoading, getListKeranjangResult} =
+      this.props;
     return (
       <View style={styles.page}>
         <DropShadow style={dropshadow.footer}>
@@ -44,34 +87,78 @@ export default class Keranjang extends Component {
             <Text style={styles.titleText}>Keranjang</Text>
           </View>
         </DropShadow>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <ListKeranjang daftarKeranjang={pesanan.items}></ListKeranjang>
-        </ScrollView>
-        <DropShadow style={dropshadow.footer}>
-          <View style={styles.footer}>
-            <View style={styles.totalHarga}>
-              <Text style={styles.totalText}>Total Harga :</Text>
-              <Text style={styles.hargaText}>
-                Rp{pesanan.totalHarga.toLocaleString('id-ID')}
+        {profile ? (
+          getListKeranjangLoading ? (
+            <View style={styles.blank}>
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
+          ) : getListKeranjangResult ? (
+            <View style={styles.page}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {/* Mengirim isi dari ketiga props dari mapStateToProps */}
+                <ListKeranjang {...this.props} />
+              </ScrollView>
+              <DropShadow style={dropshadow.footer}>
+                <View style={styles.footer}>
+                  <View style={styles.totalHarga}>
+                    <Text style={styles.totalText}>Total Harga :</Text>
+                    <Text style={styles.hargaText}>
+                      Rp
+                      {getListKeranjangResult.total_harga.toLocaleString(
+                        'id-ID',
+                      )}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.tombolCheckout}
+                    onPress={() => navigation.navigate('Checkout')}>
+                    <IconCheckout />
+                    <Text style={styles.checkoutText}>Checkout</Text>
+                  </TouchableOpacity>
+                </View>
+              </DropShadow>
+            </View>
+          ) : (
+            <View>
+              <View style={styles.emptyImage}>
+                <EmptyCart />
+              </View>
+              <Text style={styles.emptyText}>
+                Keranjang belanja Anda masih kosong.
               </Text>
             </View>
-            <TouchableOpacity
-              style={styles.tombolCheckout}
-              onPress={() => navigation.navigate('Checkout')}>
-              <IconCheckout />
-              <Text style={styles.checkoutText}>Checkout</Text>
-            </TouchableOpacity>
+          )
+        ) : (
+          <View style={styles.blank}>
+            <ActivityIndicator size="large" color={colors.primary} />
           </View>
-        </DropShadow>
+        )}
       </View>
     );
   }
 }
 
+const mapStateToProps = state => ({
+  getListKeranjangLoading: state.KeranjangReducer.getListKeranjangLoading,
+  getListKeranjangResult: state.KeranjangReducer.getListKeranjangResult,
+  getListKeranjangError: state.KeranjangReducer.getListKeranjangError,
+
+  deleteKeranjangLoading: state.KeranjangReducer.deleteKeranjangLoading,
+  deleteKeranjangResult: state.KeranjangReducer.deleteKeranjangResult,
+  deleteKeranjangError: state.KeranjangReducer.deleteKeranjangError,
+});
+
+export default connect(mapStateToProps, null)(Keranjang);
+
 const styles = StyleSheet.create({
   page: {
     flex: 1,
     backgroundColor: colors.white,
+  },
+  blank: {
+    flex: 1,
+    backgroundColor: colors.white,
+    justifyContent: 'center',
   },
   tombolBack: {
     position: 'absolute',
@@ -129,6 +216,19 @@ const styles = StyleSheet.create({
   hargaText: {
     color: colors.black,
     fontFamily: fonts.primary.bold,
+    fontSize: RFValue(20, heightMobileUI),
+  },
+  emptyImage: {
+    alignSelf: 'center',
+    height: responsiveHeight(242),
+    width: responsiveWidth(290),
+    marginTop: responsiveHeight(190),
+    marginBottom: responsiveHeight(35),
+  },
+  emptyText: {
+    alignSelf: 'center',
+    color: colors.black,
+    fontFamily: fonts.primary.semibold,
     fontSize: RFValue(20, heightMobileUI),
   },
 });

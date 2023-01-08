@@ -58,7 +58,7 @@ class EditProfile extends Component {
   
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
-    const {updateProfileResult} = this.props; //dari false menjadi data
+    const {updateProfileResult} = this.props;
     if (
       updateProfileResult &&
       prevProps.updateProfileResult !== updateProfileResult

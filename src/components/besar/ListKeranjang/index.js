@@ -1,15 +1,19 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import CardKeranjang from '../../kecil/CardKeranjang';
-import { style } from 'deprecated-react-native-prop-types/DeprecatedImagePropType';
 
-const ListKeranjang = ({daftarKeranjang}) => {
+const ListKeranjang = ({getListKeranjangResult, getListKeranjangError}) => {
   return (
     
       <View>
-        {daftarKeranjang.map(items => {
-          return <CardKeranjang keranjang={items} key={items.id} />;
-        })}
+        {getListKeranjangResult ? (
+          Object.keys(getListKeranjangResult.item).map((key) =>
+          {
+            return <CardKeranjang item={getListKeranjangResult.item[key]} keranjang={getListKeranjangResult} key={key} id={key} />
+          })
+        ) : getListKeranjangError ? (
+          <Text>{getListKeranjangError}</Text>
+        ) : null}
       </View>
     
   );

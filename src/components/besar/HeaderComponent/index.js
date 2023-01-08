@@ -1,12 +1,13 @@
 import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
 import React, {Component} from 'react';
-import {fonts, responsiveHeight, responsiveWidth} from '../../../utils';
+import {fonts, getData, responsiveHeight, responsiveWidth} from '../../../utils';
 import {IconClearText, IconSearch} from '../../../assets';
 import {KeranjangIcon} from '../../kecil';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../../utils/constant';
 import {changeFocus, deleteProdukFilter, searchProduk} from '../../../actions/ProdukAction';
 import {connect} from 'react-redux';
+import { getListKeranjang } from '../../../actions/KeranjangAction';
 
 class HeaderComponent extends Component {
   constructor(props) {
@@ -15,6 +16,17 @@ class HeaderComponent extends Component {
     this.state = {
       search: '',
     };
+  }
+
+  componentDidMount() {
+    const {dispatch} = this.props;
+    getData('user').then(res => {
+      //cek apakah user sudah Login
+      if (res) {
+        //masuk ke KeranjangAction
+        dispatch(getListKeranjang(res.uid));
+      }
+    });
   }
 
   onSubmit = keyword => {
@@ -49,16 +61,20 @@ class HeaderComponent extends Component {
     dispatch(deleteProdukFilter());
   };
 
-  
   //dijalankan ketika mengkilk form search dari halaman Home agar focus aktif
   focus = () => {
     const {dispatch} = this.props;
     dispatch(changeFocus());
-  }
+  };
 
   render() {
     const {search} = this.state;
-    const {navigation, page, isFocus} = this.props;
+    const {navigation, page, isFocus, getListKeranjangResult} = this.props;
+    let totalKeranjang;
+    if(getListKeranjangResult) {
+      //mengambil jumlah item dalam keranjang
+      totalKeranjang = Object.keys(getListKeranjangResult.item).length;
+    }
     return (
       <View style={styles.container}>
         <View style={styles.wrapperHeader}>
@@ -70,7 +86,7 @@ class HeaderComponent extends Component {
                 placeholder="Cari..."
                 style={styles.input}
                 value={search}
-                autoFocus={isFocus===true ? true : false}
+                autoFocus={isFocus === true ? true : false}
                 onFocus={() => this.changeSearch()}
                 onChangeText={search => {
                   this.setState({search});
@@ -102,7 +118,7 @@ class HeaderComponent extends Component {
           {/* Tombol Keranjang */}
           <KeranjangIcon
             icon="keranjang2"
-            totalKeranjang={5}
+            totalKeranjang={totalKeranjang}
             onPress={() => navigation.navigate('Keranjang')}
           />
         </View>
@@ -113,6 +129,7 @@ class HeaderComponent extends Component {
 
 const mapStateToProps = state => ({
   isFocus: state.ProdukReducer.isFocus,
+  getListKeranjangResult: state.KeranjangReducer.getListKeranjangResult,
 });
 
 export default connect(mapStateToProps, null)(HeaderComponent);
