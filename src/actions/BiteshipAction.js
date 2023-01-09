@@ -28,7 +28,7 @@ export const postOngkir = (data) => {
       .catch(error => {
         // ERROR
         dispatchError(dispatch, POST_ONGKIR, error.message);
-        Alert.alert('Error', error.message);
+        Alert.alert('Error', 'Mohon maaf. Jumlah barang melebihi kapasitas kurir.');
       });
   };
 };

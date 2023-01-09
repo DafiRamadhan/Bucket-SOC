@@ -177,7 +177,7 @@ class EditProfile extends Component {
       longitude,
       avatar,
     } = this.state;
-    const {navigation, updateProfileLoading, updateProfileError} = this.props;
+    const {navigation, updateProfileLoading} = this.props;
     return (
       <View style={styles.pages}>
         <DropShadow style={dropshadow.footer}>

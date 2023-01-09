@@ -20,7 +20,7 @@ const CardAlamat = ({profile}) => {
           {profile.nama} ({profile.nomerHp})
         </Text>
         <Text style={styles.alamat} numberOfLines={3}>
-          {profile.alamat}
+          {profile.alamat}.
         </Text>
         <Text numberOfLines={3} style={styles.alamat}>
           Detail Alamat : {profile.detail_alamat}
@@ -61,5 +61,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.regular,
     fontSize: RFValue(14, heightMobileUI),
     color: colors.black,
+    textAlign: 'justify',
   },
 });

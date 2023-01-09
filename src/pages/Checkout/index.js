@@ -10,6 +10,7 @@ import {
   colors,
   dropshadow,
   fonts,
+  getData,
   responsiveHeight,
   responsiveWidth,
 } from '../../utils';
@@ -24,7 +25,6 @@ import {
   Pilihan,
   PilihTanggal,
 } from '../../components/kecil';
-import {dummyPesanan, dummyProfile} from '../../data';
 import { connect } from 'react-redux';
 import { postOngkir } from '../../actions/BiteshipAction';
 
@@ -32,15 +32,42 @@ class Checkout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      profile: dummyProfile,
-      pesanan: dummyPesanan[0],
-      ekspedisi: ['gojek', 'grab'],
-      selectedEkspedisi: '',
-      selectedPengirimanIndex: '',
+      profile: false,
+      ekspedisi: [
+        'GoSend Instant',
+        'GrabExpress Instant',
+        'Ambil di Toko (COD)',
+      ],
+      selectedEkspedisi: false,
       pilihTanggal: '',
       pilihWaktu: '',
+      total_harga: this.props.route.params.total_harga,
     };
   }
+
+  //Dijalankan ketika komponen/halaman pertama kali di buka / di load
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.getUserData();
+    });
+    this.props.getOngkirResult = 0;
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  //mendapatkan userData dari Async Storage
+  getUserData = () => {
+    //mendapatkan data dari parameter 'user'
+    getData('user').then(res => {
+      const data = res;
+      //jika datanya ada
+      this.setState({
+        profile: data,
+      });
+    });
+  };
 
   updateTanggal = tanggal => {
     this.setState({
@@ -55,36 +82,38 @@ class Checkout extends Component {
   };
 
   pilihEkspedisi = selectedEkspedisi => {
-    if (selectedEkspedisi) {
-      this.setState({
-        selectedEkspedisi: selectedEkspedisi,
+    const {profile} = this.state;
+    const {dispatch, getListKeranjangResult} = this.props;
+    this.setState({
+      selectedEkspedisi: selectedEkspedisi,
+    });
+    if (selectedEkspedisi && selectedEkspedisi !== 'Ambil di Toko (COD)') {
+      let itemList = [];
+      Object.keys(getListKeranjangResult.item).forEach(key => {
+        itemList.push({
+          name: getListKeranjangResult.item[key].produk.nama,
+          description: getListKeranjangResult.item[key].catatan,
+          value: getListKeranjangResult.item[key].produk.harga,
+          quantity: getListKeranjangResult.item[key].jumlah,
+        });
       });
       const data = JSON.stringify({
-        origin_latitude: -7.5584244,
-        origin_longitude: 110.7841043,
-        destination_latitude: -7.5433613,
-        destination_longitude: 110.7655909,
-        couriers: selectedEkspedisi,
-        items: [
-          {
-            name: 'Shoes',
-            description: 'Black colored size 45',
-            value: 165000,
-            length: 40,
-            width: 40,
-            height: 40,
-            weight: 300,
-            quantity: 1,
-          },
-        ],
+        origin_latitude: -7.548838191314486,
+        origin_longitude: 110.83182951593932,
+        destination_latitude: profile.latitude,
+        destination_longitude: profile.longitude,
+        couriers: selectedEkspedisi === 'GoSend Instant' ? 'gojek' : 'grab',
+        items: itemList,
       });
-      this.props.dispatch(postOngkir(data));
+      dispatch(postOngkir(data));
+    } else {
+      this.props.getOngkirResult = 0;
     }
   };
 
   render() {
-    const {profile, ekspedisi, pesanan, selectedEkspedisi} = this.state;
-    const {navigation, ongkirResult} = this.props;
+    const {profile, ekspedisi, selectedEkspedisi, total_harga} = this.state;
+    const {navigation, getOngkirResult} = this.props;
     return (
       <View style={styles.pages}>
         <Header
@@ -131,28 +160,26 @@ class Checkout extends Component {
             <View style={styles.rincianHarga}>
               <Text style={styles.rincianText}>Rincian Harga</Text>
               <View style={styles.totalHarga}>
-                <Text style={styles.totalText}>Total Harga</Text>
+                <Text style={styles.totalText}>Total Harga Barang</Text>
                 <Text style={styles.totalText}>
-                  Rp{pesanan.totalHarga.toLocaleString('id-ID')}
+                  Rp{total_harga.toLocaleString('id-ID')}
                 </Text>
               </View>
               <View style={styles.totalHarga}>
                 <Text style={styles.totalText}>Total Ongkos Kirim</Text>
-                {ongkirResult ? (
+                {getOngkirResult ? (
                   <Text style={styles.totalText}>
-                    Rp{ongkirResult.toLocaleString('id-ID')}
+                    Rp{getOngkirResult.toLocaleString('id-ID')}
                   </Text>
                 ) : (
-                  <Text style={styles.totalText}>
-                    Rp0
-                  </Text>
+                  <Text style={styles.totalText}>Rp0</Text>
                 )}
               </View>
               <View style={styles.totalHarga}>
                 <Text style={styles.tagihan}>Total Tagihan</Text>
                 <Text style={styles.tagihan}>
                   Rp
-                  {(pesanan.totalHarga + ongkirResult).toLocaleString('id-ID')}
+                  {(total_harga + getOngkirResult).toLocaleString('id-ID')}
                 </Text>
               </View>
             </View>
@@ -163,7 +190,7 @@ class Checkout extends Component {
             <View style={styles.totalTagihan}>
               <Text style={styles.tagihanText}>Total Tagihan :</Text>
               <Text style={styles.hargaText}>
-                Rp{(pesanan.totalHarga + 15000).toLocaleString('id-ID')}
+                Rp{(total_harga + getOngkirResult).toLocaleString('id-ID')}
               </Text>
             </View>
             <TouchableOpacity
@@ -180,7 +207,8 @@ class Checkout extends Component {
 }
 
 const mapStateToProps = state => ({
-  ongkirResult: state.BiteshipReducer.ongkirResult,
+  getOngkirResult: state.BiteshipReducer.getOngkirResult,
+  getListKeranjangResult: state.KeranjangReducer.getListKeranjangResult,
 });
 
 export default connect(mapStateToProps, null)(Checkout);

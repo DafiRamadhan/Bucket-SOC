@@ -111,7 +111,11 @@ class Keranjang extends Component {
                   </View>
                   <TouchableOpacity
                     style={styles.tombolCheckout}
-                    onPress={() => navigation.navigate('Checkout')}>
+                    onPress={() =>
+                      navigation.navigate('Checkout', {
+                        total_harga: getListKeranjangResult.total_harga,
+                      })
+                    }>
                     <IconCheckout />
                     <Text style={styles.checkoutText}>Checkout</Text>
                   </TouchableOpacity>

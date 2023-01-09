@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     height: responsiveHeight(100),
     alignSelf: 'center',
     marginRight: responsiveWidth(10),
-    borderRadius: 10,
+    borderRadius: 5,
   },
   hapus: {
     flex: 1,

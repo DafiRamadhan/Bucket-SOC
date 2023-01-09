@@ -1,4 +1,4 @@
-import { FORGOT_PASSWORD, UPDATE_PROFILE } from "../../actions/ProfileAction";
+import { FORGOT_PASSWORD, UPDATE_PROFILE, CHANGE_PASSWORD } from "../../actions/ProfileAction";
 
 const initialState = {
   updateProfileLoading: false,
@@ -8,6 +8,10 @@ const initialState = {
   forgotPasswordLoading: false,
   forgotPasswordResult: false,
   forgotPasswordError: false,
+
+  changePasswordLoading: false,
+  changePasswordResult: false,
+  changePasswordError: false,
 };
 
 export default function (state = initialState, action) {
@@ -26,6 +30,14 @@ export default function (state = initialState, action) {
         forgotPasswordLoading: action.payload.loading,
         forgotPasswordResult: action.payload.data,
         forgotPasswordError: action.payload.errorMessage,
+      };
+
+    case CHANGE_PASSWORD:
+      return {
+        ...state,
+        changePasswordLoading: action.payload.loading,
+        changePasswordResult: action.payload.data,
+        changePasswordError: action.payload.errorMessage,
       };
     default:
       return state;

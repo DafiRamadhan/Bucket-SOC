@@ -1,9 +1,9 @@
 import { POST_ONGKIR } from "../../actions/BiteshipAction";
 
 const initialState = {
-  ongkirLoading: false,
-  ongkirResult: false,
-  ongkirError: false,
+  getOngkirLoading: false,
+  getOngkirResult: false,
+  getOngkirError: false,
 };
 
 export default function (state = initialState, action) {
@@ -11,9 +11,9 @@ export default function (state = initialState, action) {
     case POST_ONGKIR:
       return {
         ...state,
-        ongkirLoading: action.payload.loading,
-        ongkirResult: action.payload.data,
-        ongkirError: action.payload.errorMessage,
+        getOngkirLoading: action.payload.loading,
+        getOngkirResult: action.payload.data,
+        getOngkirError: action.payload.errorMessage,
       };
     default:
       return state;
