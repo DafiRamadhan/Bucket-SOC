@@ -7,7 +7,7 @@ import {
   Alert,
 } from 'react-native';
 import React, {Component} from 'react';
-import {LoginImg} from '../../assets';
+import {IconBack, LoginImg} from '../../assets';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
@@ -18,7 +18,6 @@ import { connect } from 'react-redux';
 class Login extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       email: '',
       password: '',
@@ -50,6 +49,11 @@ class Login extends Component {
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled">
+          <TouchableOpacity
+            style={styles.tombolBack}
+            onPress={() => navigation.goBack()}>
+            <IconBack />
+          </TouchableOpacity>
           <View style={styles.images}>
             <LoginImg />
           </View>
@@ -109,16 +113,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
+  tombolBack: {
+    marginTop: responsiveHeight(10),
+    marginLeft: responsiveWidth(10),
+    zIndex: 1,
+    padding: 5,
+    alignSelf: 'flex-start',
+  },
   images: {
     alignSelf: 'center',
     height: responsiveHeight(325),
     width: responsiveWidth(358),
-    marginTop: responsiveHeight(60),
+    marginTop: responsiveHeight(30),
     marginBottom: responsiveHeight(45),
   },
   card: {
     marginHorizontal: responsiveWidth(28),
-    marginBottom: responsiveHeight(66),
+    marginBottom: responsiveHeight(35),
   },
   loginText: {
     color: colors.black,

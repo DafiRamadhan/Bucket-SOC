@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Linking,
+  BackHandler,
 } from 'react-native';
 import React, {Component} from 'react';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
@@ -15,10 +16,29 @@ import {Header, ListDetailPesanan} from '../../components';
 export default class DetailPesanan extends Component {
   constructor(props) {
     super(props);
-
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     this.state = {
       pesanan: this.props.route.params.pesanan,
     };
+  }
+
+  componentDidMount() {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  handleBackButtonClick() {
+    this.props.navigation.navigate('Orders');
+    return true;
   }
 
   render() {
@@ -32,17 +52,20 @@ export default class DetailPesanan extends Component {
         />
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
-            <ListDetailPesanan pesanan={pesanan} />
+            <ListDetailPesanan pesanan={pesanan} navigation={navigation} />
             <View style={styles.wrapPilihan}>
-              <TouchableOpacity onPress={() => navigation.navigate('Orders')}>
-                <View style={styles.wrapButton}>
-                  <View>
-                    <Text style={styles.textMenu}>
-                      Lihat Halaman Pembayaran
-                    </Text>
+              {pesanan.url_midtrans ? (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Midtrans', pesanan)}>
+                  <View style={styles.wrapButton}>
+                    <View>
+                      <Text style={styles.textMenu}>
+                        Lihat Halaman Pembayaran
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              ) : null}
               <TouchableOpacity onPress={() => navigation.navigate('Orders')}>
                 <View style={styles.wrapButton}>
                   <View>
@@ -54,7 +77,7 @@ export default class DetailPesanan extends Component {
                 onPress={() =>
                   Linking.openURL(
                     'whatsapp://send?text=Halo, saya memiliki pertanyaan untuk pesanan saya dengan order ID ' +
-                      pesanan.orderId +
+                      pesanan.order_id +
                       '. &phone=6288225276534',
                   )
                 }>

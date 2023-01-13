@@ -1,27 +1,27 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { colors, fonts, responsiveHeight, responsiveWidth } from '../../../utils';
-import { heightMobileUI } from '../../../utils/constant';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { Jarak } from '../../kecil';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import {colors, fonts, responsiveHeight, responsiveWidth} from '../../../utils';
+import {heightMobileUI} from '../../../utils/constant';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {Jarak} from '../../kecil';
 
-export default function ListDetailPesanan({pesanan}) {
+export default function ListDetailPesanan({pesanan, navigation}) {
   return (
     <View>
       <View style={styles.wrapInfo}>
         <View style={styles.desc}>
-          <Text style={styles.titleText}>Status</Text>
+          <Text style={styles.titleText}>Status Pesanan</Text>
           <View style={styles.wrapStatus}>
-            <Text style={styles.status}>{pesanan.status}</Text>
+            <Text style={styles.status}>{pesanan.status_pesanan}</Text>
           </View>
         </View>
         <View style={styles.desc}>
-          <Text style={styles.labelText}>Order ID</Text>
-          <Text style={styles.infoText}>{pesanan.orderId}</Text>
+          <Text style={styles.labelText}>ID Pesanan</Text>
+          <Text style={styles.infoText}>{pesanan.order_id}</Text>
         </View>
         <View style={styles.desc}>
           <Text style={styles.labelText}>Tanggal Pemesanan</Text>
-          <Text style={styles.infoText}>{pesanan.tanggalPemesanan}</Text>
+          <Text style={styles.infoText}>{pesanan.tanggal_pemesanan}</Text>
         </View>
       </View>
       <Jarak
@@ -33,36 +33,39 @@ export default function ListDetailPesanan({pesanan}) {
         <View style={styles.desc}>
           <Text style={styles.titleText}>Detail Produk</Text>
         </View>
-        {pesanan.items.map((list, index) => {
+        {Object.keys(pesanan.item).map((key, index) => {
           return (
             <View key={index} style={styles.itemList}>
               <View style={styles.item}>
-                <Image source={list.product.gambar[0]} style={styles.gambar} />
+                <Image
+                  source={{uri: pesanan.item[key].produk.gambar[0]}}
+                  style={styles.gambar}
+                />
                 <View style={styles.wrapDetail}>
-                  <Text style={styles.nama} numberOfLines={1}>
-                    {list.product.nama}
+                  <Text style={styles.nama}>
+                    {pesanan.item[key].produk.nama}
                   </Text>
                   <Text style={styles.harga}>
                     Rp
-                    {list.product.harga.toLocaleString('id-ID')} x
-                    {list.jumlahPesan}
+                    {pesanan.item[key].produk.harga.toLocaleString('id-ID')} x
+                    {pesanan.item[key].jumlah}
                   </Text>
                   <View style={styles.wrapTotal}>
                     <Text style={styles.harga}>Total Harga : </Text>
                     <Text style={styles.hargaTotal}>
                       Rp
-                      {list.totalHarga.toLocaleString('id-ID')}
+                      {pesanan.item[key].total_harga.toLocaleString('id-ID')}
                     </Text>
                   </View>
                 </View>
               </View>
-              {list.catatan ? (
+              {pesanan.item[key].catatan ? (
                 <Text style={styles.catatanText}>Catatan :</Text>
               ) : (
                 <Text></Text>
               )}
-              {list.catatan ? (
-                <Text style={styles.catatan}>{list.catatan}</Text>
+              {pesanan.item[key].catatan ? (
+                <Text style={styles.catatan}>{pesanan.item[key].catatan}</Text>
               ) : null}
             </View>
           );
@@ -76,30 +79,68 @@ export default function ListDetailPesanan({pesanan}) {
       <View style={styles.wrapInfo}>
         <View style={styles.desc}>
           <Text style={styles.titleText}>
-            Informasi Pengiriman / Pengambilan
+            {pesanan.order_id.slice(-1) === 'A'
+              ? 'Informasi Pengiriman'
+              : 'Informasi Pengambilan'}
           </Text>
         </View>
         <View style={styles.desc}>
           <Text style={styles.labelText}>Permintaan Tanggal</Text>
-          <Text style={styles.infoText}>{pesanan.tanggalKirim}</Text>
+          <Text style={styles.infoText}>{pesanan.tanggal_pengiriman}</Text>
         </View>
         <View style={styles.desc}>
-          <Text style={styles.labelText}>Metode Pengiriman</Text>
-          <Text style={styles.infoText}>{pesanan.metodeKirim}</Text>
+          <Text style={styles.labelText}>
+            {pesanan.order_id.slice(-1) === 'A'
+              ? 'Metode Pengiriman'
+              : 'Metode Pengambilan'}
+          </Text>
+          <Text style={styles.infoText}>{pesanan.metode_pengiriman}</Text>
         </View>
         <View style={styles.desc}>
           <Text style={styles.labelText}>Info Kontak</Text>
-          <Text style={styles.infoText}>{pesanan.profile.nama}</Text>
+          <Text style={styles.infoText}>{pesanan.user.nama}</Text>
         </View>
-        <Text style={styles.infoAlamat}>({pesanan.profile.nomerHp})</Text>
-        <View style={styles.desc}>
-          <Text style={styles.labelText}>Alamat</Text>
-          <Text style={styles.infoText}>{pesanan.profile.alamat}</Text>
+        <Text style={styles.infoAlamat}>({pesanan.user.nomerHp})</Text>
+        {pesanan.order_id.slice(-1) === 'A' ? (
+          <View style={styles.desc}>
+            <Text style={styles.labelText}>Alamat Pengiriman</Text>
+            <Text style={styles.infoText}>{pesanan.user.alamat}</Text>
+          </View>
+        ) : (
+          <View style={styles.desc}>
+            <Text style={styles.labelText}>Alamat Toko</Text>
+            <Text style={styles.infoText}>
+              Jl. Merbabu Utama, Nusukan, Kec. Banjarsari, Kota Surakarta, Jawa
+              Tengah 57135
+            </Text>
+          </View>
+        )}
+        {pesanan.order_id.slice(-1) === 'A' ? (
+          <View style={styles.desc}>
+            <Text style={styles.labelText}>Detail Alamat Pengiriman</Text>
+            <Text style={styles.infoText}>{pesanan.user.detail_alamat}</Text>
+          </View>
+        ) : (
+          <View style={styles.desc}>
+            <Text style={styles.labelText}>Detail Alamat Toko</Text>
+            <Text style={styles.infoText}>Nusukan</Text>
+          </View>
+        )}
+        {pesanan.biteship_id ? (
+          <View>
+          <View style={styles.desc}>
+            <Text style={styles.labelText}>ID Pengiriman</Text>
+            <Text style={styles.infoText}>{pesanan.biteship_id}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.tombolLacak}
+            onPress={() =>
+              navigation.navigate('LacakPengiriman', pesanan.biteship_id)
+            }>
+            <Text style={styles.lacakText}>Lacak Pengiriman</Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.desc}>
-          <Text style={styles.labelText}>Detail Alamat</Text>
-          <Text style={styles.infoText}>{pesanan.profile.detail_alamat}</Text>
-        </View>
+        ) : null}
       </View>
       <Jarak
         width={'100%'}
@@ -113,20 +154,22 @@ export default function ListDetailPesanan({pesanan}) {
         <View style={styles.desc}>
           <Text style={styles.labelText}>Total Harga Barang</Text>
           <Text style={styles.infoText}>
-            Rp{pesanan.totalHarga.toLocaleString('id-ID')}
+            Rp{pesanan.total_harga_barang.toLocaleString('id-ID')}
           </Text>
         </View>
         <View style={styles.desc}>
           <Text style={styles.labelText}>Total Ongkos Kirim</Text>
           <Text style={styles.infoText}>
-            Rp{pesanan.ongkir.toLocaleString('id-ID')}
+            Rp{pesanan.total_ongkir.toLocaleString('id-ID')}
           </Text>
         </View>
         <View style={styles.desc}>
           <Text style={styles.totalText}>Total Pesanan</Text>
           <Text style={styles.totalInfo}>
             Rp
-            {(pesanan.totalHarga + pesanan.ongkir).toLocaleString('id-ID')}
+            {(pesanan.total_harga_barang + pesanan.total_ongkir).toLocaleString(
+              'id-ID',
+            )}
           </Text>
         </View>
       </View>
@@ -145,7 +188,7 @@ const styles = StyleSheet.create({
   desc: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 17,
+    marginTop: responsiveHeight(17),
   },
   titleText: {
     fontFamily: fonts.primary.bold,
@@ -156,6 +199,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.regular,
     fontSize: RFValue(15, heightMobileUI),
     color: colors.black,
+    width: responsiveWidth(140),
   },
   infoText: {
     fontFamily: fonts.primary.regular,
@@ -199,6 +243,8 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.regular,
     color: colors.black,
     marginBottom: responsiveHeight(17),
+    textTransform: 'capitalize',
+    textAlign: 'justify',
   },
   harga: {
     fontSize: RFValue(12, heightMobileUI),
@@ -246,5 +292,14 @@ const styles = StyleSheet.create({
     color: colors.primary,
     textAlign: 'right',
     width: responsiveWidth(220),
+  },
+  tombolLacak: {
+    alignSelf: 'flex-end',
+    marginTop: responsiveHeight(17),
+  },
+  lacakText: {
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(17, heightMobileUI),
+    color: colors.primary,
   },
 });

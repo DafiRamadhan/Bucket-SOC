@@ -13,6 +13,7 @@ import Intro3Img from './Intro3Img.js';
 import Intro4Img from './Intro4Img.js';
 import Intro5Img from './Intro5Img.js';
 import EmptyCart from './EmptyCart';
+import EmptyOrder from './EmptyOrder';
 
 export {
   Logo,
@@ -30,4 +31,5 @@ export {
   Intro4Img,
   Intro5Img,
   EmptyCart,
+  EmptyOrder,
 };

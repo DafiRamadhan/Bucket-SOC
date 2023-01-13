@@ -19,14 +19,19 @@ class HeaderComponent extends Component {
   }
 
   componentDidMount() {
-    const {dispatch} = this.props;
-    getData('user').then(res => {
-      //cek apakah user sudah Login
-      if (res) {
-        //masuk ke KeranjangAction
-        dispatch(getListKeranjang(res.uid));
-      }
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      getData('user').then(res => {
+        //cek data user untuk mengambil jumlah produk di keranjang
+        if (res) {
+          //masuk ke KeranjangAction
+          this.props.dispatch(getListKeranjang(res.uid));
+        }
+      });
     });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
   }
 
   onSubmit = keyword => {
@@ -71,7 +76,7 @@ class HeaderComponent extends Component {
     const {search} = this.state;
     const {navigation, page, isFocus, getListKeranjangResult} = this.props;
     let totalKeranjang;
-    if(getListKeranjangResult) {
+    if (getListKeranjangResult) {
       //mengambil jumlah item dalam keranjang
       totalKeranjang = Object.keys(getListKeranjangResult.item).length;
     }

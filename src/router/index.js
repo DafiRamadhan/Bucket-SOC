@@ -21,6 +21,8 @@ import {
   Intro3,
   Intro4,
   Intro5,
+  Midtrans,
+  LacakPengiriman,
 } from '../pages';
 import {BottomNavigator} from '../components';
 
@@ -85,13 +87,33 @@ const Intro = () => {
         component={Intro5}
         options={{headerShown: false, animation: 'slide_from_right'}}
       />
+      <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Register1"
+        component={Register1}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Register2"
+        component={Register2}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPassword}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };
 
 const Router = () => {
   return (
-    <Stack.Navigator initialRouteName="MainApp">
+    <Stack.Navigator initialRouteName={'MainApp'}>
       <Stack.Screen
         name="MainApp"
         component={MainApp}
@@ -128,28 +150,18 @@ const Router = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Login"
-        component={Login}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Register1"
-        component={Register1}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Register2"
-        component={Register2}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="ForgotPassword"
-        component={ForgotPassword}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
         name="Intro"
         component={Intro}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Midtrans"
+        component={Midtrans}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="LacakPengiriman"
+        component={LacakPengiriman}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

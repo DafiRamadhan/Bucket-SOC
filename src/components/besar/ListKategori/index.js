@@ -5,7 +5,7 @@ import {colors, fonts, heightMobileUI, responsiveHeight, responsiveWidth} from '
 import {connect} from 'react-redux';
 import { RFValue } from 'react-native-responsive-fontsize';
 
-//pilihKateogri dikirim dari halaman Home
+//dikirim dari halaman Home
 const ListKategori = ({getListKategoriLoading, getListKategoriResult, navigation}) => {
   return (
     <View>

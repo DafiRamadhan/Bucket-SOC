@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {RFValue} from 'react-native-responsive-fontsize';
-import {heightMobileUI} from '../../../utils/constant';
+import {custom_bulan, custom_hari, heightMobileUI} from '../../../utils/constant';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../../utils';
 import {IconCalendar, IconClock} from '../../../assets';
 
@@ -18,11 +18,7 @@ export default class PilihTanggal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()+1,
-      ),
+      date: today,
       time: today,
       showDate: false,
       showTime: false,
@@ -32,29 +28,6 @@ export default class PilihTanggal extends Component {
   }
 
   setDate = (event, selectedDate) => {
-    var custom_bulan = [
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember',
-    ];
-    var custom_hari = [
-      'Minggu',
-      'Senin',
-      'Selasa',
-      'Rabu',
-      'Kamis',
-      'Jumat',
-      'Sabtu',
-    ];
     const newDate = new Date(selectedDate);
     const year = newDate.getFullYear();
     const month = newDate.getMonth();
@@ -102,6 +75,7 @@ export default class PilihTanggal extends Component {
     } else {
       const clockText = newTime
         .toLocaleTimeString('id-ID')
+        //menghilankgan detik
         .replace(/(.*)\D\d+/, '$1');
       this.setState({
         waktu: clockText,
@@ -129,7 +103,7 @@ export default class PilihTanggal extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.labelText}>
-          Pilih Tanggal Pengiriman / Pengambilan
+          Pilih Tanggal Pengiriman / Pengambilan :
         </Text>
         <View style={styles.wrapDateTimePicker}>
           <TouchableOpacity onPress={this.datepicker}>

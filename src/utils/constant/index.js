@@ -5,9 +5,42 @@ export const widthMobileUI = 414;
 export const API_TIMEOUT = 120000;
 
 export const BITESHIP_API_KEY =
-  'biteship_live.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQXBsaWthc2kgQW5kcm9pZCIsInVzZXJJZCI6IjYzODc5NjViNTcyNGJjMjUwODRiYTAxZSIsImlhdCI6MTY2OTgzMDM1OH0.30YPDkBaJUPHC4DIKT0Y4Q063-sIjTD0DhPOOB5GCC4';
+  'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiVGVzdGluZyIsInVzZXJJZCI6IjYzODc5NjViNTcyNGJjMjUwODRiYTAxZSIsImlhdCI6MTY2OTgzMDQxM30.l_aayhOYhf3AM7m6_BIUT0ETNzQMsSJmCEvbJj-Whdo';
 export const BITESHIP_API_URL = 'https://api.biteship.com/v1/';
 export const BITESHIP_API_HEADER = {
-  'authorization': BITESHIP_API_KEY,
-  'content-type': 'application/json',
+  'Authorization': BITESHIP_API_KEY,
+  'Content-Type': 'application/json',
 };
+
+export const URL_MIDTRANS = "https://app.sandbox.midtrans.com/snap/v1/"
+export const URL_MIDTRANS_STATUS = "https://api.sandbox.midtrans.com/v2/"
+
+export const HEADER_MIDTRANS = {
+  'Accept': 'application/json',
+  'Content-Type': 'application/json',
+  'Authorization': 'Basic U0ItTWlkLXNlcnZlci1XV19XODdST2tGbnRKeUZlcllqN2VqY1Q=',
+};
+
+export var custom_bulan = [
+  'Januari',
+  'Februari',
+  'Maret',
+  'April',
+  'Mei',
+  'Juni',
+  'Juli',
+  'Agustus',
+  'September',
+  'Oktober',
+  'November',
+  'Desember',
+];
+export var custom_hari = [
+  'Minggu',
+  'Senin',
+  'Selasa',
+  'Rabu',
+  'Kamis',
+  'Jumat',
+  'Sabtu',
+];

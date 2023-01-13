@@ -33,7 +33,7 @@ const CardKeranjang = ({item, dispatch, id, keranjang}) => {
             <View style={styles.deskripsiWrap}>
               <Text style={styles.deskripsiTitle}>Kategori Buket : </Text>
               <Text style={styles.deskripsiText}>
-                {item.kategori}
+                {item.produk.nama_kategori}
               </Text>
             </View>
             {item.catatan ? (

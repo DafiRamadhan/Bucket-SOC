@@ -1,48 +1,57 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
-import { colors, fonts, responsiveHeight, responsiveWidth } from '../../../utils';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { heightMobileUI } from '../../../utils/constant';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React from 'react';
+import {colors, fonts, responsiveHeight, responsiveWidth} from '../../../utils';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {heightMobileUI} from '../../../utils/constant';
 
 const CardOrders = ({pesanan, navigation}) => {
+  // if (pesanan.url_midtrans) {
+  //   console.log(pesanan.url_midtrans);
+  // }
+
+  let itemList = [];
+  Object.keys(pesanan.item).forEach(key => {
+    itemList.push(pesanan.item[key]);
+  });
+
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate('DetailPesanan', {pesanan})}>
       <View style={styles.container}>
         <View style={styles.box}>
           <View style={styles.wrapTanggal}>
-            <Text style={styles.tanggal}>{pesanan.tanggalPemesanan}</Text>
+            <Text style={styles.tanggal}>{pesanan.tanggal_pemesanan}</Text>
           </View>
           <View style={styles.wrapStatus}>
-            <Text style={styles.status}>{pesanan.status}</Text>
+            <Text style={styles.status}>{pesanan.status_pesanan}</Text>
           </View>
           <View style={styles.item}>
             <Image
-              source={pesanan.items[0].product.gambar[0]}
+              source={{uri: itemList[0].produk.gambar[0]}}
               style={styles.gambar}
             />
             <View style={styles.wrapDetail}>
               <Text style={styles.nama} numberOfLines={1}>
-                {pesanan.items[0].product.nama}
+                {itemList[0].produk.nama}
               </Text>
               <Text style={styles.harga}>
-                Rp{pesanan.items[0].product.harga.toLocaleString('id-ID')} x
-                {pesanan.items[0].jumlahPesan}
+                Rp{itemList[0].produk.harga.toLocaleString('id-ID')} x
+                {itemList[0].jumlah}
               </Text>
               <View style={styles.wrapTotal}>
                 <Text style={styles.harga}>Total Harga : </Text>
                 <Text style={styles.hargaTotal}>
-                  Rp{pesanan.items[0].totalHarga.toLocaleString('id-ID')}
+                  Rp{itemList[0].total_harga.toLocaleString('id-ID')}
                 </Text>
               </View>
             </View>
           </View>
-          {pesanan.items.length - 1 >= 1 ? (
+          {itemList.length > 1 ? (
             <Text style={styles.jumlahProduk}>
-              +{pesanan.items.length - 1} Produk Lainnya
+              +{itemList.length - 1} Produk Lainnya
             </Text>
           ) : (
-            <Text></Text>
+            <Text style={styles.jumlahProduk}></Text>
           )}
           <View style={styles.wrapInvoice}>
             <View>
@@ -51,11 +60,13 @@ const CardOrders = ({pesanan, navigation}) => {
             </View>
             <View>
               <Text style={styles.amountInvoice}>
-                Rp{pesanan.ongkir.toLocaleString('id-ID')}
+                Rp{pesanan.total_ongkir.toLocaleString('id-ID')}
               </Text>
               <Text style={styles.amountInvoice}>
                 Rp
-                {(pesanan.totalHarga + pesanan.ongkir).toLocaleString('id-ID')}
+                {(
+                  pesanan.total_harga_barang + pesanan.total_ongkir
+                ).toLocaleString('id-ID')}
               </Text>
             </View>
           </View>
@@ -63,9 +74,9 @@ const CardOrders = ({pesanan, navigation}) => {
       </View>
     </TouchableOpacity>
   );
-}
+};
 
-export default CardOrders
+export default CardOrders;
 
 const styles = StyleSheet.create({
   container: {
@@ -124,6 +135,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.regular,
     color: colors.black,
     marginBottom: responsiveHeight(17),
+    textTransform: 'capitalize',
   },
   harga: {
     fontSize: RFValue(12, heightMobileUI),

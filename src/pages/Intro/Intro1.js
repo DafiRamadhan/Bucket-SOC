@@ -1,6 +1,6 @@
 import {Text, StyleSheet, View, TouchableOpacity} from 'react-native';
 import React, {Component} from 'react';
-import {Intro1Img} from '../../assets';
+import {IconBack, Intro1Img} from '../../assets';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
@@ -14,6 +14,11 @@ export default class Intro1 extends Component {
     return (
       <View style={styles.pages}>
         <GestureRecognizer onSwipeLeft={() => navigation.navigate('Intro2')}>
+          <TouchableOpacity
+            style={styles.tombolBack}
+            onPress={() => navigation.navigate('MainApp')}>
+            <IconBack />
+          </TouchableOpacity>
           <Text style={styles.number}>1 / 5</Text>
           <View style={styles.images}>
             <Intro1Img />
@@ -54,6 +59,14 @@ const styles = StyleSheet.create({
   pages: {
     flex: 1,
     backgroundColor: colors.white,
+  },
+  tombolBack: {
+    marginTop: responsiveHeight(10),
+    marginLeft: responsiveWidth(10),
+    zIndex: 1,
+    padding: 5,
+    alignSelf: 'flex-start',
+    position: 'absolute',
   },
   number: {
     marginTop: responsiveHeight(30),

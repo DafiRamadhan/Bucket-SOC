@@ -16,7 +16,6 @@ import {heightMobileUI} from '../../utils/constant';
 export default class Register1 extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       nama: '',
       email: '',
@@ -42,8 +41,11 @@ export default class Register1 extends Component {
     if (nama && email && nomerHp && password && confirmPassword) {
       if (!this.validateEmail(email)) {
         Alert.alert('Error', 'Format Email salah!');
-      }else if (!this.validatePassword(password)) {
-        Alert.alert('Error', 'Password harus terdiri dari minimal 8 karakter, mengandung huruf kecil, huruf besar, dan angka!');
+      } else if (!this.validatePassword(password)) {
+        Alert.alert(
+          'Error',
+          'Password harus terdiri dari minimal 8 karakter, mengandung huruf kecil, huruf besar, dan angka!',
+        );
       } else if (password !== confirmPassword) {
         Alert.alert('Error', 'Password dan Konfirmasi Password harus sama!');
       } else {

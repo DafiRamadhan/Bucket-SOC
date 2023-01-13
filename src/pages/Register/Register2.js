@@ -20,7 +20,6 @@ import { connect } from 'react-redux';
 class Register2 extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       alamat: '',
       detail_alamat: '',
@@ -30,20 +29,17 @@ class Register2 extends Component {
       search: true,
     };
   }
-  
-//Ketika suatu komponen terdapat perubahan
-componentDidUpdate(prevProps) {
-  const {registerResult} = this.props //dari false menjadi newData
 
-  if(registerResult && prevProps.registerResult !== registerResult) //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
-  {
-    Alert.alert(
-      'Pendaftaran Akun Berhasil',
-      'Silakan lakukan Login!',
-    );
-    this.props.navigation.replace("Login")
+  //Ketika suatu komponen terdapat perubahan
+  componentDidUpdate(prevProps) {
+    const {registerResult} = this.props; //dari false menjadi newData
+
+    if (registerResult && prevProps.registerResult !== registerResult) {
+      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+      Alert.alert('Pendaftaran Akun Berhasil', 'Silakan lakukan Login!');
+      this.props.navigation.replace('Login');
+    }
   }
-}
 
   clickMaps = () => {
     this.setState({
@@ -69,7 +65,7 @@ componentDidUpdate(prevProps) {
 
   onSubmit = () => {
     const {alamat, detail_alamat, latitude, longitude} = this.state;
-    if(alamat && detail_alamat && latitude && longitude) {
+    if (alamat && detail_alamat && latitude && longitude) {
       const data = {
         nama: this.props.route.params.nama,
         email: this.props.route.params.email,
@@ -82,21 +78,15 @@ componentDidUpdate(prevProps) {
         avatar: '',
       };
       //Ke Auth Action
-      this.props.dispatch(registerUser(data, this.props.route.params.password))
-    }else {
-      Alert.alert("Error", "Silahkan Isi Alamat dan Detail Alamat Anda!")
+      this.props.dispatch(registerUser(data, this.props.route.params.password));
+    } else {
+      Alert.alert('Error', 'Silahkan Isi Alamat dan Detail Alamat Anda!');
     }
-  }
+  };
 
   render() {
-    const {
-      openMaps,
-      search,
-      alamat,
-      detail_alamat,
-      latitude,
-      longitude,
-    } = this.state;
+    const {openMaps, search, alamat, detail_alamat, latitude, longitude} =
+      this.state;
     const {navigation, registerLoading} = this.props;
     return (
       <View style={styles.pages}>
@@ -232,13 +222,13 @@ const styles = StyleSheet.create({
   },
   wrapAlamat: {
     marginTop: responsiveHeight(30),
+    alignSelf: 'flex-end',
+    padding: 5,
   },
   changeText: {
     color: colors.primary,
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(18, heightMobileUI),
-    alignSelf: 'flex-end',
-    flex: 1,
   },
   cardAlamat: {
     width: '100%',

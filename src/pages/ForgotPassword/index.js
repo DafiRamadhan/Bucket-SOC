@@ -18,7 +18,6 @@ import {connect} from 'react-redux';
 class ForgotPassword extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       email: '',
     };

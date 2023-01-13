@@ -21,7 +21,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import DropShadow from 'react-native-drop-shadow';
 import { deleteProdukFilter } from '../../../actions/ProdukAction';
 
-//pilihKateogri dikirim dari halaman Home
+//dikirim dari halaman Bouquet
 const ListKategori2 = ({getListKategoriLoading, getListKategoriResult, navigation, idKategori, dispatch}) => {
   return (
     <View>

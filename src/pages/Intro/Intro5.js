@@ -11,6 +11,7 @@ export default class Intro5 extends Component {
   render() {
     const {navigation} = this.props;
     const sebelumnya = '< Kembali';
+    const selanjutnya = 'Lewati >';
     return (
       <View style={styles.pages}>
         <GestureRecognizer onSwipeRight={() => navigation.goBack()}>
@@ -49,11 +50,14 @@ export default class Intro5 extends Component {
               <Text style={styles.registerText}>Daftar Akun Baru</Text>
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.prevBtn}>
-            <Text style={styles.prevText}>{sebelumnya}</Text>
-          </TouchableOpacity>
+          <View style={styles.wrapBtn}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text style={styles.btnText}>{sebelumnya}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.replace('MainApp')}>
+              <Text style={styles.btnText}>{selanjutnya}</Text>
+            </TouchableOpacity>
+          </View>
         </GestureRecognizer>
       </View>
     );
@@ -120,11 +124,12 @@ const styles = StyleSheet.create({
     height: responsiveWidth(11),
     borderRadius: 10,
   },
-  prevBtn: {
-    alignSelf: 'flex-start',
-    marginLeft: responsiveWidth(15),
+  wrapBtn: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: responsiveWidth(15),
   },
-  prevText: {
+  btnText: {
     color: colors.desc,
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(18, heightMobileUI),

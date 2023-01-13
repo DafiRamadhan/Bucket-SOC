@@ -1,30 +1,63 @@
-import { Text, StyleSheet, View, ScrollView } from 'react-native'
-import React, { Component } from 'react'
-import { dummyPesanan } from '../../data'
-import { ListOrders } from '../../components'
-import { colors, fonts, responsiveHeight } from '../../utils'
-import { RFValue } from 'react-native-responsive-fontsize'
-import { heightMobileUI } from '../../utils/constant'
+import {
+  Text,
+  StyleSheet,
+  View,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
+import React, {Component} from 'react';
+import {ListOrders} from '../../components';
+import {colors, fonts, getData, responsiveHeight} from '../../utils';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {heightMobileUI} from '../../utils/constant';
+import {connect} from 'react-redux';
+import {getListHistory} from '../../actions/HistoryAction';
 
-export default class Orders extends Component {
-constructor(props) {
-  super(props)
+class Orders extends Component {
+  constructor(props) {
+    super(props);
 
-  this.state = {
-     pesanan: dummyPesanan
+    this.state = {
+      profile: false,
+    };
   }
-}
+
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      getData('user').then(res => {
+        const data = res;
+        if (data) {
+          this.setState({
+            profile: data,
+          });
+          this.props.dispatch(getListHistory(data.uid));
+        } else {
+          this.props.navigation.replace('Intro');
+        }
+      });
+    });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
 
   render() {
-    const {pesanan} = this.state
-    const {navigation} = this.props
+    const {profile} = this.state;
+    const {navigation} = this.props;
     return (
       <View style={styles.pages}>
         <Text style={styles.title}>Orders</Text>
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.container}>
             <View style={styles.listmenu}>
-              <ListOrders daftarPesanan={pesanan} navigation={navigation}/>
+              {profile ? (
+                <ListOrders navigation={navigation} />
+              ) : (
+                <View style={styles.loading}>
+                  <ActivityIndicator size="large" color={colors.primary} />
+                </View>
+              )}
             </View>
           </View>
         </ScrollView>
@@ -33,9 +66,10 @@ constructor(props) {
   }
 }
 
+export default connect()(Orders);
+
 const styles = StyleSheet.create({
   pages: {
-    //flex: 1,
     backgroundColor: colors.primary,
   },
   title: {
@@ -54,7 +88,7 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
     marginTop: responsiveHeight(100),
   },
-  listmenu: {
-    //marginTop: responsiveHeight(7),
+  loading: {
+    marginTop: responsiveHeight(350),
   },
 });

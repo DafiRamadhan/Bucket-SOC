@@ -22,17 +22,16 @@ import Inputan from '../../components/kecil/Inputan';
 import DropShadow from 'react-native-drop-shadow';
 import Counter from 'react-native-counters';
 import BuketSlider from '../../components/besar/BuketSlider';
-import { connect } from 'react-redux';
-import { getDetailKategori } from '../../actions/KategoriAction';
-import { masukKeranjang } from '../../actions/KeranjangAction';
-import { Loading } from '../../components';
+import {connect} from 'react-redux';
+import {getDetailKategori} from '../../actions/KategoriAction';
+import {masukKeranjang} from '../../actions/KeranjangAction';
+import {Loading} from '../../components';
 
 class DetailProduk extends Component {
   constructor(props) {
     super(props);
     this.state = {
       produk: this.props.route.params.produk,
-      images: this.props.route.params.produk.gambar,
       value: 1,
       catatan: '',
       uid: '',
@@ -48,13 +47,29 @@ class DetailProduk extends Component {
 
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
-    const {saveKeranjangResult} = this.props;
+    const {saveKeranjangResult, getDetailKategoriResult} = this.props;
+
+    if (
+      getDetailKategoriResult &&
+      prevProps.getDetailKategoriResult !== getDetailKategoriResult
+    ) {
+      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+      //Menambahkan parameter nama_kategori ke state produk
+      const produk = {
+        ...this.state.produk,
+        nama_kategori: getDetailKategoriResult.nama,
+      };
+      this.setState({
+        produk: produk,
+      });
+    }
+
     if (
       saveKeranjangResult &&
       prevProps.saveKeranjangResult !== saveKeranjangResult
     ) {
       //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
-      this.props.navigation.navigate('Keranjang')
+      this.props.navigation.navigate('Keranjang');
     }
   }
 
@@ -73,7 +88,6 @@ class DetailProduk extends Component {
         if (catatan) {
           const data = {
             ...this.state,
-            kategori: getDetailKategoriResult.nama,
           };
           //masuk ke KeranjangAction
           dispatch(masukKeranjang(data));
@@ -83,14 +97,15 @@ class DetailProduk extends Component {
         //jika user belum Login
       } else {
         Alert.alert('Alert', 'Silakan Login Terlebih Dahulu!');
-        navigation.replace('Login');
+        navigation.replace('Intro');
       }
     });
   };
 
   render() {
-    const {navigation, getDetailKategoriResult, saveKeranjangLoading} = this.props;
-    const {produk, images, catatan} = this.state;
+    const {navigation, getDetailKategoriResult, saveKeranjangLoading} =
+      this.props;
+    const {produk, catatan} = this.state;
     return (
       <View style={styles.page}>
         <ScrollView
@@ -101,7 +116,7 @@ class DetailProduk extends Component {
             onPress={() => navigation.goBack()}>
             <IconBack />
           </TouchableOpacity>
-          <BuketSlider images={images} />
+          <BuketSlider images={produk.gambar} />
           <View style={styles.container}>
             <View style={styles.desc}>
               <Text style={styles.harga}>
@@ -128,24 +143,35 @@ class DetailProduk extends Component {
         </ScrollView>
         <DropShadow style={dropshadow.footer}>
           <View style={styles.footer}>
-            <View style={styles.counter}>
-              <Counter
-                buttonStyle={styles.button}
-                buttonTextStyle={styles.buttonText}
-                countTextStyle={styles.countText}
-                start={1}
-                min={1}
-                max={20}
-                value={this.state.value}
-                onChange={value => this.setState({value})}
-              />
-            </View>
-            <TouchableOpacity
-              style={styles.tombolKeranjang}
-              onPress={() => this.masukKeranjang()}>
-              <IconAddCart />
-              <Text style={styles.keranjangText}>Keranjang</Text>
-            </TouchableOpacity>
+            {produk.ready ? (
+              <>
+                <View style={styles.counter}>
+                  <Counter
+                    buttonStyle={styles.button}
+                    buttonTextStyle={styles.buttonText}
+                    countTextStyle={styles.countText}
+                    start={1}
+                    min={1}
+                    max={20}
+                    value={this.state.value}
+                    onChange={value => this.setState({value})}
+                  />
+                </View>
+                <TouchableOpacity
+                  style={styles.tombolKeranjang}
+                  onPress={() => this.masukKeranjang()}>
+                  <IconAddCart />
+                  <Text style={styles.keranjangText}>Keranjang</Text>
+                </TouchableOpacity>
+              </>
+            ) : (
+              <>
+                <Text style={styles.noReady}>
+                  Mohon maaf, produk sedang tidak tersedia. Silakan hubungi
+                  Admin untuk info lebih lanjut.
+                </Text>
+              </>
+            )}
           </View>
         </DropShadow>
         {saveKeranjangLoading ? <Loading /> : null}
@@ -162,7 +188,7 @@ const mapStateToProps = state => ({
   saveKeranjangError: state.KeranjangReducer.saveKeranjangError,
 });
 
-export default connect(mapStateToProps, null)(DetailProduk)
+export default connect(mapStateToProps, null)(DetailProduk);
 
 const styles = StyleSheet.create({
   page: {
@@ -215,6 +241,12 @@ const styles = StyleSheet.create({
     color: colors.desc,
     marginTop: responsiveHeight(7),
     textAlign: 'justify',
+  },
+  noReady: {
+    fontSize: RFValue(14, heightMobileUI),
+    fontFamily: fonts.primary.regular,
+    color: 'red',
+    textAlign: 'center',
   },
   footer: {
     height: responsiveHeight(85),

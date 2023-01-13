@@ -72,7 +72,6 @@ export const simpanItemKeranjang = data => {
       jumlah: data.value,
       total_harga: parseInt(data.value) * parseInt(data.produk.harga),
       catatan: data.catatan,
-      kategori: data.kategori,
     };
     //Simpan data barang ke database
     set(push(ref(getDatabase(), '/keranjang/' + data.uid + '/item/')), item)

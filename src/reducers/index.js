@@ -6,6 +6,9 @@ import BannerReducer from './banner';
 import ProdukReducer from './produk';
 import KeranjangReducer from './keranjang';
 import BiteshipReducer from './biteship';
+import PaymentReducer from './payment';
+import PesananReducer from './pesanan';
+import HistoryReducer from './history';
 
 const rootReducer = combineReducers({
     AuthReducer,
@@ -15,6 +18,9 @@ const rootReducer = combineReducers({
     ProdukReducer,
     KeranjangReducer,
     BiteshipReducer,
+    PaymentReducer,
+    PesananReducer,
+    HistoryReducer,
 });
 
 export default rootReducer

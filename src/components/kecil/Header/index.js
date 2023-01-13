@@ -35,8 +35,8 @@ export default Header;
 const styles = StyleSheet.create({
   tombolBack: {
     position: 'absolute',
-    marginTop: 12,
-    marginLeft: 10,
+    marginTop: responsiveHeight(12),
+    marginLeft: responsiveWidth(10),
     zIndex: 1,
     padding: 5,
   },
@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: colors.white,
     paddingHorizontal: responsiveWidth(13),
-    marginBottom: 5,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
