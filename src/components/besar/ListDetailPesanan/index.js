@@ -130,7 +130,7 @@ export default function ListDetailPesanan({pesanan, navigation}) {
           <View>
           <View style={styles.desc}>
             <Text style={styles.labelText}>ID Pengiriman</Text>
-            <Text style={styles.infoText}>{pesanan.biteship_id}</Text>
+            <Text style={styles.idText}>{pesanan.biteship_id}</Text>
           </View>
           <TouchableOpacity
             style={styles.tombolLacak}
@@ -207,6 +207,13 @@ const styles = StyleSheet.create({
     color: colors.black,
     textAlign: 'right',
     width: responsiveWidth(220),
+  },
+  idText: {
+    fontFamily: fonts.primary.regular,
+    fontSize: RFValue(15, heightMobileUI),
+    color: colors.black,
+    textAlign: 'right',
+    width: responsiveWidth(230),
   },
   wrapStatus: {
     backgroundColor: colors.primary,

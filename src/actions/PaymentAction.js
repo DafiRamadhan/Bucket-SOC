@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Alert } from "react-native";
-import { API_TIMEOUT, URL_MIDTRANS, HEADER_MIDTRANS } from "../utils";
+import { API_TIMEOUT, URL_MIDTRANS, HEADER_MIDTRANS, URL_MIDTRANS_SNAP } from "../utils";
 import {dispatchError, dispatchLoading, dispatchSuccess} from '../utils';
 
 export const SNAP_TRANSACTION = 'SNAP_TRANSACTION';
@@ -12,7 +12,7 @@ export const snapTransaction = (dataMidtrans) => {
 
       axios({
         method: 'POST',
-        url: URL_MIDTRANS + 'transactions',
+        url: URL_MIDTRANS_SNAP + 'transactions',
         timeout: API_TIMEOUT,
         headers: HEADER_MIDTRANS,
         data: dataMidtrans,

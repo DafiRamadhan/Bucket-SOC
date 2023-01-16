@@ -17,11 +17,11 @@ class Midtrans extends Component {
       'hardwareBackPress',
       this.handleBackButtonClick,
     );
-    if (this.props.route.params.order_id) {
+    if (this.props.route.params.data.order_id) {
       //Jika belum memiliki status pesanan (baru membuat pesanan di halaman checkout)
-      if (!this.props.route.params.status_pesanan) {
+      if (!this.props.route.params.data.status_pesanan) {
         //Jalankan Action untuk hapus data keranjang dan masukkan data ke data pesanan
-        dispatch(updatePesanan(this.props.route.params));
+        dispatch(updatePesanan(this.props.route.params.data));
       }
     }
   }
@@ -34,24 +34,34 @@ class Midtrans extends Component {
   }
 
   handleBackButtonClick() {
-    this.props.navigation.navigate('DetailPesanan', this.props.updatePesananResult);
-    return true;
-  }
+    if (this.props.route.params.page === 'Checkout') {
+      this.props.navigation.navigate('Orders');
+      return true;
+    } else {
+      this.props.navigation.navigate('DetailPesanan');
+      return true;
+    }
+  } 
 
   render() {
     const {navigation, updatePesananLoading} = this.props;
     return (
       <View style={styles.page}>
-        <Header
-          title="Pembayaran"
-          goBack={() =>
-            navigation.navigate('DetailPesanan', this.props.updatePesananResult)
-          }
-        />
+        {this.props.route.params.page === 'Checkout' ? (
+          <Header
+            title="Pembayaran"
+            goBack={() => navigation.navigate('Orders')}
+          />
+        ) : (
+          <Header
+            title="Pembayaran"
+            goBack={() => navigation.navigate('DetailPesanan')}
+          />
+        )}
         {updatePesananLoading ? (
           <Loading />
         ) : (
-          <WebView source={{uri: this.props.route.params.url_midtrans}} />
+          <WebView source={{uri: this.props.route.params.data.url_midtrans}} />
         )}
       </View>
     );

@@ -87,6 +87,24 @@ const Intro = () => {
         component={Intro5}
         options={{headerShown: false, animation: 'slide_from_right'}}
       />
+    </Stack.Navigator>
+  );
+};
+
+const Router = ({status}) => {
+  return (
+    <Stack.Navigator
+      initialRouteName={status === 'Logged In' ? 'MainApp' : 'Intro'}>
+      <Stack.Screen
+        name="MainApp"
+        component={MainApp}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Intro"
+        component={Intro}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="Login"
         component={Login}
@@ -105,18 +123,6 @@ const Intro = () => {
       <Stack.Screen
         name="ForgotPassword"
         component={ForgotPassword}
-        options={{headerShown: false}}
-      />
-    </Stack.Navigator>
-  );
-};
-
-const Router = () => {
-  return (
-    <Stack.Navigator initialRouteName={'MainApp'}>
-      <Stack.Screen
-        name="MainApp"
-        component={MainApp}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -147,11 +153,6 @@ const Router = () => {
       <Stack.Screen
         name="DetailPesanan"
         component={DetailPesanan}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Intro"
-        component={Intro}
         options={{headerShown: false}}
       />
       <Stack.Screen

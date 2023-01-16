@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  BackHandler,
 } from 'react-native';
 import React, {Component} from 'react';
 import {IconBack, Register1Img} from '../../assets';
@@ -16,6 +17,7 @@ import {heightMobileUI} from '../../utils/constant';
 export default class Register1 extends Component {
   constructor(props) {
     super(props);
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     this.state = {
       nama: '',
       email: '',
@@ -23,6 +25,25 @@ export default class Register1 extends Component {
       password: '',
       confirmPassword: '',
     };
+  }
+
+  componentDidMount() {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  handleBackButtonClick() {
+    this.props.navigation.navigate('Login');
+    return true;
   }
 
   validateEmail = email => {

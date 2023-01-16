@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  BackHandler,
 } from 'react-native';
 import React, {Component} from 'react';
 import {ForgotPassImg, IconBack} from '../../assets';
@@ -18,9 +19,29 @@ import {connect} from 'react-redux';
 class ForgotPassword extends Component {
   constructor(props) {
     super(props);
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     this.state = {
       email: '',
     };
+  }
+
+  componentDidMount() {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  handleBackButtonClick() {
+    this.props.navigation.navigate('Login');
+    return true;
   }
 
   //Ketika suatu komponen terdapat perubahan

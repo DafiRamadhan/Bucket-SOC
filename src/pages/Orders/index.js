@@ -32,7 +32,7 @@ class Orders extends Component {
           });
           this.props.dispatch(getListHistory(data.uid));
         } else {
-          this.props.navigation.replace('Intro');
+          this.props.navigation.replace('Login');
         }
       });
     });

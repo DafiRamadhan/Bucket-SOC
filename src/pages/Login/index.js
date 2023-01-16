@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  BackHandler,
 } from 'react-native';
 import React, {Component} from 'react';
 import {IconBack, LoginImg} from '../../assets';
@@ -18,10 +19,30 @@ import { connect } from 'react-redux';
 class Login extends Component {
   constructor(props) {
     super(props);
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     this.state = {
       email: '',
       password: '',
     };
+  }
+
+  componentDidMount() {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  handleBackButtonClick() {
+    this.props.navigation.replace('MainApp');
+    return true;
   }
 
   //Ketika suatu komponen terdapat perubahan
@@ -51,7 +72,7 @@ class Login extends Component {
           keyboardShouldPersistTaps="handled">
           <TouchableOpacity
             style={styles.tombolBack}
-            onPress={() => navigation.goBack()}>
+            onPress={() => navigation.replace('MainApp')}>
             <IconBack />
           </TouchableOpacity>
           <View style={styles.images}>

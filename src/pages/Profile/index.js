@@ -40,7 +40,7 @@ export default class Profile extends Component {
         });
         //jika tidak ada data
       } else {
-        this.props.navigation.replace('Intro');
+        this.props.navigation.replace('Login');
       }
     });
   };

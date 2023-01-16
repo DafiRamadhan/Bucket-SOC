@@ -75,7 +75,8 @@ class Checkout extends Component {
         url_midtrans: snapTransactionResult.redirect_url,
         ...this.state.dataCheckout,
       };
-      this.props.navigation.navigate('Midtrans', data);
+      const page = 'Checkout'
+      this.props.navigation.navigate('Midtrans', {data, page});
       //Jika tidak ada url Midtrans, maka akan langsung ke halaman DetailPesanan
     } else if (
       updatePesananResult &&

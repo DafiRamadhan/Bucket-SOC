@@ -12,8 +12,13 @@ export const BITESHIP_API_HEADER = {
   'Content-Type': 'application/json',
 };
 
-export const URL_MIDTRANS = "https://app.sandbox.midtrans.com/snap/v1/"
+//SANDBOX
+export const URL_MIDTRANS_SNAP = "https://app.sandbox.midtrans.com/snap/v1/"
 export const URL_MIDTRANS_STATUS = "https://api.sandbox.midtrans.com/v2/"
+
+//PRODUCTION
+//export const URL_MIDTRANS_SNAP = "https://app.midtrans.com/snap/v1/transactions"
+//export const URL_MIDTRANS_STATUS = "https://api.midtrans.com/v2/"
 
 export const HEADER_MIDTRANS = {
   'Accept': 'application/json',

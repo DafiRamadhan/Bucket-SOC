@@ -43,7 +43,7 @@ class Keranjang extends Component {
         //masuk ke KeranjangAction
         dispatch(getListKeranjang(res.uid));
       } else {
-        navigation.replace('Intro');
+        navigation.replace('Login');
       }
     });
   }
@@ -65,7 +65,7 @@ class Keranjang extends Component {
           //masuk ke KeranjangAction
           dispatch(getListKeranjang(res.uid));
         } else {
-          navigation.replace('Intro');
+          navigation.replace('Login');
         }
       });
     }

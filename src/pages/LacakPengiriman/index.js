@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     fontSize: RFValue(15, heightMobileUI),
     color: colors.black,
     textAlign: 'right',
-    width: responsiveWidth(220),
+    width: responsiveWidth(230),
     textTransform: 'uppercase',
   },
   statusText: {
@@ -286,12 +286,12 @@ const styles = StyleSheet.create({
     height:
       (index === 0 && history.length !== 1) ||
       (index === history.length - 1 && history.length !== 1)
-        ? 40
+        ? responsiveHeight(47)
         : index === 0 && history.length === 1
         ? 0
-        : 80,
-    marginTop: index === 0 ? 35 : 0,
+        : responsiveHeight(100),
+    marginTop: index === 0 ? responsiveHeight(35) : 0,
     position: 'absolute',
-    alignSelf: 'center'
+    alignSelf: 'center',
   }),
 });

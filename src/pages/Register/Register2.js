@@ -6,6 +6,7 @@ import {
   ScrollView,
   Modal,
   Alert,
+  BackHandler,
 } from 'react-native';
 import React, {Component} from 'react';
 import {IconBack, IconMarker, Register2Img} from '../../assets';
@@ -20,6 +21,7 @@ import { connect } from 'react-redux';
 class Register2 extends Component {
   constructor(props) {
     super(props);
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     this.state = {
       alamat: '',
       detail_alamat: '',
@@ -28,6 +30,25 @@ class Register2 extends Component {
       openMaps: false,
       search: true,
     };
+  }
+
+  componentDidMount() {
+    BackHandler.addEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener(
+      'hardwareBackPress',
+      this.handleBackButtonClick,
+    );
+  }
+
+  handleBackButtonClick() {
+    this.props.navigation.navigate('Register1');
+    return true;
   }
 
   //Ketika suatu komponen terdapat perubahan

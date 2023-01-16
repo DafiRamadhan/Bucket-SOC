@@ -97,7 +97,7 @@ class DetailProduk extends Component {
         //jika user belum Login
       } else {
         Alert.alert('Alert', 'Silakan Login Terlebih Dahulu!');
-        navigation.replace('Intro');
+        navigation.replace('Login');
       }
     });
   };
