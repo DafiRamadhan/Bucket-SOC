@@ -44,7 +44,6 @@ export default function ListDetailPesanan({pesanan, navigation}) {
                 />
                 <View style={styles.wrapDetail}>
                   <Text style={styles.nama}>{item[key].produk.nama}</Text>
-                  <Text style={styles.nama}>{array.length}</Text>
                   <Text style={styles.harga}>
                     Rp
                     {item[key].produk.harga.toLocaleString('id-ID')} x
