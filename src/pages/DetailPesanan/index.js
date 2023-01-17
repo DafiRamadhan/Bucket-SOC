@@ -14,7 +14,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
 import {Header, ListDetailPesanan, Loading} from '../../components';
 import { connect } from 'react-redux';
-import { cancelPesanan } from '../../actions/PesananAction';
+import { cancelPesanan, pesananSelesai } from '../../actions/PesananAction';
 
 class DetailPesanan extends Component {
   constructor(props) {
@@ -41,13 +41,22 @@ class DetailPesanan extends Component {
 
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
-    const {cancelPesananResult} = this.props;
+    const {cancelPesananResult, pesananSelesaiResult} = this.props;
     if (
       cancelPesananResult &&
       prevProps.cancelPesananResult !== cancelPesananResult
     ) {
       //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
       Alert.alert('Sukses', 'Pembatalan Pesanan Berhasil!');
+      this.props.navigation.navigate('Orders');
+    }
+
+    if (
+      pesananSelesaiResult &&
+      prevProps.pesananSelesaiResult !== pesananSelesaiResult
+    ) {
+      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+      Alert.alert('Sukses', 'Pesanan Berhasil Diselesaikan!');
       this.props.navigation.navigate('Orders');
     }
   }
@@ -78,12 +87,33 @@ class DetailPesanan extends Component {
     dispatch(cancelPesanan(pesanan));
   };
 
+  finishDialog = pesanan => {
+    return Alert.alert(
+      'Konfirmasi Pesanan Selesai',
+      "Apakah pesanan telah diterima? Klik 'Ya' hanya jika Anda telah menerima pesanan!",
+      [
+        {
+          text: 'Tidak',
+        },
+        {
+          text: 'Ya',
+          onPress: () => this.finishOrder(pesanan),
+        },
+      ],
+    );
+  };
+
+  finishOrder = pesanan => {
+    const {dispatch} = this.props;
+    dispatch(pesananSelesai(pesanan));
+  };
+
   render() {
     const {pesanan} = this.state;
-    const {navigation, cancelPesananLoading} = this.props;
+    const {navigation, cancelPesananLoading, pesananSelesaiLoading} = this.props;
     const page = 'DetailPesanan';
     const data = pesanan;
-    const selesai = pesanan.status_pesanan.substring(0, 7)
+    const selesai = pesanan.status_pesanan.substring(0, 7);
     return (
       <View style={styles.pages}>
         <Header
@@ -137,10 +167,21 @@ class DetailPesanan extends Component {
                   </View>
                 </TouchableOpacity>
               ) : null}
+              {pesanan.status_pesanan === 'Terkirim' ||
+              (pesanan.status_pesanan === 'Siap Diambil' &&
+                pesanan.url_midtrans) ? (
+                <TouchableOpacity onPress={() => this.finishDialog(pesanan)}>
+                  <View style={styles.wrapButton}>
+                    <View>
+                      <Text style={styles.textMenu}>Selesaikan Pesanan</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ) : null}
             </View>
           </View>
         </ScrollView>
-        {cancelPesananLoading ? <Loading /> : null}
+        {cancelPesananLoading || pesananSelesaiLoading ? <Loading /> : null}
       </View>
     );
   }
@@ -150,6 +191,10 @@ const mapStateToProps = state => ({
   cancelPesananLoading: state.PesananReducer.cancelPesananLoading,
   cancelPesananResult: state.PesananReducer.cancelPesananResult,
   cancelPesananError: state.PesananReducer.cancelPesananError,
+
+  pesananSelesaiLoading: state.PesananReducer.pesananSelesaiLoading,
+  pesananSelesaiResult: state.PesananReducer.pesananSelesaiResult,
+  pesananSelesaiError: state.PesananReducer.pesananSelesaiError,
 });
 
 export default connect(mapStateToProps, null)(DetailPesanan)

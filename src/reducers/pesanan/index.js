@@ -1,4 +1,4 @@
-import { UPDATE_PESANAN, CANCEL_PESANAN } from "../../actions/PesananAction";
+import { UPDATE_PESANAN, CANCEL_PESANAN, PESANAN_SELESAI } from "../../actions/PesananAction";
 
 const initialState = {
   updatePesananLoading: false,
@@ -8,6 +8,10 @@ const initialState = {
   cancelPesananLoading: false,
   cancelPesananResult: false,
   cancelPesananError: false,
+
+  pesananSelesaiLoading: false,
+  pesananSelesaiResult: false,
+  pesananSelesaiError: false,
 };
 
 export default function (state = initialState, action) {
@@ -26,6 +30,14 @@ export default function (state = initialState, action) {
         cancelPesananLoading: action.payload.loading,
         cancelPesananResult: action.payload.data,
         cancelPesananError: action.payload.errorMessage,
+      };
+
+    case PESANAN_SELESAI:
+      return {
+        ...state,
+        pesananSelesaiLoading: action.payload.loading,
+        pesananSelesaiResult: action.payload.data,
+        pesananSelesaiError: action.payload.errorMessage,
       };
     default:
       return state;

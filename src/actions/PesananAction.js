@@ -19,6 +19,7 @@ import {
 
 export const UPDATE_PESANAN = 'UPDATE_PESANAN';
 export const CANCEL_PESANAN = 'CANCEL_PESANAN';
+export const PESANAN_SELESAI = 'PESANAN_SELESAI';
 
 export const updatePesanan = data => {
   return dispatch => {
@@ -273,6 +274,58 @@ export const cancelPesanan = pesanan => {
       error => {
         //ERROR
         dispatchError(dispatch, CANCEL_PESANAN, error.message);
+        Alert.alert('Error', error.message);
+      },
+    );
+  };
+};
+
+export const pesananSelesai = pesanan => {
+  return dispatch => {
+    //LOADING
+    dispatchLoading(dispatch, PESANAN_SELESAI);
+
+    //Validasi kembali status pesanan terbaru saat ini
+    return onValue(
+      ref(getDatabase(), '/pesanan/' + pesanan.order_id),
+      snapshot => {
+        const data = snapshot.val();
+        //Jika statusnya sudah 'Terkirim / 'Siap Diambil'
+        if (
+          data.status_pesanan === 'Terkirim' ||
+          data.status_pesanan === 'Siap Diambil'
+        ) {
+          update(ref(getDatabase(), '/pesanan/' + pesanan.order_id), {
+            status_pesanan: 'Selesai (Pesanan Telah Diterima)',
+          })
+            .then(response => {
+              //SUKSES
+              dispatchSuccess(
+                dispatch,
+                PESANAN_SELESAI,
+                response ? response : [],
+              );
+            })
+            .catch(error => {
+              //ERROR
+              dispatchError(dispatch, PESANAN_SELESAI, error.message);
+              Alert.alert('Alert', error.message);
+            });
+        } else {
+          //ERROR
+          dispatchError(dispatch, PESANAN_SELESAI, 'Selesaikan Pesanan Gagal');
+          Alert.alert(
+            'Error',
+            'Tidak dapat menyelesaikan pesanan. Silakan hubungi Admin untuk info lebih lanjut!',
+          );
+        }
+      },
+      {
+        onlyOnce: true,
+      },
+      error => {
+        //ERROR
+        dispatchError(dispatch, PESANAN_SELESAI, error.message);
         Alert.alert('Error', error.message);
       },
     );
