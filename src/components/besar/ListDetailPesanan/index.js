@@ -6,6 +6,7 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import {Jarak} from '../../kecil';
 
 export default function ListDetailPesanan({pesanan, navigation}) {
+  const item = pesanan ? pesanan.item : '';
   return (
     <View>
       <View style={styles.wrapInfo}>
@@ -33,39 +34,38 @@ export default function ListDetailPesanan({pesanan, navigation}) {
         <View style={styles.desc}>
           <Text style={styles.titleText}>Detail Produk</Text>
         </View>
-        {Object.keys(pesanan.item).map((key, index) => {
+        {Object.keys(item).map((key, index, array) => {
           return (
-            <View key={index} style={styles.itemList}>
+            <View key={index} style={styles.itemList(index, array)}>
               <View style={styles.item}>
                 <Image
-                  source={{uri: pesanan.item[key].produk.gambar[0]}}
+                  source={{uri: item[key].produk.gambar[0]}}
                   style={styles.gambar}
                 />
                 <View style={styles.wrapDetail}>
-                  <Text style={styles.nama}>
-                    {pesanan.item[key].produk.nama}
-                  </Text>
+                  <Text style={styles.nama}>{item[key].produk.nama}</Text>
+                  <Text style={styles.nama}>{array.length}</Text>
                   <Text style={styles.harga}>
                     Rp
-                    {pesanan.item[key].produk.harga.toLocaleString('id-ID')} x
-                    {pesanan.item[key].jumlah}
+                    {item[key].produk.harga.toLocaleString('id-ID')} x
+                    {item[key].jumlah}
                   </Text>
                   <View style={styles.wrapTotal}>
                     <Text style={styles.harga}>Total Harga : </Text>
                     <Text style={styles.hargaTotal}>
                       Rp
-                      {pesanan.item[key].total_harga.toLocaleString('id-ID')}
+                      {item[key].total_harga.toLocaleString('id-ID')}
                     </Text>
                   </View>
                 </View>
               </View>
-              {pesanan.item[key].catatan ? (
+              {item[key].catatan ? (
                 <Text style={styles.catatanText}>Catatan :</Text>
               ) : (
                 <Text></Text>
               )}
-              {pesanan.item[key].catatan ? (
-                <Text style={styles.catatan}>{pesanan.item[key].catatan}</Text>
+              {item[key].catatan ? (
+                <Text style={styles.catatan}>{item[key].catatan}</Text>
               ) : null}
             </View>
           );
@@ -129,7 +129,7 @@ export default function ListDetailPesanan({pesanan, navigation}) {
         {pesanan.biteship_id ? (
           <View>
           <View style={styles.desc}>
-            <Text style={styles.labelText}>ID Pengiriman</Text>
+            <Text style={styles.idLabel}>ID Pengiriman</Text>
             <Text style={styles.idText}>{pesanan.biteship_id}</Text>
           </View>
           <TouchableOpacity
@@ -208,12 +208,18 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     width: responsiveWidth(220),
   },
+  idLabel: {
+    fontFamily: fonts.primary.regular,
+    fontSize: RFValue(15, heightMobileUI),
+    color: colors.black,
+    width: responsiveWidth(120),
+  },
   idText: {
     fontFamily: fonts.primary.regular,
     fontSize: RFValue(15, heightMobileUI),
     color: colors.black,
     textAlign: 'right',
-    width: responsiveWidth(230),
+    width: responsiveWidth(240),
   },
   wrapStatus: {
     backgroundColor: colors.primary,
@@ -227,11 +233,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.bold,
     color: colors.white,
   },
-  itemList: {
+  itemList: (index, array) => ({
     marginTop: responsiveHeight(20),
     borderBottomColor: '#E7E7E7',
-    borderBottomWidth: 2,
-  },
+    borderBottomWidth: index === array.length - 1 ? 0 : 2,
+  }),
   item: {
     flexDirection: 'row',
   },

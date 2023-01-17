@@ -59,12 +59,9 @@ class LacakPengiriman extends Component {
       : '';
     return (
       <View style={styles.page}>
+        <Header title="Lacak Pengiriman" goBack={() => navigation.goBack()} />
         {getTrackingInfoResult ? (
           <View>
-            <Header
-              title="Lacak Pengiriman"
-              goBack={() => navigation.goBack()}
-            />
             <ScrollView showsVerticalScrollIndicator={false}>
               <View style={styles.wrapInfo}>
                 <View style={styles.desc}>
@@ -76,7 +73,7 @@ class LacakPengiriman extends Component {
                   </View>
                 </View>
                 <View style={styles.desc}>
-                  <Text style={styles.labelText}>ID Pengiriman</Text>
+                  <Text style={styles.idLabel}>ID Pengiriman</Text>
                   <Text style={styles.IDText}>{getTrackingInfoResult.id}</Text>
                 </View>
                 <View style={styles.desc}>
@@ -180,6 +177,7 @@ export default connect(mapStateToProps, null)(LacakPengiriman);
 const styles = StyleSheet.create({
   page: {
     flex: 1,
+    backgroundColor: colors.white,
   },
   blank: {
     flex: 1,
@@ -237,12 +235,18 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     width: responsiveWidth(220),
   },
+  idLabel: {
+    fontFamily: fonts.primary.regular,
+    fontSize: RFValue(15, heightMobileUI),
+    color: colors.black,
+    width: responsiveWidth(120),
+  },
   IDText: {
     fontFamily: fonts.primary.regular,
     fontSize: RFValue(15, heightMobileUI),
     color: colors.black,
     textAlign: 'right',
-    width: responsiveWidth(230),
+    width: responsiveWidth(240),
     textTransform: 'uppercase',
   },
   statusText: {
