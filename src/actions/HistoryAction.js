@@ -20,8 +20,8 @@ import {
   URL_MIDTRANS_STATUS,
 } from '../utils';
 
-export const GET_LIST_HISTORY = 'GET_LIST_HISTORY';
 export const UPDATE_STATUS = 'UPDATE_STATUS';
+export const GET_LIST_HISTORY = 'GET_LIST_HISTORY';
 
 export const getListHistory = uid => {
   return dispatch => {
@@ -36,6 +36,28 @@ export const getListHistory = uid => {
       ),
       snapshot => {
         const data = snapshot.val();
+        if(data) {
+          Object.keys(data).forEach(key => {
+            if (data[key].url_midtrans) {
+              if (data[key].status_pesanan === 'Menunggu Pembayaran') {
+                dispatch(
+                  updateStatusMidtrans(data[key].order_id, data[key].user.uid),
+                );
+              } else if (
+                data[key].status_pesanan === 'Sedang Dikirim' &&
+                data[key].biteship_id
+              ) {
+                dispatch(
+                  updateStatusBiteship(
+                    data[key].order_id,
+                    data[key].biteship_id,
+                    data[key].user.uid,
+                  ),
+                );
+              }
+            }
+          });
+        }
         //SUKSES
         dispatchSuccess(dispatch, GET_LIST_HISTORY, data);
       },
@@ -53,9 +75,6 @@ export const getListHistory = uid => {
 
 export const updateStatusMidtrans = (order_id, uid) => {
   return dispatch => {
-    //LOADING
-    dispatchLoading(dispatch, UPDATE_STATUS);
-
     const tgl_pemesanan = new Date(
       order_id.substring(5, 9) +
         '-' +
@@ -87,18 +106,12 @@ export const updateStatusMidtrans = (order_id, uid) => {
             status_pesanan: 'Menunggu Konfirmasi Admin',
           })
             .then(response => {
-              //SUKSES
-              dispatchSuccess(
-                dispatch,
-                UPDATE_STATUS,
-                response ? response : [],
-              );
               dispatch(getListHistory(uid));
             })
             .catch(error => {
               //ERROR
-              dispatchError(dispatch, UPDATE_STATUS, error.message);
-              Alert.alert('Alert', error.message);
+              dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+              Alert.alert('Alert', error.message + 'order id : ' + order_id);
             });
         } else if (
           response.data.transaction_status === 'deny' ||
@@ -110,52 +123,37 @@ export const updateStatusMidtrans = (order_id, uid) => {
             status_pesanan: 'Selesai (Pembayaran Gagal)',
           })
             .then(response => {
-              //SUKSES
-              dispatchSuccess(
-                dispatch,
-                UPDATE_STATUS,
-                response ? response : [],
-              );
               dispatch(getListHistory(uid));
             })
             .catch(error => {
               //ERROR
-              dispatchError(dispatch, UPDATE_STATUS, error.message);
-              Alert.alert('Alert', error.message);
+              dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+              Alert.alert('Alert', error.message + 'order id : ' + order_id);
             });
         } else if (response.data.status_code === '404' && duration > 86400000) {
           update(ref(getDatabase(), '/pesanan/' + order_id), {
             status_pesanan: 'Selesai (Pembayaran Gagal)',
           })
             .then(response => {
-              //SUKSES
-              dispatchSuccess(
-                dispatch,
-                UPDATE_STATUS,
-                response ? response : [],
-              );
               dispatch(getListHistory(uid));
             })
             .catch(error => {
               //ERROR
-              dispatchError(dispatch, UPDATE_STATUS, error.message);
-              Alert.alert('Alert', error.message);
+              dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+              Alert.alert('Alert', error.message + 'order id : ' + order_id);
             });
         }
       })
       .catch(error => {
         // ERROR
-        dispatchError(dispatch, UPDATE_STATUS, error.message);
-        Alert.alert('Error', error.message);
+        dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+        Alert.alert('Alert', error.message + 'order id : ' + order_id);
       });
   };
 };
 
 export const updateStatusBiteship = (order_id, biteship_id, uid) => {
   return dispatch => {
-    //LOADING
-    dispatchLoading(dispatch, UPDATE_STATUS);
-
     axios({
       method: 'GET',
       url: BITESHIP_API_URL + 'orders/' + biteship_id,
@@ -165,8 +163,8 @@ export const updateStatusBiteship = (order_id, biteship_id, uid) => {
       .then(response => {
         if (response.status !== 200) {
           // ERROR
-          dispatchError(dispatch, UPDATE_STATUS, response);
-          Alert.alert('Error', response);
+          dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+          Alert.alert('Alert', error.message + 'order id : ' + order_id);
         } else {
           //SUKSES
           if (response.data.status === 'delivered') {
@@ -174,18 +172,12 @@ export const updateStatusBiteship = (order_id, biteship_id, uid) => {
               status_pesanan: 'Terkirim',
             })
               .then(response => {
-                //SUKSES
-                dispatchSuccess(
-                  dispatch,
-                  UPDATE_STATUS,
-                  response ? response : [],
-                );
                 dispatch(getListHistory(uid));
               })
               .catch(error => {
                 //ERROR
-                dispatchError(dispatch, UPDATE_STATUS, error.message);
-                Alert.alert('Alert', error.message);
+                dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+                Alert.alert('Alert', error.message + 'order id : ' + order_id);
               });
           } else if (
             response.data.status === 'rejected' ||
@@ -198,26 +190,20 @@ export const updateStatusBiteship = (order_id, biteship_id, uid) => {
               status_pesanan: 'Pengiriman Gagal',
             })
               .then(response => {
-                //SUKSES
-                dispatchSuccess(
-                  dispatch,
-                  UPDATE_STATUS,
-                  response ? response : [],
-                );
                 dispatch(getListHistory(uid));
               })
               .catch(error => {
                 //ERROR
-                dispatchError(dispatch, UPDATE_STATUS, error.message);
-                Alert.alert('Alert', error.message);
+                dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+                Alert.alert('Alert', error.message + 'order id : ' + order_id);
               });
           }
         }
       })
       .catch(error => {
         // ERROR
-        dispatchError(dispatch, UPDATE_STATUS, error.message);
-        Alert.alert('Error', error.message);
+        dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+        Alert.alert('Alert', error.message + 'order id : ' + order_id);
       });
   };
 };

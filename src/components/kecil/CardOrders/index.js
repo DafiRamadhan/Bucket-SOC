@@ -4,28 +4,8 @@ import {colors, fonts, responsiveHeight, responsiveWidth} from '../../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../../utils/constant';
 import {connect} from 'react-redux';
-import { updateStatusBiteship, updateStatusMidtrans } from '../../../actions/HistoryAction';
 
 class CardOrders extends Component {
-
-  componentDidMount() {
-    const {pesanan, dispatch} = this.props;
-    if (pesanan.url_midtrans) {
-      if (pesanan.status_pesanan === 'Menunggu Pembayaran') {
-        dispatch(updateStatusMidtrans(pesanan.order_id, pesanan.user.uid));
-      } else if (
-        pesanan.status_pesanan === 'Sedang Dikirim' && pesanan.biteship_id
-      ) {
-        dispatch(
-          updateStatusBiteship(
-            pesanan.order_id,
-            pesanan.biteship_id,
-            pesanan.user.uid,
-          ),
-        );
-      }
-    }
-  }
 
   render() {
     const {pesanan, navigation} = this.props;
@@ -96,12 +76,7 @@ class CardOrders extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  updateStatusLoading: state.HistoryReducer.updateStatusLoading,
-  updateStatusResult: state.HistoryReducer.updateStatusResult,
-});
-
-export default connect(mapStateToProps, null)(CardOrders);
+export default connect()(CardOrders);
 
 const styles = StyleSheet.create({
   container: {

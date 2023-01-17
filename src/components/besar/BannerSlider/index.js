@@ -2,11 +2,10 @@ import {Image, Modal, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {Component} from 'react';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../../utils';
 import {SliderBox} from 'react-native-image-slider-box';
-import { dummyBanner } from '../../../data';
-import { Header } from '../../kecil';
-import { RFValue } from 'react-native-responsive-fontsize';
-import { heightMobileUI } from '../../../utils/constant';
-import { connect } from 'react-redux';
+import {Header} from '../../kecil';
+import {RFValue} from 'react-native-responsive-fontsize';
+import {heightMobileUI} from '../../../utils/constant';
+import {connect} from 'react-redux';
 
 class BannerSlider extends Component {
   constructor(props) {
@@ -30,10 +29,14 @@ class BannerSlider extends Component {
     const {getListBannerResult} = this.props;
     let itemList = [];
     let gambarList = [];
-    Object.keys(getListBannerResult).forEach(key => {
-      itemList.push(getListBannerResult[key]);
-      gambarList.push(getListBannerResult[key].gambar);
-    });
+    if (getListBannerResult) {
+      Object.keys(getListBannerResult)
+        .filter(key => getListBannerResult[key].active === true)
+        .forEach(key => {
+          itemList.push(getListBannerResult[key]);
+          gambarList.push(getListBannerResult[key].gambar);
+        });
+    }
     return (
       <View>
         {getListBannerResult ? (
@@ -60,12 +63,10 @@ class BannerSlider extends Component {
               <View style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                   <Image
-                    source={{uri : gambarList[index]}}
+                    source={{uri: gambarList[index]}}
                     style={styles.gambar}
                   />
-                  <Text style={styles.titleText}>
-                    {itemList[index].title}
-                  </Text>
+                  <Text style={styles.titleText}>{itemList[index].title}</Text>
                   <Text style={styles.deskripsiText}>
                     {itemList[index].deskripsi}
                   </Text>
