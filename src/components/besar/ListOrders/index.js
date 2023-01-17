@@ -48,10 +48,6 @@ const mapStateToProps = state => ({
   getListHistoryLoading: state.HistoryReducer.getListHistoryLoading,
   getListHistoryResult: state.HistoryReducer.getListHistoryResult,
   getListHistoryError: state.HistoryReducer.getListHistoryError,
-
-  updateStatusLoading: state.HistoryReducer.updateStatusLoading,
-  updateStatusResult: state.HistoryReducer.updateStatusResult,
-  updateStatusError: state.HistoryReducer.updateStatusError,
 });
 
 export default connect(mapStateToProps, null)(ListOrders);
