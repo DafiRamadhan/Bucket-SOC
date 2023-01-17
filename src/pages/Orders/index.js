@@ -11,7 +11,7 @@ import {colors, fonts, getData, responsiveHeight} from '../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
 import {connect} from 'react-redux';
-import {getListHistory} from '../../actions/HistoryAction';
+import {getListHistory, updateStatus} from '../../actions/HistoryAction';
 
 class Orders extends Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class Orders extends Component {
           this.setState({
             profile: data,
           });
-          this.props.dispatch(getListHistory(data.uid));
+          this.props.dispatch(updateStatus(data.uid));
         } else {
           this.props.navigation.replace('Login');
         }
@@ -40,6 +40,19 @@ class Orders extends Component {
 
   componentWillUnmount() {
     this._unsubscribe();
+  }
+
+  //Ketika suatu komponen terdapat perubahan
+  componentDidUpdate(prevProps) {
+    const {profile} = this.state;
+    const {updateStatusResult} = this.props;
+    if (
+      updateStatusResult &&
+      prevProps.updateStatusResult !== updateStatusResult
+    ) {
+      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+      this.props.dispatch(getListHistory(profile.uid));
+    }
   }
 
   render() {
@@ -66,7 +79,13 @@ class Orders extends Component {
   }
 }
 
-export default connect()(Orders);
+const mapStateToProps = state => ({
+  updateStatusLoading: state.HistoryReducer.updateStatusLoading,
+  updateStatusResult: state.HistoryReducer.updateStatusResult,
+  updateStatusError: state.HistoryReducer.updateStatusError,
+});
+
+export default connect(mapStateToProps, null)(Orders);
 
 const styles = StyleSheet.create({
   pages: {

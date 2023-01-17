@@ -22,10 +22,13 @@ import {
 
 export const UPDATE_STATUS = 'UPDATE_STATUS';
 export const GET_LIST_HISTORY = 'GET_LIST_HISTORY';
+let check_midtrans = 0;
+let check_biteship = 0;
 
-export const getListHistory = uid => {
+export const updateStatus = uid => {
   return dispatch => {
     //LOADING
+    dispatchLoading(dispatch, UPDATE_STATUS);
     dispatchLoading(dispatch, GET_LIST_HISTORY);
 
     return onValue(
@@ -36,12 +39,22 @@ export const getListHistory = uid => {
       ),
       snapshot => {
         const data = snapshot.val();
-        if(data) {
+        const status_pesanan = [];
+        if (data) {
+          Object.keys(data).forEach(key => {
+            status_pesanan.push(data[key].status_pesanan);
+          });
+          let item_midtrans = status_pesanan.filter(
+            x => x === 'Menunggu Pembayaran',
+          ).length;
+          let item_biteship = status_pesanan.filter(
+            x => x === 'Sedang Dikirim',
+          ).length;
           Object.keys(data).forEach(key => {
             if (data[key].url_midtrans) {
               if (data[key].status_pesanan === 'Menunggu Pembayaran') {
                 dispatch(
-                  updateStatusMidtrans(data[key].order_id, data[key].user.uid),
+                  updateStatusMidtrans(data[key].order_id, item_midtrans, item_biteship),
                 );
               } else if (
                 data[key].status_pesanan === 'Sedang Dikirim' &&
@@ -51,29 +64,35 @@ export const getListHistory = uid => {
                   updateStatusBiteship(
                     data[key].order_id,
                     data[key].biteship_id,
-                    data[key].user.uid,
+                    item_midtrans,
+                    item_biteship,
                   ),
                 );
               }
             }
           });
+          if (item_midtrans === 0 && item_biteship === 0) {
+            //SUKSES
+            dispatchSuccess(dispatch, UPDATE_STATUS, 'Cek Status Selesai');
+          }
+        } else {
+          //SUKSES
+          dispatchSuccess(dispatch, UPDATE_STATUS, 'Cek Status Selesai');
         }
-        //SUKSES
-        dispatchSuccess(dispatch, GET_LIST_HISTORY, data);
       },
       {
         onlyOnce: true,
       },
       error => {
         //ERROR
-        dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+        dispatchError(dispatch, UPDATE_STATUS, error.message);
         Alert.alert('Error', error.message);
       },
     );
   };
 };
 
-export const updateStatusMidtrans = (order_id, uid) => {
+export const updateStatusMidtrans = (order_id, item_midtrans, item_biteship) => {
   return dispatch => {
     const tgl_pemesanan = new Date(
       order_id.substring(5, 9) +
@@ -106,11 +125,12 @@ export const updateStatusMidtrans = (order_id, uid) => {
             status_pesanan: 'Menunggu Konfirmasi Admin',
           })
             .then(response => {
-              dispatch(getListHistory(uid));
+              check_midtrans++;
+              dispatch(checkItem(item_midtrans, item_biteship));
             })
             .catch(error => {
               //ERROR
-              dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+              dispatchError(dispatch, UPDATE_STATUS, error.message);
               Alert.alert('Alert', error.message + 'order id : ' + order_id);
             });
         } else if (
@@ -123,11 +143,12 @@ export const updateStatusMidtrans = (order_id, uid) => {
             status_pesanan: 'Selesai (Pembayaran Gagal)',
           })
             .then(response => {
-              dispatch(getListHistory(uid));
+              check_midtrans++;
+              dispatch(checkItem(item_midtrans, item_biteship));
             })
             .catch(error => {
               //ERROR
-              dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+              dispatchError(dispatch, UPDATE_STATUS, error.message);
               Alert.alert('Alert', error.message + 'order id : ' + order_id);
             });
         } else if (response.data.status_code === '404' && duration > 86400000) {
@@ -135,24 +156,28 @@ export const updateStatusMidtrans = (order_id, uid) => {
             status_pesanan: 'Selesai (Pembayaran Gagal)',
           })
             .then(response => {
-              dispatch(getListHistory(uid));
+              check_midtrans++;
+              dispatch(checkItem(item_midtrans, item_biteship));
             })
             .catch(error => {
               //ERROR
-              dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+              dispatchError(dispatch, UPDATE_STATUS, error.message);
               Alert.alert('Alert', error.message + 'order id : ' + order_id);
             });
+        } else {
+          check_midtrans++;
+          dispatch(checkItem(item_midtrans, item_biteship));
         }
       })
       .catch(error => {
         // ERROR
-        dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+        dispatchError(dispatch, UPDATE_STATUS, error.message);
         Alert.alert('Alert', error.message + 'order id : ' + order_id);
       });
   };
 };
 
-export const updateStatusBiteship = (order_id, biteship_id, uid) => {
+export const updateStatusBiteship = (order_id, biteship_id, item_midtrans, item_biteship) => {
   return dispatch => {
     axios({
       method: 'GET',
@@ -163,7 +188,7 @@ export const updateStatusBiteship = (order_id, biteship_id, uid) => {
       .then(response => {
         if (response.status !== 200) {
           // ERROR
-          dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+          dispatchError(dispatch, UPDATE_STATUS, error.message);
           Alert.alert('Alert', error.message + 'order id : ' + order_id);
         } else {
           //SUKSES
@@ -172,11 +197,12 @@ export const updateStatusBiteship = (order_id, biteship_id, uid) => {
               status_pesanan: 'Terkirim',
             })
               .then(response => {
-                dispatch(getListHistory(uid));
+                check_biteship++;
+                dispatch(checkItem(item_midtrans, item_biteship));
               })
               .catch(error => {
                 //ERROR
-                dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+                dispatchError(dispatch, UPDATE_STATUS, error.message);
                 Alert.alert('Alert', error.message + 'order id : ' + order_id);
               });
           } else if (
@@ -190,20 +216,63 @@ export const updateStatusBiteship = (order_id, biteship_id, uid) => {
               status_pesanan: 'Pengiriman Gagal',
             })
               .then(response => {
-                dispatch(getListHistory(uid));
+                check_biteship++;
+                dispatch(checkItem(item_midtrans, item_biteship));
               })
               .catch(error => {
                 //ERROR
-                dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+                dispatchError(dispatch, UPDATE_STATUS, error.message);
                 Alert.alert('Alert', error.message + 'order id : ' + order_id);
               });
+          } else {
+            check_biteship++;
+            dispatch(checkItem(item_midtrans, item_biteship));
           }
         }
       })
       .catch(error => {
         // ERROR
-        dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+        dispatchError(dispatch, UPDATE_STATUS, error.message);
         Alert.alert('Alert', error.message + 'order id : ' + order_id);
       });
+  };
+};
+
+export const checkItem = (item_midtrans, item_biteship) => {
+  return dispatch => {
+    if (check_midtrans === item_midtrans && check_biteship === item_biteship) {
+      check_midtrans = 0;
+      check_biteship = 0;
+      //SUKSES
+      dispatchSuccess(dispatch, UPDATE_STATUS, 'Cek Status Selesai');
+    }
+  };
+};
+
+export const getListHistory = uid => {
+  return dispatch => {
+    //LOADING
+    dispatchLoading(dispatch, GET_LIST_HISTORY);
+
+    return onValue(
+      query(
+        ref(getDatabase(), '/pesanan/'),
+        orderByChild('/user/' + '/uid/'),
+        equalTo(uid),
+      ),
+      snapshot => {
+        const data = snapshot.val();
+        //SUKSES
+        dispatchSuccess(dispatch, GET_LIST_HISTORY, data);
+      },
+      {
+        onlyOnce: true,
+      },
+      error => {
+        //ERROR
+        dispatchError(dispatch, GET_LIST_HISTORY, error.message);
+        Alert.alert('Error', error.message);
+      },
+    );
   };
 };
