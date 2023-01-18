@@ -255,7 +255,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.regular,
     color: colors.black,
     marginBottom: responsiveHeight(17),
-    textTransform: 'capitalize',
     textAlign: 'justify',
   },
   harga: {

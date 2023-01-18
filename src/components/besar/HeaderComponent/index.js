@@ -5,7 +5,7 @@ import {IconClearText, IconSearch} from '../../../assets';
 import {KeranjangIcon} from '../../kecil';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../../utils/constant';
-import {changeFocus, deleteProdukFilter, searchProduk} from '../../../actions/ProdukAction';
+import {changeFocus, deleteSearchFilter, searchProduk} from '../../../actions/ProdukAction';
 import {connect} from 'react-redux';
 import { getListKeranjang } from '../../../actions/KeranjangAction';
 
@@ -36,25 +36,7 @@ class HeaderComponent extends Component {
 
   onSubmit = keyword => {
     const {dispatch} = this.props;
-
-    //jalankan agar jika ada kategori terfliter sebelumnya dapat direset
-    dispatch(deleteProdukFilter());
-
-    //jika keyword yang dimasukkan tidak kosong
-    if (keyword.search) {
-      //jalankan fungsi pada Action
-      dispatch(searchProduk(keyword.search));
-    } else {
-      dispatch(deleteProdukFilter());
-    }
-  };
-
-  //dijalankan ketika form search diklik
-  changeSearch = () => {
-    const {dispatch} = this.props;
-
-    //menghapus props 'keyword' agar tidak aktif
-    dispatch(deleteProdukFilter());
+    dispatch(searchProduk(keyword.search));
   };
 
   //dijalankan ketika icon clear diklik
@@ -63,7 +45,7 @@ class HeaderComponent extends Component {
     this.setState({
       search: '',
     });
-    dispatch(deleteProdukFilter());
+    dispatch(deleteSearchFilter());
   };
 
   //dijalankan ketika mengkilk form search dari halaman Home agar focus aktif
@@ -92,7 +74,6 @@ class HeaderComponent extends Component {
                 style={styles.input}
                 value={search}
                 autoFocus={isFocus === true ? true : false}
-                onFocus={() => this.changeSearch()}
                 onChangeText={search => {
                   this.setState({search});
                   this.onSubmit({search});
@@ -112,6 +93,7 @@ class HeaderComponent extends Component {
                 />
               </TouchableOpacity>
             )}
+            {/* Tombol Hapus Pencarian */}
             {search ? (
               <TouchableOpacity
                 style={styles.iconClear}

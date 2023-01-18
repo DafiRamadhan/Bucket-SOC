@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.regular,
     fontSize: RFValue(15, heightMobileUI),
     color: colors.black,
-    textTransform: 'capitalize',
     textAlign: 'justify',
   },
   harga: {

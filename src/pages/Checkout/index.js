@@ -58,8 +58,9 @@ class Checkout extends Component {
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.getUserData();
+      this.props.getOngkirResult = 0;
+      this.state.selectedEkspedisi = false;
     });
-    this.props.getOngkirResult = 0;
   }
 
   //Ketika suatu komponen terdapat perubahan

@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
     fontSize: RFValue(14, heightMobileUI),
     fontFamily: fonts.primary.bold,
     textAlign: 'center',
-    textTransform: 'capitalize',
     marginTop: 5,
     paddingHorizontal: 10,
     color: 'black',

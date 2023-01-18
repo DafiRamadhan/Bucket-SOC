@@ -15,11 +15,13 @@ import {dispatchError, dispatchLoading, dispatchSuccess} from '../utils';
 export const GET_LIST_PRODUK = 'GET_LIST_PRODUK';
 export const GET_LIST_PRODUK_BY_KATEGORI = 'GET_LIST_PRODUK_BY_KATEGORI';
 export const DELETE_PRODUK_FILTER = 'DELETE_PRODUK_FILTER';
+export const DELETE_SEARCH_FILTER = 'DELETE_SEARCH_FILTER';
+export const DELETE_KATEGORI_FILTER = 'DELETE_KATEGORI_FILTER';
 export const SEARCH_PRODUK = 'SEARCH_PRODUK';
 export const CHANGE_FOCUS = 'CHANGE_FOCUS';
 //const db = getDatabase();
 
-export const getListProduk = (idKategori, keyword) => {
+export const getListProduk = (idKategori) => {
   return dispatch => {
     //LOADING
     dispatchLoading(dispatch, GET_LIST_PRODUK);
@@ -31,30 +33,6 @@ export const getListProduk = (idKategori, keyword) => {
           ref(getDatabase(), '/produk/'),
           orderByChild('kategori'),
           equalTo(idKategori),
-        ),
-        snapshot => {
-          const data = snapshot.val();
-          //SUKSES
-          dispatchSuccess(dispatch, GET_LIST_PRODUK, data);
-        },
-        {
-          onlyOnce: true,
-        },
-        error => {
-          //ERROR
-          dispatchError(dispatch, GET_LIST_PRODUK, error.message);
-          Alert.alert('Error', error.message);
-        },
-      );
-
-      //jika dilakukan pencarian keyword
-    } else if (keyword) {
-      return onValue(
-        query(
-          ref(getDatabase(), '/produk/'),
-          orderByChild('nama'),
-          startAt(keyword.toUpperCase()),
-          endAt(keyword.toUpperCase() + '\uf8ff'),
         ),
         snapshot => {
           const data = snapshot.val();
@@ -123,15 +101,23 @@ export const getProdukByKategori = (id, namaKategori) => ({
   },
 });
 
-export const deleteProdukFilter = () => ({
-  type: DELETE_PRODUK_FILTER,
-});
-
 export const searchProduk = search => ({
   type: SEARCH_PRODUK,
   payload: {
     data: search,
   },
+});
+
+export const deleteProdukFilter = () => ({
+  type: DELETE_PRODUK_FILTER,
+});
+
+export const deleteSearchFilter = () => ({
+  type: DELETE_SEARCH_FILTER,
+});
+
+export const deleteKategoriFilter = () => ({
+  type: DELETE_KATEGORI_FILTER,
 });
 
 export const changeFocus = () => ({

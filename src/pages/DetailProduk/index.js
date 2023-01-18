@@ -222,7 +222,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.semibold,
     color: 'black',
     textAlign: 'justify',
-    textTransform: 'capitalize',
   },
   garis: {
     height: 0.5,

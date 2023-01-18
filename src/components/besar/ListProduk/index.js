@@ -5,14 +5,22 @@ import { colors, fonts, heightMobileUI, responsiveHeight, responsiveWidth } from
 import { connect } from 'react-redux'
 import { RFValue } from 'react-native-responsive-fontsize'
 
-const ListProduk = ({getListProdukLoading, getListProdukResult, navigation}) => {
+const ListProduk = ({getListProdukLoading, getListProdukResult, navigation, keyword}) => {
   return (
     <View>
       {getListProdukResult ? (
         <View style={styles.container}>
-          {Object.keys(getListProdukResult).map(key => {
-            return <CardProduk produk={getListProdukResult[key]} key={key} navigation={navigation} />
-          })}
+          {Object.keys(getListProdukResult)
+            .filter(key => getListProdukResult[key].nama.toLowerCase().includes(keyword ? keyword.toLowerCase() : ''))
+            .map(key => {
+              return (
+                <CardProduk
+                  produk={getListProdukResult[key]}
+                  key={key}
+                  navigation={navigation}
+                />
+              );
+            })}
         </View>
       ) : getListProdukLoading ? (
         <View style={styles.loading}>
@@ -31,6 +39,8 @@ const mapStateToProps = state => ({
   getListProdukLoading: state.ProdukReducer.getListProdukLoading,
   getListProdukResult: state.ProdukReducer.getListProdukResult,
   getListProdukError: state.ProdukReducer.getListProdukError,
+
+  keyword: state.ProdukReducer.keyword,
 });
 
 export default connect(mapStateToProps, null)(ListProduk)

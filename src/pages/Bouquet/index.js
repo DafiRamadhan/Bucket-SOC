@@ -7,15 +7,15 @@ import {heightMobileUI} from '../../utils/constant';
 import {connect} from 'react-redux';
 import {getListKategori} from '../../actions/KategoriAction';
 import {getListProduk} from '../../actions/ProdukAction';
-import { LogBox } from 'react-native';
+import {LogBox} from 'react-native';
 LogBox.ignoreAllLogs();
 
 class Bouquet extends Component {
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      const {idKategori, keyword} = this.props;
+      const {idKategori} = this.props;
       this.props.dispatch(getListKategori());
-      this.props.dispatch(getListProduk(idKategori, keyword));
+      this.props.dispatch(getListProduk(idKategori));
     });
   }
 
@@ -25,25 +25,15 @@ class Bouquet extends Component {
 
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
-    const {idKategori, keyword} = this.props;
+    const {idKategori} = this.props;
 
     //jika nilai idKategori true && nilai sebelumnya tidak sama dengan yang baru
     if (idKategori && prevProps.idKategori !== idKategori) {
       //tampilkan produk By Kategori
-      this.props.dispatch(getListProduk(idKategori, keyword));
+      this.props.dispatch(getListProduk(idKategori));
 
       //jika nilai idKategori false && nilai sebelumnya tidak sama dengan yang baru
     } else if (idKategori === false && prevProps.idKategori !== idKategori) {
-      //tampilkan semua produk
-      this.props.dispatch(getListProduk());
-
-      //jika nilai keyword true && nilai sebelumnya tidak sama dengan yang baru
-    } else if (keyword && prevProps.keyword !== keyword) {
-      //tampilkan produk by keyword
-      this.props.dispatch(getListProduk(idKategori, keyword));
-
-      //jika nilai keyword false && nilai sebelumnya tidak sama dengan yang baru
-    } else if (keyword === false && prevProps.keyword !== keyword) {
       //tampilkan semua produk
       this.props.dispatch(getListProduk());
     }
@@ -71,7 +61,7 @@ class Bouquet extends Component {
                 </Text>
               ) : namaKategori ? (
                 <Text style={styles.label}>
-                  Menampilkan Buket dengan kategori "{namaKategori}"
+                  Menampilkan kategori "{namaKategori}"
                 </Text>
               ) : (
                 <Text style={styles.label}>Pilih Buket Favorit Anda</Text>

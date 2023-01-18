@@ -2,6 +2,8 @@ import {
   GET_LIST_PRODUK,
   GET_LIST_PRODUK_BY_KATEGORI,
   DELETE_PRODUK_FILTER,
+  DELETE_SEARCH_FILTER,
+  DELETE_KATEGORI_FILTER,
   SEARCH_PRODUK,
   CHANGE_FOCUS,
 } from '../../actions/ProdukAction';
@@ -47,6 +49,19 @@ export default function (state = initialState, action) {
       return {
         ...state,
         keyword: action.payload.data,
+      };
+
+    case DELETE_SEARCH_FILTER:
+      return {
+        ...state,
+        keyword: false,
+      };
+
+    case DELETE_KATEGORI_FILTER:
+      return {
+        ...state,
+        idKategori: false,
+        namaKategori: false,
       };
 
     case CHANGE_FOCUS:
