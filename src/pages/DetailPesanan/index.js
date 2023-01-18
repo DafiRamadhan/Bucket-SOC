@@ -13,8 +13,8 @@ import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
 import {Header, ListDetailPesanan, Loading} from '../../components';
-import { connect } from 'react-redux';
-import { cancelPesanan, pesananSelesai } from '../../actions/PesananAction';
+import {connect} from 'react-redux';
+import {cancelPesanan, pesananSelesai} from '../../actions/PesananAction';
 
 class DetailPesanan extends Component {
   constructor(props) {
@@ -41,13 +41,20 @@ class DetailPesanan extends Component {
 
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
+    const {pesanan} = this.state;
     const {cancelPesananResult, pesananSelesaiResult} = this.props;
     if (
       cancelPesananResult &&
       prevProps.cancelPesananResult !== cancelPesananResult
     ) {
       //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
-      Alert.alert('Sukses', 'Pembatalan Pesanan Berhasil!');
+      Alert.alert(
+        'Sukses',
+        pesanan.url_midtrans &&
+          pesanan.status_pesanan === 'Menunggu Konfirmasi Admin'
+          ? 'Pembatalan pesanan berhasil. Proses pencairan dana Anda sedang berlangsung!'
+          : 'Pembatalan pesanan berhasil!',
+      );
       this.props.navigation.navigate('Orders');
     }
 
@@ -56,7 +63,7 @@ class DetailPesanan extends Component {
       prevProps.pesananSelesaiResult !== pesananSelesaiResult
     ) {
       //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
-      Alert.alert('Sukses', 'Pesanan Berhasil Diselesaikan!');
+      Alert.alert('Sukses', 'Pesanan berhasil diselesaikan!');
       this.props.navigation.navigate('Orders');
     }
   }
@@ -110,7 +117,8 @@ class DetailPesanan extends Component {
 
   render() {
     const {pesanan} = this.state;
-    const {navigation, cancelPesananLoading, pesananSelesaiLoading} = this.props;
+    const {navigation, cancelPesananLoading, pesananSelesaiLoading} =
+      this.props;
     const page = 'DetailPesanan';
     const data = pesanan;
     const selesai = pesanan.status_pesanan.substring(0, 7);
@@ -197,7 +205,7 @@ const mapStateToProps = state => ({
   pesananSelesaiError: state.PesananReducer.pesananSelesaiError,
 });
 
-export default connect(mapStateToProps, null)(DetailPesanan)
+export default connect(mapStateToProps, null)(DetailPesanan);
 
 const styles = StyleSheet.create({
   pages: {

@@ -188,6 +188,9 @@ export const cancelPesanan = pesanan => {
                       '/refund/online/direct',
                     timeout: API_TIMEOUT,
                     headers: HEADER_MIDTRANS,
+                    data: {
+                      reason: 'Selesai (Dibatalkan Pembeli)',
+                    },
                   })
                     .then(response => {
                       //Jika refund berhasil
