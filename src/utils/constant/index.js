@@ -17,13 +17,18 @@ export const URL_MIDTRANS_SNAP = "https://app.sandbox.midtrans.com/snap/v1/"
 export const URL_MIDTRANS_STATUS = "https://api.sandbox.midtrans.com/v2/"
 
 //PRODUCTION
-//export const URL_MIDTRANS_SNAP = "https://app.midtrans.com/snap/v1/transactions"
+//export const URL_MIDTRANS_SNAP = "https://app.midtrans.com/snap/v1/"
 //export const URL_MIDTRANS_STATUS = "https://api.midtrans.com/v2/"
 
 export const HEADER_MIDTRANS = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
   'Authorization': 'Basic U0ItTWlkLXNlcnZlci1XV19XODdST2tGbnRKeUZlcllqN2VqY1Q=',
+};
+
+export const INVOICE_API_URL = 'https://invoice-generator.com';
+export const INVOICE_API_HEADER = {
+  'Content-Type': 'application/json',
 };
 
 export var custom_bulan = [

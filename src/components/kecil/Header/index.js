@@ -23,7 +23,7 @@ const Header = ({goBack, title}) => {
           onPress={goBack}>
           <IconBack />
         </TouchableOpacity>
-        <View style={styles.header}>
+        <View style={styles.header(title)}>
           <Text style={styles.titleText}>{title}</Text>
         </View>
       </DropShadow>
@@ -40,15 +40,16 @@ const styles = StyleSheet.create({
     zIndex: 1,
     padding: 5,
   },
-  header: {
+  header: (title) => ({
     height: responsiveHeight(70),
     width: '100%',
     backgroundColor: colors.white,
     paddingHorizontal: responsiveWidth(13),
+    marginBottom: title==='Pembayaran' || title==='Detail Pesanan'  ? 0 : responsiveWidth(5),
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-  },
+  }),
   titleText: {
     color: colors.black,
     fontFamily: fonts.primary.medium,

@@ -15,7 +15,7 @@ const CardMenu = ({pilihan, navigation}) => {
         .then(() => {
           // Sign-out successful.
           clearData();
-          navigation.replace('Intro');
+          navigation.replace('Login');
         })
         .catch(error => {
           // An error happened.

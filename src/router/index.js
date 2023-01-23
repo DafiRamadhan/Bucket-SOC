@@ -23,6 +23,7 @@ import {
   Intro5,
   Midtrans,
   LacakPengiriman,
+  Invoice,
 } from '../pages';
 import {BottomNavigator} from '../components';
 
@@ -163,6 +164,11 @@ const Router = ({status}) => {
       <Stack.Screen
         name="LacakPengiriman"
         component={LacakPengiriman}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Invoice"
+        component={Invoice}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

@@ -36,6 +36,8 @@ import IconPhoneGrey from './phone-grey.svg';
 import IconConfirmPassword from './confirm-password.svg';
 import IconClearText from './clear-text.svg';
 import IconBuilding from './building-grey.svg';
+import IconDownload from './download.svg';
+import IconQRIS from './qris.svg';
 
 export {
   IconHome,
@@ -76,4 +78,6 @@ export {
   IconConfirmPassword,
   IconClearText,
   IconBuilding,
+  IconDownload,
+  IconQRIS,
 };

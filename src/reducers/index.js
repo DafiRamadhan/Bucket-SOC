@@ -9,6 +9,7 @@ import BiteshipReducer from './biteship';
 import PaymentReducer from './payment';
 import PesananReducer from './pesanan';
 import HistoryReducer from './history';
+import InvoiceReducer from './invoice';
 
 const rootReducer = combineReducers({
     AuthReducer,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
     PaymentReducer,
     PesananReducer,
     HistoryReducer,
+    InvoiceReducer,
 });
 
 export default rootReducer

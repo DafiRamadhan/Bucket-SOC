@@ -19,6 +19,7 @@ import Intro4 from './Intro/Intro4';
 import Intro5 from './Intro/Intro5';
 import Midtrans from './Midtrans';
 import LacakPengiriman from './LacakPengiriman';
+import Invoice from './Invoice';
 
 export {
   Home,
@@ -42,4 +43,5 @@ export {
   Intro5,
   Midtrans,
   LacakPengiriman,
+  Invoice,
 };

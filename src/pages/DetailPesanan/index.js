@@ -125,6 +125,7 @@ class DetailPesanan extends Component {
     return (
       <View style={styles.pages}>
         <Header
+          noMargin
           title="Detail Pesanan"
           goBack={() => navigation.navigate('Orders')}
         />
@@ -144,7 +145,7 @@ class DetailPesanan extends Component {
                   </View>
                 </TouchableOpacity>
               ) : null}
-              <TouchableOpacity onPress={() => navigation.navigate('Orders')}>
+              <TouchableOpacity onPress={() => navigation.navigate('Invoice', {pesanan})}>
                 <View style={styles.wrapButton}>
                   <View>
                     <Text style={styles.textMenu}>Lihat Invoice Pembelian</Text>
@@ -213,7 +214,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   wrapPilihan: {
-    marginVertical: responsiveHeight(20),
+    marginTop: responsiveHeight(10),
+    marginBottom: responsiveHeight(25),
     marginHorizontal: responsiveWidth(25),
   },
   wrapButton: {
