@@ -95,11 +95,11 @@ export const updateStatus = uid => {
 export const updateStatusMidtrans = (order_id, item_midtrans, item_biteship) => {
   return dispatch => {
     const tgl_pemesanan = new Date(
-      order_id.substring(5, 9) +
+      order_id.substring(1, 5) +
         '-' +
-        order_id.substring(3, 5) +
+        order_id.substring(5, 7) +
         '-' +
-        order_id.substring(1, 3) +
+        order_id.substring(7, 9) +
         'T' +
         order_id.substring(10, 12) +
         ':' +

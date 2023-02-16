@@ -51,6 +51,7 @@ class Checkout extends Component {
       tanggal_pemesanan: false,
       itemList: false,
       dataCheckout: false,
+      asuransi: false,
     };
   }
 
@@ -76,7 +77,7 @@ class Checkout extends Component {
         url_midtrans: snapTransactionResult.redirect_url,
         ...this.state.dataCheckout,
       };
-      const page = 'Checkout'
+      const page = 'Checkout';
       this.props.navigation.navigate('Midtrans', {data, page});
       //Jika tidak ada url Midtrans, maka akan langsung ke halaman DetailPesanan
     } else if (
@@ -135,6 +136,7 @@ class Checkout extends Component {
     this.setState({
       itemList: itemList,
       selectedEkspedisi: selectedEkspedisi,
+      asuransi: false,
     });
 
     const nowDate = new Date();
@@ -152,7 +154,7 @@ class Checkout extends Component {
     const second = String(nowDate.getSeconds()).padStart(2, '0');
 
     const firstOrderid =
-      'D' + date + month + year + 'T' + hour + minute + second;
+      'D' + year + month + date + 'T' + hour + minute + second;
     const fullDate =
       custom_hari[day] +
       ', ' +
@@ -203,6 +205,12 @@ class Checkout extends Component {
     }
   };
 
+  asuransi = () => {
+    this.setState({
+      asuransi: !this.state.asuransi,
+    });
+  };
+
   onSubmit = () => {
     const {
       profile,
@@ -213,10 +221,13 @@ class Checkout extends Component {
       order_id,
       tanggal_pemesanan,
       itemList,
+      asuransi,
     } = this.state;
     const {dispatch, getOngkirResult, getListKeranjangResult} = this.props;
     const ongkir = getOngkirResult
-      ? getOngkirResult + total_harga * (0.5 / 100)
+      ? asuransi
+        ? getOngkirResult + total_harga * (0.5 / 100)
+        : getOngkirResult
       : 0;
     let ongkirList = [
       {
@@ -236,6 +247,7 @@ class Checkout extends Component {
       metode_pengiriman: selectedEkspedisi,
       total_harga_barang: total_harga,
       total_ongkir: ongkir,
+      asuransi: asuransi ? true : false,
       total_tagihan: parseInt(total_harga + ongkir),
       item: getListKeranjangResult.item,
       user: profile,
@@ -296,7 +308,8 @@ class Checkout extends Component {
   };
 
   render() {
-    const {profile, ekspedisi, selectedEkspedisi, total_harga} = this.state;
+    const {profile, ekspedisi, selectedEkspedisi, total_harga, asuransi} =
+      this.state;
     const {
       navigation,
       getOngkirResult,
@@ -306,7 +319,9 @@ class Checkout extends Component {
     } = this.props;
     //harga ongkir + asuransi (0,5% dari harga barang)
     const ongkir = getOngkirResult
-      ? getOngkirResult + total_harga * (0.5 / 100)
+      ? asuransi
+        ? getOngkirResult + total_harga * (0.5 / 100)
+        : getOngkirResult
       : 0;
     return (
       <View style={styles.pages}>
@@ -332,6 +347,19 @@ class Checkout extends Component {
                 this.pilihEkspedisi(selectedEkspedisi)
               }
             />
+            {selectedEkspedisi === 'GoSend Instant (Pembayaran Online)' ||
+            selectedEkspedisi === 'GrabExpress Instant (Pembayaran Online)' ? (
+              <TouchableOpacity onPress={() => this.asuransi()}>
+                <View style={styles.asuransiContainer}>
+                  <View style={styles.checkBox(asuransi)}>
+                    {asuransi ? <Text style={styles.ceklis}>✓</Text> : null}
+                  </View>
+                  <Text style={styles.asuransiText(asuransi)}>
+                    Gunakan Asuransi Pengiriman
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ) : null}
           </View>
           <Jarak width={'100%'} height={responsiveHeight(20)} />
           <Jarak
@@ -372,17 +400,17 @@ class Checkout extends Component {
                   <Text style={styles.totalText}>Rp0</Text>
                 )}
               </View>
-              <>
-                {getOngkirResult ? (
-                  <View style={styles.totalHarga}>
-                    <Text style={styles.totalText}>Asuransi Pengiriman (wajib)</Text>
-                    <Text style={styles.totalText}>
-                      Rp
-                      {(total_harga * (0.5 / 100)).toLocaleString('id-ID')}
-                    </Text>
-                  </View>
-                ) : getOngkirLoading ? null : null}
-              </>
+              <View style={styles.totalHarga}>
+                <Text style={styles.totalText}>Asuransi Pengiriman</Text>
+                {asuransi ? (
+                  <Text style={styles.totalText}>
+                    Rp
+                    {(total_harga * (0.5 / 100)).toLocaleString('id-ID')}
+                  </Text>
+                ) : (
+                  <Text style={styles.totalText}>Rp0</Text>
+                )}
+              </View>
               <View style={styles.totalHarga}>
                 <Text style={styles.tagihan}>Total Pesanan</Text>
                 <Text style={styles.tagihan}>
@@ -499,5 +527,29 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(18, heightMobileUI),
     paddingLeft: 20,
+  },
+  checkBox: asuransi => ({
+    height: responsiveHeight(21),
+    width: responsiveHeight(21),
+    borderWidth: 1,
+    borderColor: asuransi ? colors.primary : colors.black,
+    borderRadius: 3,
+    marginRight: responsiveWidth(10),
+    backgroundColor: asuransi ? colors.primary : null,
+    alignItems: 'center',
+  }),
+  asuransiContainer: {
+    marginTop: responsiveHeight(20),
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  asuransiText: asuransi => ({
+    fontFamily: asuransi ? fonts.primary.bold : fonts.primary.regular,
+    fontSize: RFValue(16, heightMobileUI),
+    color: colors.black,
+  }),
+  ceklis: {
+    fontFamily: fonts.primary.bold,
+    color: colors.white,
   },
 });

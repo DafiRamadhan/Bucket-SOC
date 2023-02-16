@@ -75,7 +75,7 @@ class DetailProduk extends Component {
 
   masukKeranjang = () => {
     const {catatan} = this.state;
-    const {navigation, dispatch, getDetailKategoriResult} = this.props;
+    const {navigation, dispatch} = this.props;
     getData('user').then(res => {
       //jika data user ditemukan (user sudah Login)
       if (res) {
@@ -83,17 +83,8 @@ class DetailProduk extends Component {
         this.setState({
           uid: res.uid,
         });
-
-        //validasi form jika catatan sudah diisi
-        if (catatan) {
-          const data = {
-            ...this.state,
-          };
-          //masuk ke KeranjangAction
-          dispatch(masukKeranjang(data));
-        } else {
-          Alert.alert('Alert', 'Catatan harus diisi!');
-        }
+        //masuk ke KeranjangAction
+        dispatch(masukKeranjang(this.state));
         //jika user belum Login
       } else {
         Alert.alert('Alert', 'Silakan Login Terlebih Dahulu!');

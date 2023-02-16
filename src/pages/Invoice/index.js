@@ -47,7 +47,7 @@ class Invoice extends Component {
         name: pesanan.item[key].produk.nama,
         quantity: pesanan.item[key].jumlah,
         unit_cost: pesanan.item[key].produk.harga,
-        description: 'Catatan: ' + pesanan.item[key].catatan,
+        description: pesanan.item[key].catatan ? 'Catatan: ' + pesanan.item[key].catatan : null,
       });
     });
     if (pesanan.url_midtrans) {

@@ -107,12 +107,12 @@ class Login extends Component {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.wrapRegister}>
-            <Text style={styles.questionText}>Belum Punya Akun ? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register1')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Register1')}>
+            <View style={styles.wrapRegister}>
+              <Text style={styles.questionText}>Belum Punya Akun ? </Text>
               <Text style={styles.daftarText}>Daftar</Text>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         </ScrollView>
         {loginLoading ? <Loading /> : null}
       </View>

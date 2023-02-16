@@ -1,10 +1,8 @@
 import {
   StyleSheet,
   Text,
-  Image,
   View,
   TouchableOpacity,
-  ScrollView,
 } from 'react-native';
 import React from 'react';
 import {
@@ -36,7 +34,11 @@ const CardKategori = ({kategori, navigation, id, dispatch}) => {
       onPress={() => ProdukByKategori(id, kategori.nama)}>
       <DropShadow style={dropshadow.kategoriCard}>
         <View style={styles.card}>
-          <SvgUri style={styles.logo} uri={kategori.gambar} />
+          <SvgUri
+            width={responsiveWidth(57)}
+            height={responsiveHeight(57)}
+            uri={kategori.gambar}
+          />
         </View>
       </DropShadow>
       <Text numberOfLines={2} style={styles.label}>
@@ -61,10 +63,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
-  },
-  logo: {
-    width: responsiveWidth(57),
-    height: responsiveHeight(57),
   },
   label: {
     fontSize: RFValue(15, heightMobileUI),
