@@ -15,6 +15,7 @@ import {heightMobileUI} from '../../utils/constant';
 import {Header, ListDetailPesanan, Loading} from '../../components';
 import {connect} from 'react-redux';
 import {cancelPesanan, pesananSelesai} from '../../actions/PesananAction';
+import {getAdminProfile} from '../../actions/ProfileAction';
 
 class DetailPesanan extends Component {
   constructor(props) {
@@ -26,6 +27,8 @@ class DetailPesanan extends Component {
   }
 
   componentDidMount() {
+    const {dispatch} = this.props;
+    dispatch(getAdminProfile());
     BackHandler.addEventListener(
       'hardwareBackPress',
       this.handleBackButtonClick,
@@ -117,8 +120,12 @@ class DetailPesanan extends Component {
 
   render() {
     const {pesanan} = this.state;
-    const {navigation, cancelPesananLoading, pesananSelesaiLoading} =
-      this.props;
+    const {
+      navigation,
+      cancelPesananLoading,
+      pesananSelesaiLoading,
+      getAdminProfileResult,
+    } = this.props;
     const page = 'DetailPesanan';
     const data = pesanan;
     const selesai = pesanan.status_pesanan.substring(0, 7);
@@ -131,7 +138,11 @@ class DetailPesanan extends Component {
         />
         <ScrollView showsVerticalScrollIndicator={false}>
           <View>
-            <ListDetailPesanan pesanan={pesanan} navigation={navigation} />
+            <ListDetailPesanan
+              pesanan={pesanan}
+              admin={getAdminProfileResult}
+              navigation={navigation}
+            />
             <View style={styles.wrapPilihan}>
               {pesanan.url_midtrans && selesai !== 'Selesai' ? (
                 <TouchableOpacity
@@ -145,27 +156,31 @@ class DetailPesanan extends Component {
                   </View>
                 </TouchableOpacity>
               ) : null}
-              <TouchableOpacity onPress={() => navigation.navigate('Invoice', {pesanan})}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Invoice', {pesanan})}>
                 <View style={styles.wrapButton}>
                   <View>
                     <Text style={styles.textMenu}>Lihat Invoice Pembelian</Text>
                   </View>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() =>
-                  Linking.openURL(
-                    'whatsapp://send?text=Halo, saya memiliki pertanyaan untuk pesanan saya dengan order ID ' +
-                      pesanan.order_id +
-                      '. &phone=6288225276534',
-                  )
-                }>
-                <View style={styles.wrapButton}>
-                  <View>
-                    <Text style={styles.textMenu}>Kontak Kami</Text>
+              {getAdminProfileResult.nomerHp ? (
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      'https://wa.me/' +
+                        getAdminProfileResult.nomerHp +
+                        '?text=Halo%2C%20saya%20memiliki%20pertanyaan%20untuk%20pesanan%20saya%20dengan%20order%20ID%20' +
+                        pesanan.order_id,
+                    )
+                  }>
+                  <View style={styles.wrapButton}>
+                    <View>
+                      <Text style={styles.textMenu}>Kontak Kami</Text>
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              ) : null}
               {pesanan.status_pesanan === 'Menunggu Pembayaran' ||
               pesanan.status_pesanan === 'Menunggu Konfirmasi Admin' ? (
                 <TouchableOpacity onPress={() => this.cancelDialog(pesanan)}>
@@ -204,6 +219,10 @@ const mapStateToProps = state => ({
   pesananSelesaiLoading: state.PesananReducer.pesananSelesaiLoading,
   pesananSelesaiResult: state.PesananReducer.pesananSelesaiResult,
   pesananSelesaiError: state.PesananReducer.pesananSelesaiError,
+
+  getAdminProfileLoading: state.ProfileReducer.getAdminProfileLoading,
+  getAdminProfileResult: state.ProfileReducer.getAdminProfileResult,
+  getAdminProfileError: state.ProfileReducer.getAdminProfileError,
 });
 
 export default connect(mapStateToProps, null)(DetailPesanan);

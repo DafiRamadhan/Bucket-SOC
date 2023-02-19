@@ -6,7 +6,7 @@ export const Menu = [
     id: 1,
     nama: 'Kontak Kami',
     gambar: <IconKontakKami />,
-    halaman: 'whatsapp://send?phone=6288225276534',
+    halaman: 'https://wa.me/6288225276534',
   },
   {
     id: 2,

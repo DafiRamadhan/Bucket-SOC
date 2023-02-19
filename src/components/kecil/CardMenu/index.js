@@ -7,7 +7,7 @@ import { heightMobileUI } from '../../../utils/constant'
 import {signOut} from 'firebase/auth';
 import { auth } from '../../../config/FIREBASE';
 
-const CardMenu = ({pilihan, navigation}) => {
+const CardMenu = ({pilihan, admin, navigation}) => {
 
   const onSubmit = () => {
     if(pilihan.halaman === "Login") {
@@ -30,7 +30,11 @@ const CardMenu = ({pilihan, navigation}) => {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => Linking.openURL(pilihan.halaman)}>
+      onPress={() =>
+        Linking.openURL(
+          admin.nomerHp ? 'https://wa.me/' + admin.nomerHp : 'https://wa.me/',
+        )
+      }>
       <View style={styles.menu}>
         {pilihan.gambar}
         <Text style={styles.text}>{pilihan.nama}</Text>

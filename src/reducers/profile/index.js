@@ -1,4 +1,4 @@
-import { FORGOT_PASSWORD, UPDATE_PROFILE, CHANGE_PASSWORD } from "../../actions/ProfileAction";
+import { FORGOT_PASSWORD, UPDATE_PROFILE, CHANGE_PASSWORD, GET_ADMIN_PROFILE } from "../../actions/ProfileAction";
 
 const initialState = {
   updateProfileLoading: false,
@@ -12,6 +12,10 @@ const initialState = {
   changePasswordLoading: false,
   changePasswordResult: false,
   changePasswordError: false,
+
+  getAdminProfileLoading: false,
+  getAdminProfileResult: false,
+  getAdminProfileError: false,
 };
 
 export default function (state = initialState, action) {
@@ -38,6 +42,14 @@ export default function (state = initialState, action) {
         changePasswordLoading: action.payload.loading,
         changePasswordResult: action.payload.data,
         changePasswordError: action.payload.errorMessage,
+      };
+
+    case GET_ADMIN_PROFILE:
+      return {
+        ...state,
+        getAdminProfileLoading: action.payload.loading,
+        getAdminProfileResult: action.payload.data,
+        getAdminProfileError: action.payload.errorMessage,
       };
     default:
       return state;

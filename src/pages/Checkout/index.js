@@ -31,6 +31,7 @@ import {connect} from 'react-redux';
 import {postOngkir} from '../../actions/BiteshipAction';
 import {snapTransaction} from '../../actions/PaymentAction';
 import {updatePesanan} from '../../actions/PesananAction';
+import { getAdminProfile } from '../../actions/ProfileAction';
 
 class Checkout extends Component {
   constructor(props) {
@@ -58,6 +59,8 @@ class Checkout extends Component {
   //Dijalankan ketika komponen/halaman pertama kali di buka / di load
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      const {dispatch} = this.props;
+      dispatch(getAdminProfile());
       this.getUserData();
       this.props.getOngkirResult = 0;
       this.state.selectedEkspedisi = false;
@@ -120,7 +123,7 @@ class Checkout extends Component {
 
   pilihEkspedisi = selectedEkspedisi => {
     const {profile} = this.state;
-    const {dispatch, getListKeranjangResult} = this.props;
+    const {dispatch, getListKeranjangResult, getAdminProfileResult} = this.props;
     //itemList adalah data2 yang diperlukan untuk Midtrans dan Biteship API
     let itemList = [];
     Object.keys(getListKeranjangResult.item).forEach(key => {
@@ -173,8 +176,8 @@ class Checkout extends Component {
       selectedEkspedisi === 'GrabExpress Instant (Pembayaran Online)'
     ) {
       const data = JSON.stringify({
-        origin_latitude: -7.548838191314486,
-        origin_longitude: 110.83182951593932,
+        origin_latitude: getAdminProfileResult.latitude ? getAdminProfileResult.latitude : 0,
+        origin_longitude: getAdminProfileResult.longitude ? getAdminProfileResult.longitude : 0,
         destination_latitude: profile.latitude,
         destination_longitude: profile.longitude,
         couriers:
@@ -456,6 +459,10 @@ const mapStateToProps = state => ({
   updatePesananLoading: state.PesananReducer.updatePesananLoading,
   updatePesananResult: state.PesananReducer.updatePesananResult,
   updatePesananError: state.PesananReducer.updatePesananError,
+
+  getAdminProfileLoading: state.ProfileReducer.getAdminProfileLoading,
+  getAdminProfileResult: state.ProfileReducer.getAdminProfileResult,
+  getAdminProfileError: state.ProfileReducer.getAdminProfileError,
 });
 
 export default connect(mapStateToProps, null)(Checkout);

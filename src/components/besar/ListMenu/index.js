@@ -3,11 +3,11 @@ import React from 'react'
 import { CardMenu } from '../../kecil'
 
 //mengoper parameter pilihMenu dari halaman profile untuk dilakukan perulangan
-const ListMenu = ({pilihMenu, navigation}) => {
+const ListMenu = ({pilihMenu, admin, navigation}) => {
   return (
     <View>
       {pilihMenu.map((menu) => {
-        return <CardMenu pilihan={menu} key={menu.id} navigation={navigation}/>
+        return <CardMenu pilihan={menu} admin={admin} key={menu.id} navigation={navigation}/>
       })}
     </View>
   )

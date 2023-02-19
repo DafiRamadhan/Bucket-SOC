@@ -1,11 +1,11 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Linking, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../../utils';
 import {heightMobileUI} from '../../../utils/constant';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {Jarak} from '../../kecil';
 
-export default function ListDetailPesanan({pesanan, navigation}) {
+export default function ListDetailPesanan({pesanan, admin, navigation}) {
   const item = pesanan ? pesanan.item : '';
   return (
     <View>
@@ -108,10 +108,14 @@ export default function ListDetailPesanan({pesanan, navigation}) {
         ) : (
           <View style={styles.desc}>
             <Text style={styles.labelText}>Alamat Toko</Text>
-            <Text style={styles.infoText}>
-              Jl. Merbabu Utama, Nusukan, Kec. Banjarsari, Kota Surakarta, Jawa
-              Tengah 57135
-            </Text>
+            {admin.alamat ? (
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL('https://maps.google.com/?q=' + admin.alamat)
+                }>
+                <Text style={styles.tokoText}>{admin.alamat}</Text>
+              </TouchableOpacity>
+            ) : null}
           </View>
         )}
         {pesanan.order_id.slice(-1) === 'A' ? (
@@ -127,18 +131,18 @@ export default function ListDetailPesanan({pesanan, navigation}) {
         )}
         {pesanan.biteship_id ? (
           <View>
-          <View style={styles.desc}>
-            <Text style={styles.idLabel}>ID Pengiriman</Text>
-            <Text style={styles.idText}>{pesanan.biteship_id}</Text>
+            <View style={styles.desc}>
+              <Text style={styles.idLabel}>ID Pengiriman</Text>
+              <Text style={styles.idText}>{pesanan.biteship_id}</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.tombolLacak}
+              onPress={() =>
+                navigation.navigate('LacakPengiriman', pesanan.biteship_id)
+              }>
+              <Text style={styles.lacakText}>Lacak Pengiriman</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            style={styles.tombolLacak}
-            onPress={() =>
-              navigation.navigate('LacakPengiriman', pesanan.biteship_id)
-            }>
-            <Text style={styles.lacakText}>Lacak Pengiriman</Text>
-          </TouchableOpacity>
-        </View>
         ) : null}
       </View>
       <Jarak
@@ -206,6 +210,14 @@ const styles = StyleSheet.create({
     color: colors.black,
     textAlign: 'right',
     width: responsiveWidth(220),
+  },
+  tokoText: {
+    fontFamily: fonts.primary.regular,
+    fontSize: RFValue(15, heightMobileUI),
+    color: colors.black,
+    textAlign: 'right',
+    width: responsiveWidth(220),
+    textDecorationLine: 'underline',
   },
   idLabel: {
     fontFamily: fonts.primary.regular,

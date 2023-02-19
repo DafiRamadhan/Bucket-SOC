@@ -1,13 +1,28 @@
-import {Text, StyleSheet, View, Image, ScrollView, ActivityIndicator} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Image,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import React, {Component} from 'react';
-import {dummyProfile, Menu} from '../../data';
-import {colors, fonts, getData, responsiveHeight, responsiveWidth} from '../../utils';
+import {Menu} from '../../data';
+import {
+  colors,
+  fonts,
+  getData,
+  responsiveHeight,
+  responsiveWidth,
+} from '../../utils';
 import {defaultProfile, IconAlamat, IconEmail, IconPhone} from '../../assets';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
 import {ListMenu} from '../../components/besar';
+import {connect} from 'react-redux';
+import { getAdminProfile } from '../../actions/ProfileAction';
 
-export default class Profile extends Component {
+class Profile extends Component {
   constructor(props) {
     super(props);
 
@@ -19,6 +34,8 @@ export default class Profile extends Component {
 
   //Dijalankan ketika komponen/halaman pertama kali di buka / di load
   componentDidMount() {
+    const {dispatch} = this.props;
+    dispatch(getAdminProfile());
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.getUserData();
     });
@@ -47,6 +64,7 @@ export default class Profile extends Component {
 
   render() {
     const {profile, menu} = this.state;
+    const {getAdminProfileResult} = this.props;
     return (
       <View style={styles.pages}>
         {profile ? (
@@ -88,6 +106,7 @@ export default class Profile extends Component {
                 <View style={styles.listmenu}>
                   <ListMenu
                     pilihMenu={menu}
+                    admin={getAdminProfileResult}
                     navigation={this.props.navigation}
                   />
                 </View>
@@ -103,6 +122,14 @@ export default class Profile extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  getAdminProfileLoading: state.ProfileReducer.getAdminProfileLoading,
+  getAdminProfileResult: state.ProfileReducer.getAdminProfileResult,
+  getAdminProfileError: state.ProfileReducer.getAdminProfileError,
+});
+
+export default connect(mapStateToProps, null)(Profile);
 
 const styles = StyleSheet.create({
   pages: {

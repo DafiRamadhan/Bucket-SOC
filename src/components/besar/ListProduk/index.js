@@ -12,6 +12,7 @@ const ListProduk = ({getListProdukLoading, getListProdukResult, navigation, keyw
         <View style={styles.container}>
           {Object.keys(getListProdukResult)
             .filter(key => getListProdukResult[key].nama.toLowerCase().includes(keyword ? keyword.toLowerCase() : ''))
+            .reverse()
             .map(key => {
               return (
                 <CardProduk
