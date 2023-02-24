@@ -32,6 +32,7 @@ class DetailProduk extends Component {
     super(props);
     this.state = {
       produk: this.props.route.params.produk,
+      id_produk: this.props.route.params.id,
       value: 1,
       catatan: '',
       uid: '',
@@ -97,6 +98,7 @@ class DetailProduk extends Component {
     const {navigation, getDetailKategoriResult, saveKeranjangLoading} =
       this.props;
     const {produk, catatan} = this.state;
+    
     return (
       <View style={styles.page}>
         <ScrollView

@@ -57,7 +57,7 @@ class Register2 extends Component {
 
     if (registerResult && prevProps.registerResult !== registerResult) {
       //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
-      Alert.alert('Pendaftaran Akun Berhasil', 'Silakan lakukan Login!');
+      Alert.alert('Pendaftaran Akun Berhasil', 'Silakan lakukan verifikasi akun melalui tautan yang dikirimkan ke email Anda!');
       this.props.navigation.replace('Login');
     }
   }

@@ -1,4 +1,4 @@
-import { MASUK_KERANJANG, GET_LIST_KERANJANG, DELETE_KERANJANG } from "../../actions/KeranjangAction";
+import { MASUK_KERANJANG, GET_LIST_KERANJANG, UPDATE_KERANJANG, DELETE_KERANJANG } from "../../actions/KeranjangAction";
 
 const initialState = {
   saveKeranjangLoading: false,
@@ -8,6 +8,10 @@ const initialState = {
   getListKeranjangLoading: false,
   getListKeranjangResult: false,
   getListKeranjangError: false,
+
+  updateKeranjangLoading: false,
+  updateKeranjangResult: false,
+  updateKeranjangError: false,
 
   deleteKeranjangLoading: false,
   deleteKeranjangResult: false,
@@ -30,6 +34,14 @@ export default function (state = initialState, action) {
         getListKeranjangLoading: action.payload.loading,
         getListKeranjangResult: action.payload.data,
         getListKeranjangError: action.payload.errorMessage,
+      };
+
+    case UPDATE_KERANJANG:
+      return {
+        ...state,
+        updateKeranjangLoading: action.payload.loading,
+        updateKeranjangResult: action.payload.data,
+        updateKeranjangError: action.payload.errorMessage,
       };
 
     case DELETE_KERANJANG:

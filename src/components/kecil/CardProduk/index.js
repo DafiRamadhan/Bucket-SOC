@@ -12,12 +12,12 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../../utils/constant';
 import {connect} from 'react-redux';
 
-const CardProduk = ({produk, navigation}) => {
+const CardProduk = ({produk, id, navigation}) => {
   return (
     <View>
       <TouchableOpacity
         style={styles.container}
-        onPress={() => navigation.navigate('DetailProduk', {produk})}>
+        onPress={() => navigation.navigate('DetailProduk', {produk, id})}>
         <DropShadow style={dropshadow.kategoriCard}>
           <View style={styles.card}>
             <Image source={{uri: produk.gambar[0]}} style={styles.gambar} />

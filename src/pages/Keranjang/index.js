@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import React, {Component} from 'react';
 import {ListKeranjang} from '../../components';
@@ -21,7 +22,8 @@ import {EmptyCart, IconBack, IconCheckout} from '../../assets';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
 import {connect} from 'react-redux';
-import {getListKeranjang} from '../../actions/KeranjangAction';
+import {getListKeranjang, updateKeranjang} from '../../actions/KeranjangAction';
+import {getListProduk} from '../../actions/ProdukAction';
 
 class Keranjang extends Component {
   constructor(props) {
@@ -40,8 +42,7 @@ class Keranjang extends Component {
         this.setState({
           profile: res,
         });
-        //masuk ke KeranjangAction
-        dispatch(getListKeranjang(res.uid));
+        dispatch(getListProduk());
       } else {
         navigation.replace('Login');
       }
@@ -50,31 +51,75 @@ class Keranjang extends Component {
 
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
-    const {deleteKeranjangResult, dispatch} = this.props;
+    const {
+      deleteKeranjangResult,
+      updateKeranjangResult,
+      getListProdukResult,
+      dispatch,
+    } = this.props;
+
+    if (
+      getListProdukResult &&
+      prevProps.getListProdukResult !== getListProdukResult
+    ) {
+      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+      let produkList = [];
+      Object.keys(getListProdukResult).forEach(key => {
+        produkList.push({
+          key: key,
+          produk: getListProdukResult[key],
+        });
+      });
+      //masuk dispatch updateKeranjang untuk cek status terbaru sesuai produk
+      dispatch(updateKeranjang(this.state.profile.uid, produkList));
+    }
+
+    if (
+      updateKeranjangResult &&
+      prevProps.updateKeranjangResult !== updateKeranjangResult
+    ) {
+      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+      dispatch(getListKeranjang(this.state.profile.uid));
+    }
+
     if (
       deleteKeranjangResult &&
       prevProps.deleteKeranjangResult !== deleteKeranjangResult
     ) {
       //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
-      getData('user').then(res => {
-        //cek apakah user sudah Login
-        if (res) {
-          this.setState({
-            profile: res,
-          });
-          //masuk ke KeranjangAction
-          dispatch(getListKeranjang(res.uid));
-        } else {
-          navigation.replace('Login');
-        }
-      });
+      dispatch(getListKeranjang(this.state.profile.uid));
     }
   }
 
   render() {
     const {profile} = this.state;
-    const {navigation, getListKeranjangLoading, getListKeranjangResult} =
-      this.props;
+    const {
+      navigation,
+      getListKeranjangLoading,
+      getListKeranjangResult,
+      getListProdukLoading,
+      getListProdukResult,
+    } = this.props;
+    let total_harga = 0;
+    let produkList = [];
+    if (getListKeranjangResult && getListProdukResult) {
+      Object.keys(getListProdukResult).forEach(key => {
+        produkList.push({
+          key: key,
+          produk: getListProdukResult[key],
+        });
+      });
+      Object.keys(getListKeranjangResult.item).forEach(key => {
+        let harga = produkList.find(
+          x => x.key === getListKeranjangResult.item[key].produk,
+        )
+          ? produkList.find(
+              x => x.key === getListKeranjangResult.item[key].produk,
+            ).produk.harga * getListKeranjangResult.item[key].jumlah
+          : 0;
+        total_harga += harga;
+      });
+    }
     return (
       <View style={styles.page}>
         <DropShadow style={dropshadow.footer}>
@@ -87,54 +132,43 @@ class Keranjang extends Component {
             <Text style={styles.titleText}>Keranjang</Text>
           </View>
         </DropShadow>
-        {profile ? (
-          getListKeranjangLoading ? (
-            <View style={styles.blank}>
-              <ActivityIndicator size="large" color={colors.primary} />
-            </View>
-          ) : getListKeranjangResult ? (
-            <View style={styles.page}>
-              <ScrollView showsVerticalScrollIndicator={false}>
-                {/* Mengirim isi dari ketiga props dari mapStateToProps */}
-                <ListKeranjang {...this.props} />
-              </ScrollView>
-              <DropShadow style={dropshadow.footer}>
-                <View style={styles.footer}>
-                  <View style={styles.totalHarga}>
-                    <Text style={styles.totalText}>Total Harga :</Text>
-                    <Text style={styles.hargaText}>
-                      Rp
-                      {getListKeranjangResult.total_harga.toLocaleString(
-                        'id-ID',
-                      )}
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    style={styles.tombolCheckout}
-                    onPress={() =>
-                      navigation.navigate('Checkout', {
-                        total_harga: getListKeranjangResult.total_harga,
-                      })
-                    }>
-                    <IconCheckout />
-                    <Text style={styles.checkoutText}>Checkout</Text>
-                  </TouchableOpacity>
-                </View>
-              </DropShadow>
-            </View>
-          ) : (
-            <View>
-              <View style={styles.emptyImage}>
-                <EmptyCart />
-              </View>
-              <Text style={styles.emptyText}>
-                Keranjang belanja Anda masih kosong.
-              </Text>
-            </View>
-          )
-        ) : (
+        {!profile || getListKeranjangLoading || getListProdukLoading ? (
           <View style={styles.blank}>
             <ActivityIndicator size="large" color={colors.primary} />
+          </View>
+        ) : getListKeranjangResult && getListProdukResult ? (
+          <View style={styles.page}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {/* Mengirim isi state dari mapStateToProps */}
+              <ListKeranjang {...this.props} produkList={produkList} />
+            </ScrollView>
+            <DropShadow style={dropshadow.footer}>
+              <View style={styles.footer}>
+                <View style={styles.totalHarga}>
+                  <Text style={styles.totalText}>Total Harga :</Text>
+                  <Text style={styles.hargaText}>
+                    Rp{total_harga.toLocaleString('id-ID')}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={styles.tombolCheckout}
+                  onPress={() =>
+                    navigation.navigate('Checkout', {total_harga, produkList})
+                  }>
+                  <IconCheckout />
+                  <Text style={styles.checkoutText}>Checkout</Text>
+                </TouchableOpacity>
+              </View>
+            </DropShadow>
+          </View>
+        ) : (
+          <View>
+            <View style={styles.emptyImage}>
+              <EmptyCart />
+            </View>
+            <Text style={styles.emptyText}>
+              Keranjang belanja Anda masih kosong.
+            </Text>
           </View>
         )}
       </View>
@@ -150,6 +184,14 @@ const mapStateToProps = state => ({
   deleteKeranjangLoading: state.KeranjangReducer.deleteKeranjangLoading,
   deleteKeranjangResult: state.KeranjangReducer.deleteKeranjangResult,
   deleteKeranjangError: state.KeranjangReducer.deleteKeranjangError,
+
+  getListProdukLoading: state.ProdukReducer.getListProdukLoading,
+  getListProdukResult: state.ProdukReducer.getListProdukResult,
+  getListProdukError: state.ProdukReducer.getListProdukError,
+
+  updateKeranjangLoading: state.KeranjangReducer.updateKeranjangLoading,
+  updateKeranjangResult: state.KeranjangReducer.updateKeranjangResult,
+  updateKeranjangError: state.KeranjangReducer.updateKeranjangResult,
 });
 
 export default connect(mapStateToProps, null)(Keranjang);

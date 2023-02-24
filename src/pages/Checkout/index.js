@@ -28,10 +28,10 @@ import {
   PilihTanggal,
 } from '../../components/kecil';
 import {connect} from 'react-redux';
-import {postOngkir} from '../../actions/BiteshipAction';
+import {deleteOngkir, postOngkir} from '../../actions/BiteshipAction';
 import {snapTransaction} from '../../actions/PaymentAction';
 import {updatePesanan} from '../../actions/PesananAction';
-import { getAdminProfile } from '../../actions/ProfileAction';
+import {getAdminProfile} from '../../actions/ProfileAction';
 
 class Checkout extends Component {
   constructor(props) {
@@ -48,6 +48,7 @@ class Checkout extends Component {
       pilihTanggal: false,
       pilihWaktu: false,
       total_harga: this.props.route.params.total_harga,
+      produkList: this.props.route.params.produkList,
       order_id: false,
       tanggal_pemesanan: false,
       itemList: false,
@@ -61,8 +62,8 @@ class Checkout extends Component {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       const {dispatch} = this.props;
       dispatch(getAdminProfile());
+      dispatch(deleteOngkir());
       this.getUserData();
-      this.props.getOngkirResult = 0;
       this.state.selectedEkspedisi = false;
     });
   }
@@ -122,16 +123,23 @@ class Checkout extends Component {
   };
 
   pilihEkspedisi = selectedEkspedisi => {
-    const {profile} = this.state;
-    const {dispatch, getListKeranjangResult, getAdminProfileResult} = this.props;
+    const {profile, produkList} = this.state;
+    const {dispatch, getListKeranjangResult, getAdminProfileResult} =
+      this.props;
     //itemList adalah data2 yang diperlukan untuk Midtrans dan Biteship API
     let itemList = [];
     Object.keys(getListKeranjangResult.item).forEach(key => {
       itemList.push({
-        name: getListKeranjangResult.item[key].produk.nama,
+        name: produkList.find(
+          x => x.key === getListKeranjangResult.item[key].produk,
+        ).produk.nama,
         description: getListKeranjangResult.item[key].catatan,
-        value: getListKeranjangResult.item[key].produk.harga,
-        price: getListKeranjangResult.item[key].produk.harga,
+        value: produkList.find(
+          x => x.key === getListKeranjangResult.item[key].produk,
+        ).produk.harga,
+        price: produkList.find(
+          x => x.key === getListKeranjangResult.item[key].produk,
+        ).produk.harga,
         quantity: getListKeranjangResult.item[key].jumlah,
       });
     });
@@ -176,15 +184,19 @@ class Checkout extends Component {
       selectedEkspedisi === 'GrabExpress Instant (Pembayaran Online)'
     ) {
       const data = JSON.stringify({
-        origin_latitude: getAdminProfileResult.latitude ? getAdminProfileResult.latitude : 0,
-        origin_longitude: getAdminProfileResult.longitude ? getAdminProfileResult.longitude : 0,
+        origin_latitude: getAdminProfileResult.latitude
+          ? getAdminProfileResult.latitude
+          : 0,
+        origin_longitude: getAdminProfileResult.longitude
+          ? getAdminProfileResult.longitude
+          : 0,
         destination_latitude: profile.latitude,
         destination_longitude: profile.longitude,
         couriers:
           selectedEkspedisi === 'GoSend Instant (Pembayaran Online)'
             ? 'gojek'
             : 'grab',
-        items: itemList,
+        items: [],
       });
       this.setState({
         order_id: firstOrderid + 'A',
@@ -219,6 +231,7 @@ class Checkout extends Component {
       profile,
       selectedEkspedisi,
       total_harga,
+      produkList,
       pilihTanggal,
       pilihWaktu,
       order_id,
@@ -229,7 +242,7 @@ class Checkout extends Component {
     const {dispatch, getOngkirResult, getListKeranjangResult} = this.props;
     const ongkir = getOngkirResult
       ? asuransi
-        ? getOngkirResult + total_harga * (0.5 / 100)
+        ? getOngkirResult + parseInt(total_harga * (0.5 / 100))
         : getOngkirResult
       : 0;
     let ongkirList = [
@@ -242,6 +255,25 @@ class Checkout extends Component {
     //Menggabungkan array itemList dan ongkirList ke dalam 1 array
     let dataItem = getOngkirResult ? itemList.concat(ongkirList) : itemList;
 
+    //Data item untuk disimpan di Firebase
+    let firebaseItem = {};
+    Object.keys(getListKeranjangResult.item).forEach(key => {
+      firebaseItem = {
+        ...firebaseItem,
+        [key]: {
+          produk: produkList.find(
+            x => x.key === getListKeranjangResult.item[key].produk,
+          ).produk,
+          catatan: getListKeranjangResult.item[key].catatan,
+          total_harga:
+            produkList.find(
+              x => x.key === getListKeranjangResult.item[key].produk,
+            ).produk.harga * getListKeranjangResult.item[key].jumlah,
+          jumlah: getListKeranjangResult.item[key].jumlah,
+        },
+      };
+    });
+
     //Untuk disimpan ke Firebase
     const dataCheckout = {
       order_id: order_id,
@@ -252,7 +284,7 @@ class Checkout extends Component {
       total_ongkir: ongkir,
       asuransi: asuransi ? true : false,
       total_tagihan: parseInt(total_harga + ongkir),
-      item: getListKeranjangResult.item,
+      item: firebaseItem,
       user: profile,
     };
 
@@ -323,7 +355,7 @@ class Checkout extends Component {
     //harga ongkir + asuransi (0,5% dari harga barang)
     const ongkir = getOngkirResult
       ? asuransi
-        ? getOngkirResult + total_harga * (0.5 / 100)
+        ? getOngkirResult + parseInt(total_harga * (0.5 / 100))
         : getOngkirResult
       : 0;
     return (
@@ -408,7 +440,7 @@ class Checkout extends Component {
                 {asuransi ? (
                   <Text style={styles.totalText}>
                     Rp
-                    {(total_harga * (0.5 / 100)).toLocaleString('id-ID')}
+                    {parseInt(total_harga * (0.5 / 100)).toLocaleString('id-ID')}
                   </Text>
                 ) : (
                   <Text style={styles.totalText}>Rp0</Text>

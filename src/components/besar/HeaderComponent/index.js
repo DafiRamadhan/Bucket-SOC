@@ -15,6 +15,7 @@ class HeaderComponent extends Component {
 
     this.state = {
       search: '',
+      profile: false,
     };
   }
 
@@ -23,6 +24,9 @@ class HeaderComponent extends Component {
       getData('user').then(res => {
         //cek data user untuk mengambil jumlah produk di keranjang
         if (res) {
+          this.setState({
+            profile: res,
+          });
           //masuk ke KeranjangAction
           this.props.dispatch(getListKeranjang(res.uid));
         }
@@ -55,10 +59,10 @@ class HeaderComponent extends Component {
   };
 
   render() {
-    const {search} = this.state;
+    const {search, profile} = this.state;
     const {navigation, page, isFocus, getListKeranjangResult} = this.props;
     let totalKeranjang;
-    if (getListKeranjangResult) {
+    if (getListKeranjangResult && profile) {
       //mengambil jumlah item dalam keranjang
       totalKeranjang = Object.keys(getListKeranjangResult.item).length;
     }

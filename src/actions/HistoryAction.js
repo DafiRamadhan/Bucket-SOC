@@ -73,11 +73,13 @@ export const updateStatus = uid => {
           });
           if (item_midtrans === 0 && item_biteship === 0) {
             //SUKSES
-            dispatchSuccess(dispatch, UPDATE_STATUS, 'Cek Status Selesai');
+            dispatchSuccess(dispatch, GET_LIST_HISTORY, data);
+            dispatchSuccess(dispatch, UPDATE_STATUS, false);
           }
         } else {
           //SUKSES
-          dispatchSuccess(dispatch, UPDATE_STATUS, 'Cek Status Selesai');
+          dispatchSuccess(dispatch, GET_LIST_HISTORY, data);
+          dispatchSuccess(dispatch, UPDATE_STATUS, false);
         }
       },
       {

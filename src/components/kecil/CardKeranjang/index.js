@@ -1,58 +1,81 @@
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import React, {Component} from 'react';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../../utils';
 import {IconTrash} from '../../../assets';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../../utils/constant';
-import { connect } from 'react-redux';
-import { deleteKeranjang } from '../../../actions/KeranjangAction';
+import {connect} from 'react-redux';
+import {deleteKeranjang} from '../../../actions/KeranjangAction';
 
-const CardKeranjang = ({item, dispatch, id, keranjang}) => {
+class CardKeranjang extends Component {
+  hapusKeranjang = (id, keranjang, totalKeranjang) => {
+    const {dispatch} = this.props;
+    dispatch(deleteKeranjang(id, keranjang, totalKeranjang));
+  };
 
-  const hapusKeranjang = () => {
-    dispatch(deleteKeranjang(id, keranjang, item))
-  }
-  return (
-    <View style={styles.container}>
-      <View style={styles.box}>
-        <Image source={{uri : item.produk.gambar[0]}} style={styles.gambar} />
-        <View style={styles.desc}>
-          <View style={styles.title}>
-            <Text style={styles.nama}>
-              {item.produk.nama}
-            </Text>
-            <Text style={styles.harga}>
-              Rp{item.produk.harga.toLocaleString('id-ID')}
-            </Text>
-          </View>
-          <View style={styles.deskripsi}>
-            <View style={styles.deskripsiWrap}>
-              <Text style={styles.deskripsiTitle}>Jumlah : </Text>
-              <Text style={styles.deskripsiText}>{item.jumlah}</Text>
+  render() {
+    const {item, id, keranjang, produkList, totalKeranjang} = this.props;
+
+    return (
+      <View style={styles.container}>
+        {produkList.find(
+          x =>
+            x.key === item.produk &&
+            produkList.find(x => x.key === item.produk).produk.ready,
+        ) ? (
+          <View style={styles.box}>
+            <Image
+              source={{
+                uri: produkList.find(x => x.key === item.produk).produk
+                  .gambar[0],
+              }}
+              style={styles.gambar}
+            />
+            <View style={styles.desc}>
+              <View style={styles.title}>
+                <Text style={styles.nama}>
+                  {produkList.find(x => x.key === item.produk).produk.nama}
+                </Text>
+                <Text style={styles.harga}>
+                  Rp
+                  {produkList
+                    .find(x => x.key === item.produk)
+                    .produk.harga.toLocaleString('id-ID')}
+                </Text>
+              </View>
+              <View style={styles.deskripsi}>
+                <View style={styles.deskripsiWrap}>
+                  <Text style={styles.deskripsiTitle}>Jumlah : </Text>
+                  <Text style={styles.deskripsiText}>{item.jumlah}</Text>
+                </View>
+                <View style={styles.deskripsiWrap}>
+                  <Text style={styles.deskripsiTitle}>Total Harga : </Text>
+                  <Text style={styles.deskripsiText}>
+                    {produkList.find(x => x.key === item.produk).produk.harga *
+                      item.jumlah}
+                  </Text>
+                </View>
+                {item.catatan ? (
+                  <Text style={styles.deskripsiTitle}>Catatan :</Text>
+                ) : (
+                  <Text></Text>
+                )}
+                <Text style={styles.deskripsiText}>{item.catatan}</Text>
+              </View>
             </View>
-            <View style={styles.deskripsiWrap}>
-              <Text style={styles.deskripsiTitle}>Kategori Buket : </Text>
-              <Text style={styles.deskripsiText}>
-                {item.produk.nama_kategori}
-              </Text>
-            </View>
-            {item.catatan ? (
-              <Text style={styles.deskripsiTitle}>Catatan :</Text>
-            ) : (
-              <Text></Text>
-            )}
-            <Text style={styles.deskripsiText}>
-              {item.catatan}
-            </Text>
+            <TouchableOpacity
+              style={styles.hapus}
+              onPress={() =>
+                this.hapusKeranjang(id, keranjang, totalKeranjang)
+              }>
+              <IconTrash />
+            </TouchableOpacity>
           </View>
-        </View>
-        <TouchableOpacity style={styles.hapus} onPress={() => hapusKeranjang()}>
-          <IconTrash />
-        </TouchableOpacity>
+        ) : null}
       </View>
-    </View>
-  );
-};
+    );
+  }
+}
 
 export default connect()(CardKeranjang);
 

@@ -1,4 +1,4 @@
-import { POST_ONGKIR, GET_TRACKING } from "../../actions/BiteshipAction";
+import { POST_ONGKIR, GET_TRACKING, DELETE_ONGKIR } from "../../actions/BiteshipAction";
 
 const initialState = {
   getOngkirLoading: false,
@@ -27,6 +27,13 @@ export default function (state = initialState, action) {
         getTrackingInfoResult: action.payload.data,
         getTrackingInfoError: action.payload.errorMessage,
       };
+
+    case DELETE_ONGKIR:
+      return {
+        ...state,
+        getOngkirResult: false,
+      };
+
     default:
       return state;
   }

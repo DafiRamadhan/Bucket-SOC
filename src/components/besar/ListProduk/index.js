@@ -18,6 +18,7 @@ const ListProduk = ({getListProdukLoading, getListProdukResult, navigation, keyw
                 <CardProduk
                   produk={getListProdukResult[key]}
                   key={key}
+                  id={key}
                   navigation={navigation}
                 />
               );

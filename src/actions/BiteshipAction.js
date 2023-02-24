@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import {API_TIMEOUT, BITESHIP_API_HEADER, BITESHIP_API_URL, dispatchError, dispatchLoading, dispatchSuccess} from '../utils';
 
 export const POST_ONGKIR = 'POST_ONGKIR';
+export const DELETE_ONGKIR = 'DELETE_ONGKIR';
 export const GET_TRACKING = 'GET_TRACKING';
 
 export const postOngkir = (data) => {
@@ -35,6 +36,10 @@ export const postOngkir = (data) => {
       });
   };
 };
+
+export const deleteOngkir = () => ({
+  type: DELETE_ONGKIR,
+});
 
 export const getTrackingInfo = id => {
   return dispatch => {

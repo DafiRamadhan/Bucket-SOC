@@ -1,9 +1,10 @@
-import {getDatabase, ref, set, onValue, update, push, remove} from 'firebase/database';
+import {getDatabase, ref, set, onValue, push, remove} from 'firebase/database';
 import {Alert} from 'react-native';
 import {dispatchError, dispatchLoading, dispatchSuccess} from '../utils';
 
 export const MASUK_KERANJANG = 'MASUK_KERANJANG';
 export const GET_LIST_KERANJANG = 'GET_LIST_KERANJANG';
+export const UPDATE_KERANJANG = 'UPDATE_KERANJANG';
 export const DELETE_KERANJANG = 'DELETE_KERANJANG';
 
 export const masukKeranjang = data => {
@@ -17,27 +18,11 @@ export const masukKeranjang = data => {
       snapshot => {
         if (snapshot.val()) {
           //Update data keranjang yang sudah ada
-          const dataKeranjang = snapshot.val()
-          const harga_baru = parseInt(data.value) * parseInt(data.produk.harga)
-
-          update(ref(getDatabase(), '/keranjang/' + data.uid), {
-            total_harga : dataKeranjang.total_harga + harga_baru
-          })
-            .then(response => {
-              //jika berhasil maka akan lanjut menyimpan data barang ke keranjang
-              dispatch(simpanItemKeranjang(data));
-            })
-            .catch(error => {
-              //ERROR
-              dispatchError(dispatch, MASUK_KERANJANG, error.message);
-              Alert.alert('Alert', error.message);
-            });
-            
+          dispatch(simpanItemKeranjang(data));
         } else {
           //Buat data keranjang baru
           const dataKeranjang = {
             user: data.uid,
-            total_harga: parseInt(data.value) * parseInt(data.produk.harga),
           };
 
           //Simpan data 'dataKeranjang' ke Database
@@ -68,9 +53,8 @@ export const masukKeranjang = data => {
 export const simpanItemKeranjang = data => {
   return dispatch => {
     const item = {
-      produk: data.produk,
+      produk: data.id_produk,
       jumlah: data.value,
-      total_harga: parseInt(data.value) * parseInt(data.produk.harga),
       catatan: data.catatan,
     };
     //Simpan data barang ke database
@@ -87,7 +71,7 @@ export const simpanItemKeranjang = data => {
   };
 };
 
-export const getListKeranjang = (uid) => {
+export const getListKeranjang = uid => {
   return dispatch => {
     //LOADING
     dispatchLoading(dispatch, GET_LIST_KERANJANG);
@@ -111,37 +95,135 @@ export const getListKeranjang = (uid) => {
   };
 };
 
-export const deleteKeranjang = (id, keranjang, item) => {
+export const updateKeranjang = (uid, produkList) => {
+  return dispatch => {
+    //LOADING
+    dispatchLoading(dispatch, UPDATE_KERANJANG);
+    dispatchLoading(dispatch, GET_LIST_KERANJANG);
+
+    //Baca data keranjang saat ini
+    return onValue(
+      ref(getDatabase(), '/keranjang/' + uid),
+      snapshot => {
+        const data = snapshot.val();
+        //Jika data keranjang user ada
+        if (data) {
+          let itemList = [];
+          //Lakukan perulangan item pada keranjang
+          Object.keys(data.item).forEach(key => {
+            const list = {...data.item[key], id: key};
+            itemList.push(list);
+          });
+          //Dapatkan jumlah item pada keranjang
+          let jumlahItem = itemList.length;
+
+          //Filter item sesuai kriteria (item dihapus atau tidak ready)
+          let filteredItemList = itemList.filter(item => {
+            const isProdukExist =
+              produkList.find(x => x.key === item.produk) !== undefined;
+            const isProdukReady =
+              isProdukExist &&
+              produkList.find(x => x.key === item.produk).produk.ready;
+            return !isProdukExist || !isProdukReady;
+          });
+
+          const filteredCount = filteredItemList.length;
+          let deletedItemCount = 0;
+          if (filteredCount !== 0) {
+            filteredItemList.forEach(item => {
+              remove(
+                ref(getDatabase(), '/keranjang/' + uid + '/item/' + item.id),
+              )
+                .then(() => {
+                  deletedItemCount++;
+                  jumlahItem--;
+                  // Jika semua item yang memenuhi kriteria sudah dihapus
+                  if (deletedItemCount === filteredCount) {
+                    // Jika Tidak ada lagi item di dalam keranjang
+                    if (jumlahItem === 0) {
+                      remove(ref(getDatabase(), '/keranjang/' + uid))
+                        .then(() => {
+                          //SUKSES
+                          dispatchSuccess(
+                            dispatch,
+                            UPDATE_KERANJANG,
+                            'Update Keranjang Sukses',
+                          );
+                          Alert.alert(
+                            'Info',
+                            'Beberapa produk telah dihapus karena sudah tidak tersedia!',
+                          );
+                        })
+                        .catch(error => {
+                          dispatchError(
+                            dispatch,
+                            UPDATE_KERANJANG,
+                            error.message,
+                          );
+                          Alert.alert('Error', error.message);
+                        });
+                    } else {
+                      //SUKSES
+                      dispatchSuccess(
+                        dispatch,
+                        UPDATE_KERANJANG,
+                        'Update Keranjang Sukses',
+                      );
+                      Alert.alert(
+                        'Info',
+                        'Beberapa produk telah dihapus karena sudah tidak tersedia!',
+                      );
+                    }
+                  }
+                })
+                .catch(error => {
+                  dispatchError(dispatch, UPDATE_KERANJANG, error.message);
+                  Alert.alert('Error', error.message);
+                });
+            });
+          } else {
+            //SUKSES
+            dispatchSuccess(dispatch, GET_LIST_KERANJANG, data);
+            dispatchSuccess(dispatch, UPDATE_KERANJANG, false);
+          }
+
+          //Jika data keranjang user tidak ada
+        } else {
+          //SUKSES
+          dispatchSuccess(dispatch, GET_LIST_KERANJANG, data);
+          dispatchSuccess(dispatch, UPDATE_KERANJANG, false);
+        }
+      },
+      {
+        onlyOnce: true,
+      },
+      error => {
+        //ERROR
+        dispatchError(dispatch, UPDATE_KERANJANG, error.message);
+        Alert.alert('Error', error.message);
+      },
+    );
+  };
+};
+
+export const deleteKeranjang = (id, keranjang, totalKeranjang) => {
   return dispatch => {
     //LOADING
     dispatchLoading(dispatch, DELETE_KERANJANG);
+    //menghitung jumlah item keranjang baru : item awal - 1
+    jumlah_item_baru = totalKeranjang - 1;
 
-    //menghitung total harga baru : total harga di keranjang - total harga tiap item
-    total_harga_baru = keranjang.total_harga - item.total_harga
-
-    //jika sudah tidak ada item di keranjang (harga = 0)
-    if(total_harga_baru === 0) {
+    //jika sudah tidak ada item di keranjang (item = 0)
+    if (jumlah_item_baru === 0) {
       //hapus data keranjang pada uid user tersebut beserta data itemnya
       remove(ref(getDatabase(), '/keranjang/' + keranjang.user))
-      .then(response => {
-        //SUKSES
-        dispatchSuccess(dispatch, DELETE_KERANJANG, 'Keranjang Berhasil Dihapus')
-      })
-      .catch(error => {
-        //ERROR
-        dispatchError(dispatch, DELETE_KERANJANG, error.message);
-        Alert.alert('Alert', error.message);
-      });
-
-      //jika masih ada barang di keranjang
-    } else {
-      //update total harga di keranjang
-      update(ref(getDatabase(), '/keranjang/' + keranjang.user), {
-        total_harga: total_harga_baru,
-      })
         .then(response => {
-          //jika berhasil update maka akan lanjut hapus data item yang terpilih
-          dispatch(deleteKeranjangItem(id, keranjang));
+          //SUKSES
+          dispatchSuccess(
+            dispatch,
+            DELETE_KERANJANG,
+            'Keranjang berhasil dihapus',
+          );
         })
         .catch(error => {
           //ERROR
@@ -149,21 +231,28 @@ export const deleteKeranjang = (id, keranjang, item) => {
           Alert.alert('Alert', error.message);
         });
 
+      //jika masih ada item di keranjang
+    } else {
+      dispatch(deleteKeranjangItem(id, keranjang));
     }
-  }
-}
+  };
+};
 
 export const deleteKeranjangItem = (id, keranjang) => {
   return dispatch => {
     remove(ref(getDatabase(), '/keranjang/' + keranjang.user + '/item/' + id))
-    .then(response => {
+      .then(response => {
         //SUKSES
-        dispatchSuccess(dispatch, DELETE_KERANJANG, 'Keranjang Berhasil Dihapus')
+        dispatchSuccess(
+          dispatch,
+          DELETE_KERANJANG,
+          'Keranjang Berhasil Dihapus',
+        );
       })
       .catch(error => {
         //ERROR
         dispatchError(dispatch, DELETE_KERANJANG, error.message);
         Alert.alert('Alert', error.message);
       });
-  }
-}
+  };
+};

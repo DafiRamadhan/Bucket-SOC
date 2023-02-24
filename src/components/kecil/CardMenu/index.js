@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Linking } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Linking, Alert } from 'react-native'
 import React from 'react'
 import { IconArrowRight } from '../../../assets'
 import { clearData, colors, fonts, responsiveHeight, responsiveWidth } from '../../../utils'
@@ -19,7 +19,7 @@ const CardMenu = ({pilihan, admin, navigation}) => {
         })
         .catch(error => {
           // An error happened.
-          alert(error.message)
+          Alert.alert('Error', error.message);
         });
   }else {
     navigation.navigate(pilihan.halaman)
