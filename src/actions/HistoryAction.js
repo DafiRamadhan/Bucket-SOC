@@ -119,65 +119,56 @@ export const updateStatusMidtrans = (order_id, item_midtrans, item_biteship) => 
       headers: HEADER_MIDTRANS,
     })
       .then(response => {
-        if (response.status !== 200) {
-          // ERROR
-          dispatchError(dispatch, UPDATE_STATUS, response.status);
-          Alert.alert('Error', response.status + 'order id : ' + order_id);
+        if (
+          response.data.transaction_status === 'settlement' ||
+          response.data.transaction_status === 'capture'
+        ) {
+          update(ref(getDatabase(), '/pesanan/' + order_id), {
+            status_pesanan: 'Menunggu Konfirmasi Admin',
+          })
+            .then(response => {
+              check_midtrans++;
+              dispatch(checkItem(item_midtrans, item_biteship));
+            })
+            .catch(error => {
+              //ERROR
+              dispatchError(dispatch, UPDATE_STATUS, error.message);
+              Alert.alert('Alert', error.message + 'order id : ' + order_id);
+            });
+        } else if (
+          response.data.transaction_status === 'deny' ||
+          response.data.transaction_status === 'cancel' ||
+          response.data.transaction_status === 'expire' ||
+          response.data.transaction_status === 'failure'
+        ) {
+          update(ref(getDatabase(), '/pesanan/' + order_id), {
+            status_pesanan: 'Selesai (Pembayaran Gagal)',
+          })
+            .then(response => {
+              check_midtrans++;
+              dispatch(checkItem(item_midtrans, item_biteship));
+            })
+            .catch(error => {
+              //ERROR
+              dispatchError(dispatch, UPDATE_STATUS, error.message);
+              Alert.alert('Alert', error.message + 'order id : ' + order_id);
+            });
+        } else if (response.data.status_code === '404' && duration > 86400000) {
+          update(ref(getDatabase(), '/pesanan/' + order_id), {
+            status_pesanan: 'Selesai (Pembayaran Gagal)',
+          })
+            .then(response => {
+              check_midtrans++;
+              dispatch(checkItem(item_midtrans, item_biteship));
+            })
+            .catch(error => {
+              //ERROR
+              dispatchError(dispatch, UPDATE_STATUS, error.message);
+              Alert.alert('Alert', error.message + 'order id : ' + order_id);
+            });
         } else {
-          if (
-            response.data.transaction_status === 'settlement' ||
-            response.data.transaction_status === 'capture'
-          ) {
-            update(ref(getDatabase(), '/pesanan/' + order_id), {
-              status_pesanan: 'Menunggu Konfirmasi Admin',
-            })
-              .then(response => {
-                check_midtrans++;
-                dispatch(checkItem(item_midtrans, item_biteship));
-              })
-              .catch(error => {
-                //ERROR
-                dispatchError(dispatch, UPDATE_STATUS, error.message);
-                Alert.alert('Alert', error.message + 'order id : ' + order_id);
-              });
-          } else if (
-            response.data.transaction_status === 'deny' ||
-            response.data.transaction_status === 'cancel' ||
-            response.data.transaction_status === 'expire' ||
-            response.data.transaction_status === 'failure'
-          ) {
-            update(ref(getDatabase(), '/pesanan/' + order_id), {
-              status_pesanan: 'Selesai (Pembayaran Gagal)',
-            })
-              .then(response => {
-                check_midtrans++;
-                dispatch(checkItem(item_midtrans, item_biteship));
-              })
-              .catch(error => {
-                //ERROR
-                dispatchError(dispatch, UPDATE_STATUS, error.message);
-                Alert.alert('Alert', error.message + 'order id : ' + order_id);
-              });
-          } else if (
-            response.data.status_code === '404' &&
-            duration > 86400000
-          ) {
-            update(ref(getDatabase(), '/pesanan/' + order_id), {
-              status_pesanan: 'Selesai (Pembayaran Gagal)',
-            })
-              .then(response => {
-                check_midtrans++;
-                dispatch(checkItem(item_midtrans, item_biteship));
-              })
-              .catch(error => {
-                //ERROR
-                dispatchError(dispatch, UPDATE_STATUS, error.message);
-                Alert.alert('Alert', error.message + 'order id : ' + order_id);
-              });
-          } else {
-            check_midtrans++;
-            dispatch(checkItem(item_midtrans, item_biteship));
-          }
+          check_midtrans++;
+          dispatch(checkItem(item_midtrans, item_biteship));
         }
       })
       .catch(error => {

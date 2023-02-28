@@ -105,168 +105,136 @@ export const cancelPesanan = pesanan => {
               headers: HEADER_MIDTRANS,
             })
               .then(response => {
-                if (response.status !== 200) {
-                  // ERROR
-                  dispatchError(dispatch, CANCEL_PESANAN, response.status);
-                  Alert.alert('Error', response.status);
-                } else {
-                  //jika status pembayaran masih pending, batalkan pembayaran
-                  if (response.data.transaction_status === 'pending') {
-                    axios({
-                      method: 'POST',
-                      url: URL_MIDTRANS_STATUS + pesanan.order_id + '/cancel',
-                      timeout: API_TIMEOUT,
-                      headers: HEADER_MIDTRANS,
-                    })
-                      .then(response => {
-                        if (response.status !== 200) {
-                          // ERROR
-                          dispatchError(
-                            dispatch,
-                            CANCEL_PESANAN,
-                            response.status,
-                          );
-                          Alert.alert('Error', response.status);
-                        } else {
-                          //Jika pembatalan pesanan berhasil
-                          if (response.data.transaction_status === 'cancel') {
-                            update(
-                              ref(
-                                getDatabase(),
-                                '/pesanan/' + pesanan.order_id,
-                              ),
-                              {
-                                status_pesanan: 'Selesai (Dibatalkan Pembeli)',
-                              },
-                            )
-                              .then(response => {
-                                //SUKSES
-                                dispatchSuccess(
-                                  dispatch,
-                                  CANCEL_PESANAN,
-                                  response ? response : [],
-                                );
-                              })
-                              .catch(error => {
-                                //ERROR
-                                dispatchError(
-                                  dispatch,
-                                  CANCEL_PESANAN,
-                                  error.message,
-                                );
-                                Alert.alert('Alert', error.message);
-                              });
-                          } else {
+                //jika status pembayaran masih pending, batalkan pembayaran
+                if (response.data.transaction_status === 'pending') {
+                  axios({
+                    method: 'POST',
+                    url: URL_MIDTRANS_STATUS + pesanan.order_id + '/cancel',
+                    timeout: API_TIMEOUT,
+                    headers: HEADER_MIDTRANS,
+                  })
+                    .then(response => {
+                      //Jika pembatalan pesanan berhasil
+                      if (response.data.transaction_status === 'cancel') {
+                        update(
+                          ref(getDatabase(), '/pesanan/' + pesanan.order_id),
+                          {
+                            status_pesanan: 'Selesai (Dibatalkan Pembeli)',
+                          },
+                        )
+                          .then(response => {
+                            //SUKSES
+                            dispatchSuccess(
+                              dispatch,
+                              CANCEL_PESANAN,
+                              response ? response : [],
+                            );
+                          })
+                          .catch(error => {
+                            //ERROR
                             dispatchError(
                               dispatch,
                               CANCEL_PESANAN,
-                              'Pembatalan Gagal',
+                              error.message,
                             );
-                            Alert.alert(
-                              'Error',
-                              'Pembatalan gagal. Silakan hubungi Admin untuk info lebih lanjut!',
-                            );
-                          }
-                        }
-                      })
-                      .catch(error => {
-                        // ERROR
-                        dispatchError(dispatch, CANCEL_PESANAN, error.message);
-                        Alert.alert('Error', error.message);
-                      });
-                    //Jika pembayaran tidak ditemukan (pembeli belum memilih channel pembayaran)
-                  } else if (response.data.status_code === '404') {
-                    update(ref(getDatabase(), '/pesanan/' + pesanan.order_id), {
-                      status_pesanan: 'Selesai (Dibatalkan Pembeli)',
-                    })
-                      .then(response => {
-                        //SUKSES
-                        dispatchSuccess(
+                            Alert.alert('Alert', error.message);
+                          });
+                      } else {
+                        dispatchError(
                           dispatch,
                           CANCEL_PESANAN,
-                          response ? response : [],
+                          'Pembatalan Gagal',
                         );
-                      })
-                      .catch(error => {
-                        //ERROR
-                        dispatchError(dispatch, CANCEL_PESANAN, error.message);
-                        Alert.alert('Alert', error.message);
-                      });
-                    //Jika pembayaran telah berhasil dilakukan tetapi admin belum mengonfirmasi pesanan
-                  } else if (
-                    response.data.transaction_status === 'settlement' ||
-                    response.data.transaction_status === 'capture'
-                  ) {
-                    //Mencoba untuk melakukan refund
-                    axios({
-                      method: 'POST',
-                      url:
-                        URL_MIDTRANS_STATUS +
-                        pesanan.order_id +
-                        '/refund/online/direct',
-                      timeout: API_TIMEOUT,
-                      headers: HEADER_MIDTRANS,
-                      data: {
-                        reason: 'Selesai (Dibatalkan Pembeli)',
-                      },
+                        Alert.alert(
+                          'Error',
+                          'Pembatalan gagal. Silakan hubungi Admin untuk info lebih lanjut!',
+                        );
+                      }
                     })
-                      .then(response => {
-                        if (response.status !== 200) {
-                          // ERROR
-                          dispatchError(
-                            dispatch,
-                            CANCEL_PESANAN,
-                            response.status,
-                          );
-                          Alert.alert('Error', response.status);
-                        } else {
-                          //Jika refund berhasil
-                          if (response.data.transaction_status === 'refund') {
-                            update(
-                              ref(
-                                getDatabase(),
-                                '/pesanan/' + pesanan.order_id,
-                              ),
-                              {
-                                status_pesanan: 'Selesai (Dibatalkan Pembeli)',
-                              },
-                            )
-                              .then(response => {
-                                //SUKSES
-                                dispatchSuccess(
-                                  dispatch,
-                                  CANCEL_PESANAN,
-                                  response ? response : [],
-                                );
-                              })
-                              .catch(error => {
-                                //ERROR
-                                dispatchError(
-                                  dispatch,
-                                  CANCEL_PESANAN,
-                                  error.message,
-                                );
-                                Alert.alert('Alert', error.message);
-                              });
-                          } else {
+                    .catch(error => {
+                      // ERROR
+                      dispatchError(dispatch, CANCEL_PESANAN, error.message);
+                      Alert.alert('Error', error.message);
+                    });
+                  //Jika pembayaran tidak ditemukan (pembeli belum memilih channel pembayaran)
+                } else if (response.data.status_code === '404') {
+                  update(ref(getDatabase(), '/pesanan/' + pesanan.order_id), {
+                    status_pesanan: 'Selesai (Dibatalkan Pembeli)',
+                  })
+                    .then(response => {
+                      //SUKSES
+                      dispatchSuccess(
+                        dispatch,
+                        CANCEL_PESANAN,
+                        response ? response : [],
+                      );
+                    })
+                    .catch(error => {
+                      //ERROR
+                      dispatchError(dispatch, CANCEL_PESANAN, error.message);
+                      Alert.alert('Alert', error.message);
+                    });
+                  //Jika pembayaran telah berhasil dilakukan tetapi admin belum mengonfirmasi pesanan
+                } else if (
+                  response.data.transaction_status === 'settlement' ||
+                  response.data.transaction_status === 'capture'
+                ) {
+                  //Mencoba untuk melakukan refund
+                  axios({
+                    method: 'POST',
+                    url:
+                      URL_MIDTRANS_STATUS +
+                      pesanan.order_id +
+                      '/refund/online/direct',
+                    timeout: API_TIMEOUT,
+                    headers: HEADER_MIDTRANS,
+                    data: {
+                      reason: 'Selesai (Dibatalkan Pembeli)',
+                    },
+                  })
+                    .then(response => {
+                      //Jika refund berhasil
+                      if (response.data.transaction_status === 'refund') {
+                        update(
+                          ref(getDatabase(), '/pesanan/' + pesanan.order_id),
+                          {
+                            status_pesanan: 'Selesai (Dibatalkan Pembeli)',
+                          },
+                        )
+                          .then(response => {
+                            //SUKSES
+                            dispatchSuccess(
+                              dispatch,
+                              CANCEL_PESANAN,
+                              response ? response : [],
+                            );
+                          })
+                          .catch(error => {
+                            //ERROR
                             dispatchError(
                               dispatch,
                               CANCEL_PESANAN,
-                              'Pembatalan Gagal',
+                              error.message,
                             );
-                            Alert.alert(
-                              'Tidak Dapat Membatalkan Pesanan',
-                              'Silakan hubungi Admin jika ingin melakukan pembatalan pesanan ini!',
-                            );
-                          }
-                        }
-                      })
-                      .catch(error => {
-                        // ERROR
-                        dispatchError(dispatch, CANCEL_PESANAN, error.message);
-                        Alert.alert('Error', error.message);
-                      });
-                  }
+                            Alert.alert('Alert', error.message);
+                          });
+                      } else {
+                        dispatchError(
+                          dispatch,
+                          CANCEL_PESANAN,
+                          'Pembatalan Gagal',
+                        );
+                        Alert.alert(
+                          'Tidak Dapat Membatalkan Pesanan',
+                          'Silakan hubungi Admin jika ingin melakukan pembatalan pesanan ini!',
+                        );
+                      }
+                    })
+                    .catch(error => {
+                      // ERROR
+                      dispatchError(dispatch, CANCEL_PESANAN, error.message);
+                      Alert.alert('Error', error.message);
+                    });
                 }
               })
               .catch(error => {
