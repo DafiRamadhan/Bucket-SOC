@@ -21,8 +21,8 @@ export const postOngkir = (data) => {
       .then(response => {
         if (response.status !== 200) {
           // ERROR
-          dispatchError(dispatch, POST_ONGKIR, response);
-          Alert.alert('Error', response);
+          dispatchError(dispatch, POST_ONGKIR, response.status);
+          Alert.alert('Error', response.status);
         } else {
           //SUKSES
           const ongkirResult = response.data.pricing[0].price;
@@ -55,8 +55,8 @@ export const getTrackingInfo = id => {
       .then(response => {
         if (response.status !== 200) {
           // ERROR
-          dispatchError(dispatch, GET_TRACKING, response);
-          Alert.alert('Error', response);
+          dispatchError(dispatch, GET_TRACKING, response.status);
+          Alert.alert('Error', response.status);
         } else {
           //SUKSES
           const data = response.data;

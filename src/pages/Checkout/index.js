@@ -196,7 +196,7 @@ class Checkout extends Component {
           selectedEkspedisi === 'GoSend Instant (Pembayaran Online)'
             ? 'gojek'
             : 'grab',
-        items: [],
+        items: itemList,
       });
       this.setState({
         order_id: firstOrderid + 'A',

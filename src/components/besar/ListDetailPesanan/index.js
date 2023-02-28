@@ -324,5 +324,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.bold,
     fontSize: RFValue(17, heightMobileUI),
     color: colors.primary,
+    textDecorationLine: 'underline',
   },
 });

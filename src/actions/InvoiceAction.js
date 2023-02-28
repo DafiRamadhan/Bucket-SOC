@@ -19,13 +19,19 @@ export const createInvoice = (data) => {
       data: data,
     })
       .then(response => {
-        var reader = new FileReader();
-        reader.readAsDataURL(response.data);
-        reader.onloadend = function () {
-          var base64data = reader.result;
-          var newbase64 = base64data.replace(/octet-stream/g, 'pdf');
-          //SUKSES
-          dispatchSuccess(dispatch, CREATE_INVOICE, newbase64);
+        if (response.status !== 200) {
+          // ERROR
+          dispatchError(dispatch, CREATE_INVOICE, response.status);
+          Alert.alert('Error', response.status);
+        } else {
+          var reader = new FileReader();
+          reader.readAsDataURL(response.data);
+          reader.onloadend = function () {
+            var base64data = reader.result;
+            var newbase64 = base64data.replace(/octet-stream/g, 'pdf');
+            //SUKSES
+            dispatchSuccess(dispatch, CREATE_INVOICE, newbase64);
+          };
         }
       })
       .catch(error => {

@@ -18,7 +18,7 @@ export const snapTransaction = (dataMidtrans) => {
         data: dataMidtrans,
       })
         .then(response => {
-            //SUKSES
+          //SUKSES
           dispatchSuccess(dispatch, SNAP_TRANSACTION, response.data);
         })
         .catch(error => {

@@ -5,6 +5,8 @@ import {
   ActivityIndicator,
   ScrollView,
   BackHandler,
+  TouchableOpacity,
+  Linking,
 } from 'react-native';
 import React, {Component} from 'react';
 import {
@@ -112,6 +114,15 @@ class LacakPengiriman extends Component {
                     {getTrackingInfoResult.courier.phone}
                   </Text>
                 </View>
+                {getTrackingInfoResult.courier.link ? (
+                  <TouchableOpacity
+                    style={styles.tombolLacak}
+                    onPress={() =>
+                      Linking.openURL(getTrackingInfoResult.courier.link)
+                    }>
+                    <Text style={styles.lacakText}>Live Tracking</Text>
+                  </TouchableOpacity>
+                ) : null}
               </View>
               <Jarak
                 width={'100%'}
@@ -262,6 +273,16 @@ const styles = StyleSheet.create({
     color: colors.black,
     textAlign: 'right',
     width: responsiveWidth(200),
+  },
+  tombolLacak: {
+    alignSelf: 'flex-end',
+    marginTop: responsiveHeight(12),
+  },
+  lacakText: {
+    fontFamily: fonts.primary.bold,
+    fontSize: RFValue(17, heightMobileUI),
+    color: colors.primary,
+    textDecorationLine: 'underline',
   },
   deskripsi: {
     fontFamily: fonts.primary.regular,
