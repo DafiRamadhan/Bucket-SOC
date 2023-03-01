@@ -34,8 +34,6 @@ class Profile extends Component {
 
   //Dijalankan ketika komponen/halaman pertama kali di buka / di load
   componentDidMount() {
-    const {dispatch} = this.props;
-    dispatch(getAdminProfile());
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.getUserData();
     });
@@ -47,6 +45,7 @@ class Profile extends Component {
 
   //mendapatkan userData dari Async Storage
   getUserData = () => {
+    const {dispatch} = this.props;
     //mendapatkan data dari parameter 'user'
     getData('user').then(res => {
       const data = res;
@@ -55,6 +54,7 @@ class Profile extends Component {
         this.setState({
           profile: data,
         });
+        dispatch(getAdminProfile());
         //jika tidak ada data
       } else {
         this.props.navigation.replace('Login');
