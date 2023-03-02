@@ -29,8 +29,8 @@ function App() {
         SplashScreen.hide();
       }
     });
-    
   })
+  
   const [status, setStatus] = useState(false);
   return (
     <Provider store={store}>

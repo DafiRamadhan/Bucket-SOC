@@ -91,7 +91,7 @@ class EditProfile extends Component {
 
   getImage = () => {
     launchImageLibrary(
-      {quality: 1, maxWidth: 500, maxHeight: 500, includeBase64: true},
+      {quality: 0.5, maxWidth: 500, maxHeight: 500, includeBase64: true},
       response => {
         if (response.didCancel || response.errorMessage || response.errorCode) {
           Alert.alert('Error', 'Anda belum memilih foto!');

@@ -120,7 +120,7 @@ class DetailProduk extends Component {
               <Text style={styles.subtitle}>Deskripsi Produk : </Text>
               <Text style={styles.deskripsi}>{produk.deskripsi}</Text>
               <Text style={styles.subtitle}>
-                Kategori Buket : {getDetailKategoriResult.nama}
+                Kategori Buket : {getDetailKategoriResult ? getDetailKategoriResult.nama : 'Tidak Ada Kategori'}
               </Text>
               <Inputan
                 label="Catatan"

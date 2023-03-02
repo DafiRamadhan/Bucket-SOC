@@ -22,7 +22,7 @@ export const URL_MIDTRANS_SNAP = "https://app.sandbox.midtrans.com/snap/v1/"
 export const URL_MIDTRANS_STATUS = "https://api.sandbox.midtrans.com/v2/"
 
 //PRODUCTION
-//export const MIDTRANS_API_KEY = 'Basic TWlkLXNlcnZlci1TYXo3dVhYcGdFM1VzNGNQU2JWUFlKWWY=';
+// export const MIDTRANS_API_KEY = 'Basic TWlkLXNlcnZlci1TYXo3dVhYcGdFM1VzNGNQU2JWUFlKWWY=';
 // export const URL_MIDTRANS_SNAP = "https://app.midtrans.com/snap/v1/"
 // export const URL_MIDTRANS_STATUS = "https://api.midtrans.com/v2/"
 

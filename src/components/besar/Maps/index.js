@@ -66,30 +66,30 @@ export default class Maps extends Component {
           },
         });
       })
-      .catch(ex => {
-        const {code, message} = ex;
-        //console.warn(code, message);
-        // if (code === 'CANCELLED') {
-        //   Alert.alert('Mohon Menunggu...');
-        // }
-        if (code === 'UNAVAILABLE') {
+      .catch(error => {
+        if (error.code === 'UNAVAILABLE') {
           if (Platform.OS === 'android') {
             RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
               interval: 10000,
               fastInterval: 5000,
-            });
-            // .catch(err => {
-            //   console.warn('Error ' + err.message + ', Code : ' + err.code);
-            //   alert('Error ' + err.message + ', Code : ' + err.code);
-            // });
+            })
+              .then(() => {
+                this.requestLocation();
+              })
+              .catch(error => {
+                //Jika error nya disebabkan selain cancel oleh user (selain ERR00)
+                if (error.code !== 'ERR00') {
+                  Alert.alert('Error', error.message);
+                }
+              });
           } else {
             GetLocation.openGpsSettings();
           }
         }
-        if (code === 'TIMEOUT') {
+        if (error.code === 'TIMEOUT') {
           Alert.alert('Timeout', 'Location request timed out');
         }
-        if (code === 'UNAUTHORIZED') {
+        if (error.code === 'UNAUTHORIZED') {
           Alert.alert('Unauthorized', 'Authorization denied');
         }
       });

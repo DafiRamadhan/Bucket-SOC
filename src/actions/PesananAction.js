@@ -216,7 +216,10 @@ export const cancelPesanan = pesanan => {
                               CANCEL_PESANAN,
                               error.message,
                             );
-                            Alert.alert('Alert', error.message);
+                             Alert.alert(
+                               'Tidak Dapat Membatalkan Pesanan',
+                               'Silakan hubungi Admin jika ingin melakukan pembatalan pesanan ini!',
+                             );
                           });
                       } else {
                         dispatchError(
