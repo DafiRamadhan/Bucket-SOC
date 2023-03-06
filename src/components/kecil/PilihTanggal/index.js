@@ -65,12 +65,12 @@ export default class PilihTanggal extends Component {
     startTime.setHours(7);
     startTime.setMinutes(59);
     var finishTime = new Date();
-    finishTime.setHours(20);
+    finishTime.setHours(18);
     finishTime.setMinutes(1);
     if (selectedTime < startTime || selectedTime > finishTime) {
       Alert.alert(
         'Tidak Dapat Memilih Waktu',
-        'Mohon Maaf, Waktu Pengiriman Tersedia Pukul 8 Pagi - 8 Malam',
+        'Mohon Maaf, Waktu Pengiriman Tersedia Pukul 8 Pagi - 6 Sore',
       );
       this.setState({
         showTime: false,
