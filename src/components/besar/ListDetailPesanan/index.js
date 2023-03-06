@@ -126,7 +126,7 @@ export default function ListDetailPesanan({pesanan, admin, navigation}) {
         ) : (
           <View style={styles.desc}>
             <Text style={styles.labelText}>Detail Alamat Toko</Text>
-            <Text style={styles.infoText}>Nusukan</Text>
+            <Text style={styles.infoText}>{admin.detail_alamat}</Text>
           </View>
         )}
         {pesanan.biteship_id ? (

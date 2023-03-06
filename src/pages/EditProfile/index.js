@@ -55,7 +55,7 @@ class EditProfile extends Component {
   componentDidMount() {
     this.getUserData();
   }
-  
+
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
     const {updateProfileResult} = this.props;
@@ -106,10 +106,24 @@ class EditProfile extends Component {
   };
 
   clearImage = () => {
-     this.setState({
-       avatar: '',
-     });
-  }
+    this.setState({
+      avatar: '',
+    });
+  };
+  
+  validatePhone = phone => {
+    // cek apakah teks hanya mengandung karakter angka
+    if (/^\d*$/.test(phone)) {
+      // cek apakah nomor telepon diawali dengan "08"
+      if (phone.startsWith('08')) {
+        // ganti "08" dengan "628"
+        phone = '628' + phone.substr(2);
+      }
+      this.setState({
+        nomerHp: phone,
+      });
+    }
+  };
 
   clickMaps = () => {
     this.setState({
@@ -203,7 +217,7 @@ class EditProfile extends Component {
             <Inputan
               label="No. Handphone *"
               value={nomerHp}
-              onChangeText={nomerHp => this.setState({nomerHp})}
+              onChangeText={this.validatePhone}
               keyboardType="number-pad"
             />
             <View style={styles.wrapAlamat}>

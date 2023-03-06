@@ -54,10 +54,14 @@ class CardOrders extends Component {
             )}
             <View style={styles.wrapInvoice}>
               <View>
+                <Text style={styles.labelInvoice}>ID Pesanan : </Text>
                 <Text style={styles.labelInvoice}>Ongkos Kirim : </Text>
                 <Text style={styles.labelInvoice}>Total Pesanan : </Text>
               </View>
               <View>
+                <Text style={styles.amountInvoice}>
+                  {pesanan.order_id}
+                </Text>
                 <Text style={styles.amountInvoice}>
                   Rp{pesanan.total_ongkir.toLocaleString('id-ID')}
                 </Text>

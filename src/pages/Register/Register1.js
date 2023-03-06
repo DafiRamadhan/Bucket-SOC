@@ -57,6 +57,20 @@ export default class Register1 extends Component {
     return validPassword.test(password);
   };
 
+  validatePhone = phone => {
+    // cek apakah teks hanya mengandung karakter angka
+    if (/^\d*$/.test(phone)) {
+      // cek apakah nomor telepon diawali dengan "08"
+      if (phone.startsWith('08')) {
+        // ganti "08" dengan "628"
+        phone = '628' + phone.substr(2);
+      }
+      this.setState({
+        nomerHp: phone,
+      });
+    }
+  };
+
   onContinue = () => {
     const {nama, email, nomerHp, password, confirmPassword} = this.state;
     if (nama && email && nomerHp && password && confirmPassword) {
@@ -116,7 +130,7 @@ export default class Register1 extends Component {
                 keyboardType="number-pad"
                 placeholder={'Nomor HP'}
                 value={nomerHp}
-                onChangeText={nomerHp => this.setState({nomerHp})}
+                onChangeText={this.validatePhone}
               />
               <Inputan
                 icon={'password'}
