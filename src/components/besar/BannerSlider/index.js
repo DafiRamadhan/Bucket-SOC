@@ -63,12 +63,12 @@ class BannerSlider extends Component {
               <View style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                   <Image
-                    source={{uri: gambarList[index]}}
+                    source={gambarList[index] ? {uri: gambarList[index]} : null}
                     style={styles.gambar}
                   />
-                  <Text style={styles.titleText}>{itemList[index].title}</Text>
+                  <Text style={styles.titleText}>{itemList[index] ? itemList[index].title : null}</Text>
                   <Text style={styles.deskripsiText}>
-                    {itemList[index].deskripsi}
+                    {itemList[index] ? itemList[index].deskripsi : null}
                   </Text>
                 </ScrollView>
               </View>
