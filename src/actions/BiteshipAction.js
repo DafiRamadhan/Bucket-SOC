@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Alert } from 'react-native';
-import {API_TIMEOUT, BITESHIP_API_HEADER, BITESHIP_API_URL, dispatchError, dispatchLoading, dispatchSuccess} from '../utils';
+import {dispatchError, dispatchLoading, dispatchSuccess} from '../utils';
 
 export const POST_ONGKIR = 'POST_ONGKIR';
 export const DELETE_ONGKIR = 'DELETE_ONGKIR';
@@ -11,13 +11,15 @@ export const postOngkir = (data) => {
     //LOADING
     dispatchLoading(dispatch, POST_ONGKIR);
 
-    axios({
-      method: 'POST',
-      url: BITESHIP_API_URL + 'rates/couriers',
-      timeout: API_TIMEOUT,
-      headers: BITESHIP_API_HEADER,
+    const parameter = {
       data: data,
-    })
+    };
+
+    axios
+      .post(
+        'https://us-central1-bucketsoc.cloudfunctions.net/app/biteship-rates',
+        parameter,
+      )
       .then(response => {
         if (response.status !== 200) {
           // ERROR
@@ -32,7 +34,10 @@ export const postOngkir = (data) => {
       .catch(error => {
         // ERROR
         dispatchError(dispatch, POST_ONGKIR, error.message);
-        Alert.alert('Error', 'Mohon maaf. Jumlah barang melebihi kapasitas kurir.');
+        Alert.alert(
+          'Error',
+          'Mohon maaf. Jumlah barang melebihi kapasitas kurir.',
+        );
       });
   };
 };
@@ -46,12 +51,15 @@ export const getTrackingInfo = id => {
     //LOADING
     dispatchLoading(dispatch, GET_TRACKING);
 
-    axios({
-      method: 'GET',
-      url: BITESHIP_API_URL + 'orders/' + id,
-      timeout: API_TIMEOUT,
-      headers: BITESHIP_API_HEADER,
-    })
+    const parameter = {
+      biteship_id: id,
+    };
+
+    axios
+      .post(
+        'https://us-central1-bucketsoc.cloudfunctions.net/app/biteship-status',
+        parameter,
+      )
       .then(response => {
         if (response.status !== 200) {
           // ERROR

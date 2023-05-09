@@ -32,8 +32,10 @@ import {
 import {heightMobileUI} from '../../../utils/constant';
 import Geocoder from 'react-native-geocoding';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import { getAdminProfile } from '../../../actions/ProfileAction';
+import { connect } from 'react-redux';
 
-export default class Maps extends Component {
+class Maps extends Component {
   state = {
     GOOGLE_MAPS_API: 'AIzaSyBT4fsHQVZ-hgBoDpps2osek_96lbvKCNM',
     location: {
@@ -49,6 +51,11 @@ export default class Maps extends Component {
     address: this.props.address,
     search: this.props.search,
   };
+
+  componentDidMount() {
+    const {dispatch} = this.props;
+    dispatch(getAdminProfile());
+  }
 
   requestLocation = () => {
     GetLocation.getCurrentPosition({
@@ -125,12 +132,28 @@ export default class Maps extends Component {
   };
 
   saveLocation = () => {
-    if (
-      this.state.region.latitude > -7.35725 ||
-      this.state.region.latitude < -7.7271903 ||
-      this.state.region.longitude < 110.6435949 ||
-      this.state.region.longitude > 111.0134088
-    ) {
+    const {
+      getAdminProfileResult,
+    } = this.props;
+    const latitude = this.state.region.latitude;
+    const longitude = this.state.region.longitude;
+    const adminLatitude = getAdminProfileResult ? getAdminProfileResult.latitude : 0;
+    const adminLongitude = getAdminProfileResult ? getAdminProfileResult.longitude : 0;
+    const R = 6371e3; // Jari-jari bumi dalam meter
+    const lat1 = (adminLatitude * Math.PI) / 180; // Konversi ke radian
+    const lat2 = (latitude * Math.PI) / 180; // Konversi ke radian
+    const deltaLat = ((latitude - adminLatitude) * Math.PI) / 180; // Konversi ke radian
+    const deltaLon = ((longitude - adminLongitude) * Math.PI) / 180; // Konversi ke radian
+    const a =
+      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+      Math.cos(lat1) *
+        Math.cos(lat2) *
+        Math.sin(deltaLon / 2) *
+        Math.sin(deltaLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    //Membatasi lokasi pengguna hanya maksimal 25km dari toko
+    if (distance > 25000) {
       Alert.alert(
         'Tidak Dapat Memilih Lokasi',
         'Mohon Maaf. Belum tersedia untuk lokasi Anda!.',
@@ -265,6 +288,14 @@ export default class Maps extends Component {
     );
   }
 }
+
+const mapStateToProps = state => ({
+  getAdminProfileLoading: state.ProfileReducer.getAdminProfileLoading,
+  getAdminProfileResult: state.ProfileReducer.getAdminProfileResult,
+  getAdminProfileError: state.ProfileReducer.getAdminProfileError,
+});
+
+export default connect(mapStateToProps, null)(Maps);
 
 const styles = StyleSheet.create({
   map: {

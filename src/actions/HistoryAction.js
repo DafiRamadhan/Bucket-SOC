@@ -10,14 +10,9 @@ import {
 } from 'firebase/database';
 import {Alert} from 'react-native';
 import {
-  API_TIMEOUT,
-  BITESHIP_API_HEADER,
-  BITESHIP_API_URL,
   dispatchError,
   dispatchLoading,
   dispatchSuccess,
-  HEADER_MIDTRANS,
-  URL_MIDTRANS_STATUS,
 } from '../utils';
 
 export const UPDATE_STATUS = 'UPDATE_STATUS';
@@ -112,12 +107,15 @@ export const updateStatusMidtrans = (order_id, item_midtrans, item_biteship) => 
     const now = new Date().getTime();
     const duration = now - tgl_pemesanan;
 
-    axios({
-      method: 'GET',
-      url: URL_MIDTRANS_STATUS + order_id + '/status',
-      timeout: API_TIMEOUT,
-      headers: HEADER_MIDTRANS,
-    })
+    const parameter = {
+      order_id: order_id,
+    };
+
+    axios
+      .post(
+        'https://us-central1-bucketsoc.cloudfunctions.net/app/midtrans-status',
+        parameter,
+      )
       .then(response => {
         if (
           response.data.transaction_status === 'settlement' ||
@@ -181,12 +179,15 @@ export const updateStatusMidtrans = (order_id, item_midtrans, item_biteship) => 
 
 export const updateStatusBiteship = (order_id, biteship_id, item_midtrans, item_biteship) => {
   return dispatch => {
-    axios({
-      method: 'GET',
-      url: BITESHIP_API_URL + 'orders/' + biteship_id,
-      timeout: API_TIMEOUT,
-      headers: BITESHIP_API_HEADER,
-    })
+    const parameter = {
+      biteship_id: biteship_id,
+    };
+
+    axios
+      .post(
+        'https://us-central1-bucketsoc.cloudfunctions.net/app/biteship-status',
+        parameter,
+      )
       .then(response => {
         if (response.status !== 200) {
           // ERROR
@@ -235,10 +236,7 @@ export const updateStatusBiteship = (order_id, biteship_id, item_midtrans, item_
       .catch(error => {
         // ERROR
         dispatchError(dispatch, UPDATE_STATUS, error.message);
-        Alert.alert(
-          'Alert',
-          error.message + 'order id : ' + order_id,
-        );
+        Alert.alert('Alert', error.message + 'order id : ' + order_id);
       });
   };
 };

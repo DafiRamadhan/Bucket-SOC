@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {Alert} from 'react-native';
-import {API_TIMEOUT, INVOICE_API_URL, INVOICE_API_HEADER} from '../utils';
 import {dispatchError, dispatchLoading, dispatchSuccess} from '../utils';
 
 export const CREATE_INVOICE = 'CREATE_INVOICE';
@@ -10,13 +9,15 @@ export const createInvoice = (data) => {
     //LOADING
     dispatchLoading(dispatch, CREATE_INVOICE);
 
+    const parameter = {
+      data,
+    };
+
     axios({
       method: 'POST',
-      url: INVOICE_API_URL,
-      timeout: API_TIMEOUT,
-      headers: INVOICE_API_HEADER,
+      url: 'https://us-central1-bucketsoc.cloudfunctions.net/app/invoice',
       responseType: 'blob',
-      data: data,
+      data: parameter,
     })
       .then(response => {
         if (response.status !== 200) {

@@ -9,12 +9,9 @@ import {
 } from 'firebase/database';
 import {Alert} from 'react-native';
 import {
-  API_TIMEOUT,
   dispatchError,
   dispatchLoading,
   dispatchSuccess,
-  HEADER_MIDTRANS,
-  URL_MIDTRANS_STATUS,
 } from '../utils';
 
 export const UPDATE_PESANAN = 'UPDATE_PESANAN';
@@ -98,21 +95,24 @@ export const cancelPesanan = pesanan => {
         ) {
           //Cek apakah ada url midtrans, jika ada cek status pembayaran
           if (pesanan.url_midtrans) {
-            axios({
-              method: 'GET',
-              url: URL_MIDTRANS_STATUS + pesanan.order_id + '/status',
-              timeout: API_TIMEOUT,
-              headers: HEADER_MIDTRANS,
-            })
+            const parameter = {
+              order_id: pesanan.order_id,
+              reason: 'Selesai (Dibatalkan Pembeli)',
+            };
+
+            axios
+              .post(
+                'https://us-central1-bucketsoc.cloudfunctions.net/app/midtrans-status',
+                parameter,
+              )
               .then(response => {
                 //jika status pembayaran masih pending, batalkan pembayaran
                 if (response.data.transaction_status === 'pending') {
-                  axios({
-                    method: 'POST',
-                    url: URL_MIDTRANS_STATUS + pesanan.order_id + '/cancel',
-                    timeout: API_TIMEOUT,
-                    headers: HEADER_MIDTRANS,
-                  })
+                  axios
+                    .post(
+                      'https://us-central1-bucketsoc.cloudfunctions.net/app/midtrans-cancel',
+                      parameter,
+                    )
                     .then(response => {
                       //Jika pembatalan pesanan berhasil
                       if (response.data.transaction_status === 'cancel') {
@@ -180,18 +180,11 @@ export const cancelPesanan = pesanan => {
                   response.data.transaction_status === 'capture'
                 ) {
                   //Mencoba untuk melakukan refund
-                  axios({
-                    method: 'POST',
-                    url:
-                      URL_MIDTRANS_STATUS +
-                      pesanan.order_id +
-                      '/refund/online/direct',
-                    timeout: API_TIMEOUT,
-                    headers: HEADER_MIDTRANS,
-                    data: {
-                      reason: 'Selesai (Dibatalkan Pembeli)',
-                    },
-                  })
+                  axios
+                    .post(
+                      'https://us-central1-bucketsoc.cloudfunctions.net/app/midtrans-refund',
+                      parameter,
+                    )
                     .then(response => {
                       //Jika refund berhasil
                       if (response.data.transaction_status === 'refund') {
@@ -216,10 +209,10 @@ export const cancelPesanan = pesanan => {
                               CANCEL_PESANAN,
                               error.message,
                             );
-                             Alert.alert(
-                               'Tidak Dapat Membatalkan Pesanan',
-                               'Silakan hubungi Admin jika ingin melakukan pembatalan pesanan ini!',
-                             );
+                            Alert.alert(
+                              'Tidak Dapat Membatalkan Pesanan',
+                              'Silakan hubungi Admin jika ingin melakukan pembatalan pesanan ini!',
+                            );
                           });
                       } else {
                         dispatchError(
