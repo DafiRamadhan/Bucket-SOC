@@ -37,7 +37,7 @@ import { connect } from 'react-redux';
 
 class Maps extends Component {
   state = {
-    GOOGLE_MAPS_API: 'AIzaSyBT4fsHQVZ-hgBoDpps2osek_96lbvKCNM',
+    GOOGLE_MAPS_API: 'AIzaSyA4QbcD1J0EBKqTQ6iIX-fqo9QTAfPapVk',
     location: {
       latitude: 0,
       longitude: 0,
@@ -132,13 +132,15 @@ class Maps extends Component {
   };
 
   saveLocation = () => {
-    const {
-      getAdminProfileResult,
-    } = this.props;
+    const {getAdminProfileResult} = this.props;
     const latitude = this.state.region.latitude;
     const longitude = this.state.region.longitude;
-    const adminLatitude = getAdminProfileResult ? getAdminProfileResult.latitude : 0;
-    const adminLongitude = getAdminProfileResult ? getAdminProfileResult.longitude : 0;
+    const adminLatitude = getAdminProfileResult
+      ? getAdminProfileResult.latitude
+      : 0;
+    const adminLongitude = getAdminProfileResult
+      ? getAdminProfileResult.longitude
+      : 0;
     const R = 6371e3; // Jari-jari bumi dalam meter
     const lat1 = (adminLatitude * Math.PI) / 180; // Konversi ke radian
     const lat2 = (latitude * Math.PI) / 180; // Konversi ke radian
