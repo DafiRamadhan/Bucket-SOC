@@ -3,7 +3,6 @@ import {
   BackHandler,
   Linking,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import React, {Component} from 'react';
@@ -12,7 +11,6 @@ import {Header, Loading} from '../../components';
 import {connect} from 'react-redux';
 import {updatePesanan} from '../../actions/PesananAction';
 import {colors, responsiveHeight} from '../../utils';
-import {IconQRIS} from '../../assets';
 
 class Midtrans extends Component {
   constructor(props) {
@@ -55,12 +53,6 @@ class Midtrans extends Component {
     }
   }
 
-  qris = ({url}) => {
-    this.setState({
-      url: url + '#/gopay-qris',
-    });
-  };
-
   render() {
     const {url} = this.state;
     const {navigation, updatePesananLoading} = this.props;
@@ -97,16 +89,6 @@ class Midtrans extends Component {
                 }
               }}
             />
-            {url.slice(-12) !== '#/gopay-qris' &&
-            (!this.props.route.params.data.status_pesanan ||
-              this.props.route.params.data.status_pesanan ===
-                'Menunggu Pembayaran') ? (
-              <TouchableOpacity
-                style={styles.qris}
-                onPress={() => this.qris({url})}>
-                <IconQRIS />
-              </TouchableOpacity>
-            ) : null}
           </>
         )}
       </View>
