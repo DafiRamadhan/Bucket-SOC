@@ -40,12 +40,12 @@ export default class Intro5 extends Component {
               <View style={styles.circlePrimary}></View>
             </View>
             <TouchableOpacity
-              onPress={() => navigation.navigate('Login')}
+              onPress={() => navigation.replace('Login')}
               style={styles.loginBtn}>
               <Text style={styles.loginText}>Masuk Ke Akun Anda</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate('Register1')}
+              onPress={() => navigation.replace('Register1')}
               style={styles.registerBtn}>
               <Text style={styles.registerText}>Daftar Akun Baru</Text>
             </TouchableOpacity>

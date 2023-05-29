@@ -42,7 +42,7 @@ export default class Register1 extends Component {
   }
 
   handleBackButtonClick() {
-    this.props.navigation.navigate('Login');
+    this.props.navigation.replace('Login');
     return true;
   }
 
@@ -101,7 +101,7 @@ export default class Register1 extends Component {
           keyboardShouldPersistTaps="handled">
           <TouchableOpacity
             style={styles.tombolBack}
-            onPress={() => navigation.goBack()}>
+            onPress={() => navigation.replace('Login')}>
             <IconBack />
           </TouchableOpacity>
           <View style={styles.images}>
