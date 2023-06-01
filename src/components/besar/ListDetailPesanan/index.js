@@ -231,6 +231,7 @@ const styles = StyleSheet.create({
     color: colors.black,
     textAlign: 'right',
     width: responsiveWidth(240),
+    textTransform: 'uppercase',
   },
   wrapStatus: {
     backgroundColor: colors.primary,
