@@ -7,6 +7,7 @@ import {
   BackHandler,
   TouchableOpacity,
   Linking,
+  RefreshControl,
 } from 'react-native';
 import React, {Component} from 'react';
 import {
@@ -27,6 +28,7 @@ class LacakPengiriman extends Component {
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     this.state = {
       tracking_id: this.props.route.params,
+      refreshing: false,
     };
   }
 
@@ -36,8 +38,7 @@ class LacakPengiriman extends Component {
       this.handleBackButtonClick,
     );
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      const {tracking_id} = this.state;
-      this.props.dispatch(getTrackingInfo(tracking_id));
+      this.loadData();
     });
   }
 
@@ -54,6 +55,19 @@ class LacakPengiriman extends Component {
     return true;
   }
 
+  loadData = () => {
+    const {tracking_id} = this.state;
+    this.props.dispatch(getTrackingInfo(tracking_id));
+  };
+
+  handleRefresh = () => {
+    this.setState({refreshing: true});
+    // Setelah tindakan refresh selesai, set state refreshing menjadi false.
+    // Ini akan memicu pemanggilan loadData untuk menjalankan ulang tindakan saat komponen dimuat ulang.
+    this.setState({refreshing: false});
+    this.loadData();
+  };
+
   render() {
     const {navigation, getTrackingInfoResult} = this.props;
     const history = getTrackingInfoResult
@@ -64,7 +78,16 @@ class LacakPengiriman extends Component {
         <Header title="Lacak Pengiriman" goBack={() => navigation.goBack()} />
         {getTrackingInfoResult ? (
           <View>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{flexGrow: 1}}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.handleRefresh}
+                  colors={[colors.primary]}
+                />
+              }>
               <View style={styles.wrapInfo}>
                 <View style={styles.desc}>
                   <Text style={styles.titleText}>Status Pengiriman</Text>

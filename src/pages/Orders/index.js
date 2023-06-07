@@ -11,7 +11,8 @@ import {colors, fonts, getData, responsiveHeight} from '../../utils';
 import {RFValue} from 'react-native-responsive-fontsize';
 import {heightMobileUI} from '../../utils/constant';
 import {connect} from 'react-redux';
-import {getListHistory, updateStatus} from '../../actions/HistoryAction';
+import {getListHistory} from '../../actions/HistoryAction';
+import { RefreshControl } from 'react-native';
 
 class Orders extends Component {
   constructor(props) {
@@ -19,41 +20,35 @@ class Orders extends Component {
 
     this.state = {
       profile: false,
+      refreshing: false,
     };
   }
 
   componentDidMount() {
-    this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      getData('user').then(res => {
-        const data = res;
-        if (data) {
-          this.setState({
-            profile: data,
-          });
-          this.props.dispatch(updateStatus(data.uid));
-        } else {
-          this.props.navigation.replace('Login');
-        }
-      });
+    this.loadData();
+  }
+
+  loadData = () => {
+    getData('user').then(res => {
+      const data = res;
+      if (data) {
+        this.setState({
+          profile: data,
+        });
+        this.props.dispatch(getListHistory(data.uid));
+      } else {
+        this.props.navigation.replace('Login');
+      }
     });
-  }
+  };
 
-  componentWillUnmount() {
-    this._unsubscribe();
-  }
-
-  //Ketika suatu komponen terdapat perubahan
-  componentDidUpdate(prevProps) {
-    const {profile} = this.state;
-    const {updateStatusResult} = this.props;
-    if (
-      updateStatusResult &&
-      prevProps.updateStatusResult !== updateStatusResult
-    ) {
-      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
-      this.props.dispatch(getListHistory(profile.uid));
-    }
-  }
+  handleRefresh = () => {
+    this.setState({refreshing: true});
+    // Setelah tindakan refresh selesai, set state refreshing menjadi false.
+    // Ini akan memicu pemanggilan loadData untuk menjalankan ulang tindakan saat komponen dimuat ulang.
+    this.setState({refreshing: false});
+    this.loadData();
+  };
 
   render() {
     const {profile} = this.state;
@@ -61,7 +56,16 @@ class Orders extends Component {
     return (
       <View style={styles.pages}>
         <Text style={styles.title}>Orders</Text>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{flexGrow: 1}}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.handleRefresh}
+              colors={[colors.primary]}
+            />
+          }>
           <View style={styles.container}>
             <View style={styles.listmenu}>
               {profile ? (
@@ -79,13 +83,7 @@ class Orders extends Component {
   }
 }
 
-const mapStateToProps = state => ({
-  updateStatusLoading: state.HistoryReducer.updateStatusLoading,
-  updateStatusResult: state.HistoryReducer.updateStatusResult,
-  updateStatusError: state.HistoryReducer.updateStatusError,
-});
-
-export default connect(mapStateToProps, null)(Orders);
+export default connect()(Orders);
 
 const styles = StyleSheet.create({
   pages: {

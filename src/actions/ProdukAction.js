@@ -1,5 +1,4 @@
 import {
-  endAt,
   equalTo,
   getDatabase,
   limitToLast,
@@ -7,12 +6,12 @@ import {
   orderByChild,
   query,
   ref,
-  startAt,
 } from 'firebase/database';
 import {Alert} from 'react-native';
 import {dispatchError, dispatchLoading, dispatchSuccess} from '../utils';
 
 export const GET_LIST_PRODUK = 'GET_LIST_PRODUK';
+export const GET_LIST_LIMIT_PRODUK = 'GET_LIST LIMIT PRODUK';
 export const GET_LIST_PRODUK_BY_KATEGORI = 'GET_LIST_PRODUK_BY_KATEGORI';
 export const DELETE_PRODUK_FILTER = 'DELETE_PRODUK_FILTER';
 export const DELETE_SEARCH_FILTER = 'DELETE_SEARCH_FILTER';
@@ -72,21 +71,21 @@ export const getListProduk = (idKategori) => {
 export const getListLimitProduk = () => {
   return dispatch => {
     //LOADING
-    dispatchLoading(dispatch, GET_LIST_PRODUK);
+    dispatchLoading(dispatch, GET_LIST_LIMIT_PRODUK);
 
     return onValue(
       query(ref(getDatabase(), 'produk'), limitToLast(10)),
       snapshot => {
         const data = snapshot.val();
         //SUKSES
-        dispatchSuccess(dispatch, GET_LIST_PRODUK, data);
+        dispatchSuccess(dispatch, GET_LIST_LIMIT_PRODUK, data);
       },
       {
         onlyOnce: true,
       },
       error => {
         //ERROR
-        dispatchError(dispatch, GET_LIST_PRODUK, error.message);
+        dispatchError(dispatch, GET_LIST_LIMIT_PRODUK, error.message);
         Alert.alert('Error', error.message);
       },
     );

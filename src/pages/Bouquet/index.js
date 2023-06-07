@@ -1,4 +1,4 @@
-import {StyleSheet, View, Text, ScrollView} from 'react-native';
+import {StyleSheet, View, Text, ScrollView, RefreshControl} from 'react-native';
 import React, {Component} from 'react';
 import {HeaderComponent, ListKategori2, ListProduk} from '../../components';
 import {colors, fonts, responsiveHeight, responsiveWidth} from '../../utils';
@@ -8,20 +8,33 @@ import {connect} from 'react-redux';
 import {getListKategori} from '../../actions/KategoriAction';
 import {getListProduk} from '../../actions/ProdukAction';
 import {LogBox} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 LogBox.ignoreAllLogs();
 
 class Bouquet extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      refreshing: false,
+    };
+  }
+
   componentDidMount() {
+    this.loadData();
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      const {idKategori} = this.props;
-      this.props.dispatch(getListKategori());
-      this.props.dispatch(getListProduk(idKategori));
     });
   }
 
   componentWillUnmount() {
     this._unsubscribe();
   }
+
+  loadData = () => {
+    const {idKategori} = this.props;
+    this.props.dispatch(getListKategori());
+    this.props.dispatch(getListProduk(idKategori));
+  };
 
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
@@ -39,6 +52,14 @@ class Bouquet extends Component {
     }
   }
 
+  handleRefresh = () => {
+    this.setState({refreshing: true});
+    // Setelah tindakan refresh selesai, set state refreshing menjadi false.
+    // Ini akan memicu pemanggilan loadData untuk menjalankan ulang tindakan saat komponen dimuat ulang.
+    this.setState({refreshing: false});
+    this.loadData();
+  };
+
   render() {
     const {navigation, keyword, namaKategori} = this.props;
     return (
@@ -52,7 +73,15 @@ class Bouquet extends Component {
         </View>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled">
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{flexGrow: 1}}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.handleRefresh}
+              colors={[colors.primary]}
+            />
+          }>
           <View style={styles.body}>
             <View style={styles.pilihBuket}>
               {keyword ? (
@@ -79,6 +108,14 @@ const mapStateToProps = state => ({
   idKategori: state.ProdukReducer.idKategori,
   namaKategori: state.ProdukReducer.namaKategori,
   keyword: state.ProdukReducer.keyword,
+
+  getListProdukLoading: state.ProdukReducer.getListProdukLoading,
+  getListProdukResult: state.ProdukReducer.getListProdukResult,
+  getListProdukError: state.ProdukReducer.getListProdukError,
+
+  getListKategoriLoading: state.KategoriReducer.getListKategoriLoading,
+  getListKategoriResult: state.KategoriReducer.getListKategoriResult,
+  getListKategoriError: state.KategoriReducer.getListKategoriError,
 });
 
 export default connect(mapStateToProps, null)(Bouquet);

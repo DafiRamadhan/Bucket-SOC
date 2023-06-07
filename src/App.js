@@ -1,12 +1,14 @@
 import * as React from 'react';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import Router from './router';
-import { colors, getData } from './utils';
+import { clearData, colors, getData } from './utils';
 import { useEffect } from 'react';
 import SplashScreen from 'react-native-splash-screen';
 import { Provider } from 'react-redux';
 import store from './reducers/store';
 import { useState } from 'react';
+import { getDatabase, onValue, ref } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 
 const MyTheme = {
   ...DefaultTheme,

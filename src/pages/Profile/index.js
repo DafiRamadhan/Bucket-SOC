@@ -5,6 +5,7 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
+  RefreshControl,
 } from 'react-native';
 import React, {Component} from 'react';
 import {Menu} from '../../data';
@@ -29,19 +30,18 @@ class Profile extends Component {
     this.state = {
       profile: false,
       menu: Menu,
+      refreshing: false,
     };
   }
 
   //Dijalankan ketika komponen/halaman pertama kali di buka / di load
   componentDidMount() {
-    this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      this.getUserData();
-    });
+    this.loadData();
   }
 
-  componentWillUnmount() {
-    this._unsubscribe();
-  }
+  loadData = () => {
+    this.getUserData();
+  };
 
   //mendapatkan userData dari Async Storage
   getUserData = () => {
@@ -62,6 +62,14 @@ class Profile extends Component {
     });
   };
 
+  handleRefresh = () => {
+    this.setState({refreshing: true});
+    // Setelah tindakan refresh selesai, set state refreshing menjadi false.
+    // Ini akan memicu pemanggilan loadData untuk menjalankan ulang tindakan saat komponen dimuat ulang.
+    this.setState({refreshing: false});
+    this.loadData();
+  };
+
   render() {
     const {profile, menu} = this.state;
     const {getAdminProfileResult} = this.props;
@@ -70,7 +78,16 @@ class Profile extends Component {
         {profile ? (
           <View>
             <Text style={styles.title}>Profile Pribadi</Text>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{flexGrow: 1}}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.handleRefresh}
+                  colors={[colors.primary]}
+                />
+              }>
               <View style={styles.container}>
                 <View style={styles.header}>
                   <Image

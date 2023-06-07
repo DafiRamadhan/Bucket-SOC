@@ -4,6 +4,7 @@ import BannerSlider from './BannerSlider';
 import ListKategori from './ListKategori';
 import ListKategori2 from './ListKategori/index2';
 import ListProduk from './ListProduk';
+import ListLimitProduk from './ListProduk/index2';
 import BuketSlider from './BuketSlider';
 import ListMenu from './ListMenu';
 import ListKeranjang from './ListKeranjang';
@@ -19,6 +20,7 @@ export {
   ListKategori,
   ListKategori2,
   ListProduk,
+  ListLimitProduk,
   BuketSlider,
   ListMenu,
   ListKeranjang,

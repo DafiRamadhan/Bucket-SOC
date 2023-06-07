@@ -24,6 +24,7 @@ import {heightMobileUI} from '../../utils/constant';
 import {connect} from 'react-redux';
 import {getListKeranjang, updateKeranjang} from '../../actions/KeranjangAction';
 import {getListProduk} from '../../actions/ProdukAction';
+import { RefreshControl } from 'react-native';
 
 class Keranjang extends Component {
   constructor(props) {
@@ -31,10 +32,15 @@ class Keranjang extends Component {
 
     this.state = {
       profile: false,
+      refreshing: false,
     };
   }
 
   componentDidMount() {
+    this.loadData();
+  }
+
+  loadData = () => {
     const {dispatch, navigation} = this.props;
     getData('user').then(res => {
       //cek apakah user sudah Login
@@ -47,7 +53,7 @@ class Keranjang extends Component {
         navigation.replace('Login');
       }
     });
-  }
+  };
 
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
@@ -90,6 +96,14 @@ class Keranjang extends Component {
       dispatch(getListKeranjang(this.state.profile.uid));
     }
   }
+
+  handleRefresh = () => {
+    this.setState({refreshing: true});
+    // Setelah tindakan refresh selesai, set state refreshing menjadi false.
+    // Ini akan memicu pemanggilan loadData untuk menjalankan ulang tindakan saat komponen dimuat ulang.
+    this.setState({refreshing: false});
+    this.loadData();
+  };
 
   render() {
     const {profile} = this.state;
@@ -138,7 +152,16 @@ class Keranjang extends Component {
           </View>
         ) : getListKeranjangResult && getListProdukResult ? (
           <View style={styles.page}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{flexGrow: 1}}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.handleRefresh}
+                  colors={[colors.primary]}
+                />
+              }>
               {/* Mengirim isi state dari mapStateToProps */}
               <ListKeranjang {...this.props} produkList={produkList} />
             </ScrollView>

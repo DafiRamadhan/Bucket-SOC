@@ -1,6 +1,7 @@
 import {
   GET_LIST_PRODUK,
   GET_LIST_PRODUK_BY_KATEGORI,
+  GET_LIST_LIMIT_PRODUK,
   DELETE_PRODUK_FILTER,
   DELETE_SEARCH_FILTER,
   DELETE_KATEGORI_FILTER,
@@ -12,6 +13,10 @@ const initialState = {
   getListProdukLoading: false,
   getListProdukResult: false,
   getListProdukError: false,
+
+  getListLimitProdukLoading: false,
+  getListLimitProdukResult: false,
+  getListLimitProdukError: false,
 
   idKategori: false,
   namaKategori: false,
@@ -27,6 +32,14 @@ export default function (state = initialState, action) {
         getListProdukLoading: action.payload.loading,
         getListProdukResult: action.payload.data,
         getListProdukError: action.payload.errorMessage,
+      };
+
+    case GET_LIST_LIMIT_PRODUK:
+      return {
+        ...state,
+        getListLimitProdukLoading: action.payload.loading,
+        getListLimitProdukResult: action.payload.data,
+        getListLimitProdukError: action.payload.errorMessage,
       };
 
     case GET_LIST_PRODUK_BY_KATEGORI:

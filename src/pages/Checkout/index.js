@@ -32,6 +32,7 @@ import {deleteOngkir, postOngkir} from '../../actions/BiteshipAction';
 import {snapTransaction} from '../../actions/PaymentAction';
 import {updatePesanan} from '../../actions/PesananAction';
 import {getAdminProfile} from '../../actions/ProfileAction';
+import { getListHistory } from '../../actions/HistoryAction';
 
 class Checkout extends Component {
   constructor(props) {
@@ -91,6 +92,7 @@ class Checkout extends Component {
     ) {
       //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru && tidak ada URL Midtrans
       this.props.navigation.navigate('DetailPesanan', updatePesananResult);
+      this.props.dispatch(getListHistory(this.state.profile.uid));
     }
   }
 

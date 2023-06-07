@@ -5,13 +5,14 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  RefreshControl,
 } from 'react-native';
 import React, {Component} from 'react';
 import {
   BannerSlider,
   HeaderComponent,
   ListKategori,
-  ListProduk,
+  ListLimitProduk,
 } from '../../components';
 import {
   colors,
@@ -36,22 +37,21 @@ class Home extends Component {
     //state akan dioper ke List
     this.state = {
       profile: false,
+      refreshing: false,
     };
   }
 
   //Dijalankan ketika komponen/halaman pertama kali di buka / di load
   componentDidMount() {
-    this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      this.props.dispatch(getListKategori());
-      this.props.dispatch(getListBanner());
-      this.props.dispatch(getListLimitProduk());
-      this.getUserData();
-    });
+    this.loadData();
   }
 
-  componentWillUnmount() {
-    this._unsubscribe();
-  }
+  loadData = () => {
+    this.props.dispatch(getListKategori());
+    this.props.dispatch(getListBanner());
+    this.props.dispatch(getListLimitProduk());
+    this.getUserData();
+  };
 
   //mendapatkan userData dari Async Storage
   getUserData = () => {
@@ -82,6 +82,14 @@ class Home extends Component {
     });
   };
 
+  handleRefresh = () => {
+    this.setState({refreshing: true});
+    // Setelah tindakan refresh selesai, set state refreshing menjadi false.
+    // Ini akan memicu pemanggilan loadData untuk menjalankan ulang tindakan saat komponen dimuat ulang.
+    this.setState({refreshing: false});
+    this.loadData();
+  };
+
   render() {
     const {profile} = this.state;
     const {navigation} = this.props;
@@ -89,7 +97,15 @@ class Home extends Component {
       <View style={styles.page}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled">
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={{flexGrow: 1}}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.handleRefresh}
+              colors={[colors.primary]}
+            />
+          }>
           <View style={styles.header}>
             <View style={styles.wrapTitle}>
               {profile.nama ? (
@@ -123,7 +139,7 @@ class Home extends Component {
             </View>
             <View style={styles.pilihBuket}>
               <Text style={styles.label}>Pilih Buket Favorit Anda</Text>
-              <ListProduk navigation={navigation} />
+              <ListLimitProduk navigation={navigation} />
             </View>
             <TouchableOpacity
               style={styles.containerTombol}
