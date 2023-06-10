@@ -45,6 +45,10 @@ class Profile extends Component {
     this._unsubscribe();
   }
 
+  loadData = () => {
+    this.getUserData();
+  };
+
   //mendapatkan userData dari Async Storage
   getUserData = () => {
     const {dispatch} = this.props;
