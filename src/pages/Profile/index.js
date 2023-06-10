@@ -36,12 +36,14 @@ class Profile extends Component {
 
   //Dijalankan ketika komponen/halaman pertama kali di buka / di load
   componentDidMount() {
-    this.loadData();
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.loadData();
+    });
   }
 
-  loadData = () => {
-    this.getUserData();
-  };
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
 
   //mendapatkan userData dari Async Storage
   getUserData = () => {
