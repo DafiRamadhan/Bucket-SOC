@@ -92,7 +92,7 @@ class Invoice extends Component {
       balance_title: 'Total Tagihan',
       notes_title: 'Catatan',
       terms_title: 'Diperbarui pada',
-      logo: 'https://i.ibb.co/f0rbMfm/Rounded-Logo-Copy.png',
+      logo: 'https://tinyurl.com/LogoBucketSOC',
       number: pesanan.order_id,
       from: 'BUCKET SOC',
       to: pesanan.user.nama + ' (' + pesanan.user.nomerHp + ')',
