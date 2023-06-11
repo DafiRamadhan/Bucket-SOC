@@ -32,8 +32,10 @@ import {
 import {heightMobileUI} from '../../../utils/constant';
 import Geocoder from 'react-native-geocoding';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import { getAdminProfile } from '../../../actions/ProfileAction';
-import { connect } from 'react-redux';
+import {getAdminProfile} from '../../../actions/ProfileAction';
+import {connect} from 'react-redux';
+import { postOngkir } from '../../../actions/BiteshipAction';
+import { Loading } from '../../kecil';
 
 class Maps extends Component {
   state = {
@@ -132,45 +134,38 @@ class Maps extends Component {
   };
 
   saveLocation = () => {
-    const {getAdminProfileResult} = this.props;
-    const latitude = this.state.region.latitude;
-    const longitude = this.state.region.longitude;
-    const adminLatitude = getAdminProfileResult
-      ? getAdminProfileResult.latitude
-      : 0;
-    const adminLongitude = getAdminProfileResult
-      ? getAdminProfileResult.longitude
-      : 0;
-    const R = 6371e3; // Jari-jari bumi dalam meter
-    const lat1 = (adminLatitude * Math.PI) / 180; // Konversi ke radian
-    const lat2 = (latitude * Math.PI) / 180; // Konversi ke radian
-    const deltaLat = ((latitude - adminLatitude) * Math.PI) / 180; // Konversi ke radian
-    const deltaLon = ((longitude - adminLongitude) * Math.PI) / 180; // Konversi ke radian
-    const a =
-      Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-      Math.cos(lat1) *
-        Math.cos(lat2) *
-        Math.sin(deltaLon / 2) *
-        Math.sin(deltaLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    //Membatasi lokasi pengguna hanya maksimal 25km dari toko
-    if (distance > 25000) {
-      Alert.alert(
-        'Tidak Dapat Memilih Lokasi',
-        'Mohon Maaf. Belum tersedia untuk lokasi Anda!.',
-      );
-    } else {
-      this.props.updateLocation(this.state);
-    }
+    const {getAdminProfileResult, dispatch} = this.props;
+    const data = JSON.stringify({
+      origin_latitude: getAdminProfileResult
+        ? getAdminProfileResult.latitude
+        : 0,
+      origin_longitude: getAdminProfileResult
+        ? getAdminProfileResult.longitude
+        : 0,
+      destination_latitude: this.state.region.latitude,
+      destination_longitude: this.state.region.longitude,
+      couriers: 'grab,gojek',
+      items: [],
+    });
+    dispatch(postOngkir(data, 'Maps'));
   };
 
   goBack = () => {
     this.props.goBack();
   };
 
+  //Ketika suatu komponen terdapat perubahan
+  componentDidUpdate(prevProps) {
+    const {getOngkirResult} = this.props;
+    if (getOngkirResult && prevProps.getOngkirResult !== getOngkirResult) {
+      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+      this.props.updateLocation(this.state);
+    }
+  }
+
   render() {
     const {GOOGLE_MAPS_API, location, region, address} = this.state;
+    const {getOngkirLoading} = this.props;
     Geocoder.init(GOOGLE_MAPS_API, {language: 'id'});
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -285,6 +280,7 @@ class Maps extends Component {
           </TouchableOpacity>
           {/* <Text style={styles.location}>{JSON.stringify(region, 0, 2)}</Text>
         <Text style={styles.location2}>{JSON.stringify(location, 0, 2)}</Text> */}
+          {getOngkirLoading ? <Loading /> : null}
         </View>
       </TouchableWithoutFeedback>
     );
@@ -295,6 +291,10 @@ const mapStateToProps = state => ({
   getAdminProfileLoading: state.ProfileReducer.getAdminProfileLoading,
   getAdminProfileResult: state.ProfileReducer.getAdminProfileResult,
   getAdminProfileError: state.ProfileReducer.getAdminProfileError,
+
+  getOngkirLoading: state.BiteshipReducer.getOngkirLoading,
+  getOngkirResult: state.BiteshipReducer.getOngkirResult,
+  getOngkirError: state.BiteshipReducer.getOngkirError,
 });
 
 export default connect(mapStateToProps, null)(Maps);

@@ -6,7 +6,7 @@ export const POST_ONGKIR = 'POST_ONGKIR';
 export const DELETE_ONGKIR = 'DELETE_ONGKIR';
 export const GET_TRACKING = 'GET_TRACKING';
 
-export const postOngkir = (data) => {
+export const postOngkir = (data, page) => {
   return dispatch => {
     //LOADING
     dispatchLoading(dispatch, POST_ONGKIR);
@@ -34,10 +34,17 @@ export const postOngkir = (data) => {
       .catch(error => {
         // ERROR
         dispatchError(dispatch, POST_ONGKIR, error.message);
-        Alert.alert(
-          'Error',
-          'Mohon maaf. Jumlah barang melebihi kapasitas kurir.',
-        );
+        if(page === 'Maps') {
+          Alert.alert(
+            'Tidak Dapat Memilih Lokasi',
+            'Mohon Maaf. Belum tersedia untuk lokasi Anda!',
+          );
+        } else if (page === 'Checkout') {
+          Alert.alert(
+            'Error',
+            'Mohon maaf. Jumlah barang melebihi kapasitas kurir!',
+          );
+        }
       });
   };
 };

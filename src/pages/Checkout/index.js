@@ -32,7 +32,7 @@ import {deleteOngkir, postOngkir} from '../../actions/BiteshipAction';
 import {snapTransaction} from '../../actions/PaymentAction';
 import {updatePesanan} from '../../actions/PesananAction';
 import {getAdminProfile} from '../../actions/ProfileAction';
-import { getListHistory } from '../../actions/HistoryAction';
+import {getListHistory} from '../../actions/HistoryAction';
 
 class Checkout extends Component {
   constructor(props) {
@@ -71,7 +71,8 @@ class Checkout extends Component {
 
   //Ketika suatu komponen terdapat perubahan
   componentDidUpdate(prevProps) {
-    const {snapTransactionResult, updatePesananResult} = this.props;
+    const {snapTransactionResult, updatePesananResult, getOngkirError} =
+      this.props;
     //Jika ada URL Midtrans, maka akan masuk halaman Midtrans
     if (
       snapTransactionResult &&
@@ -85,7 +86,8 @@ class Checkout extends Component {
       const page = 'Checkout';
       this.props.navigation.navigate('Midtrans', {data, page});
       //Jika tidak ada url Midtrans, maka akan langsung ke halaman DetailPesanan
-    } else if (
+    } 
+    if (
       updatePesananResult &&
       prevProps.updatePesananResult !== updatePesananResult &&
       !updatePesananResult.pesanan.url_midtrans
@@ -93,6 +95,12 @@ class Checkout extends Component {
       //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru && tidak ada URL Midtrans
       this.props.navigation.navigate('DetailPesanan', updatePesananResult);
       this.props.dispatch(getListHistory(this.state.profile.uid));
+    }
+    if (getOngkirError && prevProps.getOngkirError !== getOngkirError) {
+      //jika nilainya true && nilai sebelumnya tidak sama dengan yang baru
+      this.setState({
+        selectedEkspedisi: false,
+      });
     }
   }
 
@@ -143,9 +151,11 @@ class Checkout extends Component {
           x => x.key === getListKeranjangResult.item[key].produk,
         ).produk.harga,
         quantity: getListKeranjangResult.item[key].jumlah,
+        length: 30,
+        width: 30,
+        height: 30,
       });
     });
-
     this.setState({
       itemList: itemList,
       selectedEkspedisi: selectedEkspedisi,
@@ -204,7 +214,7 @@ class Checkout extends Component {
         order_id: firstOrderid + 'A',
         tanggal_pemesanan: fullDate,
       });
-      dispatch(postOngkir(data));
+      dispatch(postOngkir(data, 'Checkout'));
     } else if (selectedEkspedisi === 'Ambil di Toko (Pembayaran Online)') {
       this.props.getOngkirResult = 0;
       this.setState({
@@ -442,7 +452,9 @@ class Checkout extends Component {
                 {asuransi ? (
                   <Text style={styles.totalText}>
                     Rp
-                    {parseInt(total_harga * (0.5 / 100)).toLocaleString('id-ID')}
+                    {parseInt(total_harga * (0.5 / 100)).toLocaleString(
+                      'id-ID',
+                    )}
                   </Text>
                 ) : (
                   <Text style={styles.totalText}>Rp0</Text>
@@ -484,6 +496,7 @@ class Checkout extends Component {
 const mapStateToProps = state => ({
   getOngkirLoading: state.BiteshipReducer.getOngkirLoading,
   getOngkirResult: state.BiteshipReducer.getOngkirResult,
+  getOngkirError: state.BiteshipReducer.getOngkirError,
 
   getListKeranjangResult: state.KeranjangReducer.getListKeranjangResult,
 
